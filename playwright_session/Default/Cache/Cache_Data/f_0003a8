@@ -1,0 +1,5219 @@
+/**
+ * CSS File for Umrah Logged-in User (Landing Page)
+ */
+
+/* Dropdowns in header */
+.homepage_lang_container {
+    padding-right: 5px;
+    padding-left: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: rgba(0, 0, 0, 1);
+    height: 25%;
+    line-height: 27px;
+    vertical-align: middle;
+}
+
+.homepage_lang_container .btn {
+    background-color: transparent;
+    color: #000;
+}
+
+.homepage_lang_container ul {
+    background: rgba(204, 204, 204, 1);
+    margin: 0;
+    padding: 0;
+}
+
+.homepage_lang_container ul li a {
+    color: rgba(0, 0, 0, 1);
+}
+
+.homepage_lang_container img {
+    margin-right: 7px;
+    max-width: 20px;
+}
+
+.header-dropdown {
+    background: transparent !important;
+    color: #000 !important;
+}
+
+/* Modal CSS & Animation */
+.modal .modal-content {
+    -webkit-animation-name: modal-animation;
+    -webkit-animation-duration: 0.5s;
+    animation-name: modal-animation;
+    animation-duration: 0.5s;
+}
+
+.modal-header .announce-close {
+    margin-top: -20px !important;
+}
+
+@-webkit-keyframes modal-animation {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes modal-animation {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+/* Landing Carousel Section */
+.landing-carousel-section {
+    border-radius: 0 !important;
+    background-color: #fff;
+    margin-bottom: 0;
+    min-height: 300px;
+    padding-bottom: 0 !important;
+}
+
+/* Landing Page Carousel custom css */
+.carousel-div .row{
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.carousel-div .inner-item{
+	padding: 0px;
+    width: 33.3%;
+}
+
+.carousel-div .carousel-inner .item.left.active {
+    transform: translateX(-33.3%);
+}
+
+.carousel-div .carousel-inner .item.right.active {
+    transform: translateX(33.3%);
+}
+
+.carousel-div .carousel-inner .item.next {
+    transform: translateX(33.3%);
+}
+
+.carousel-div .carousel-inner .item.prev {
+    transform: translateX(-33.3%);
+}
+.carousel-div .carousel-inner .item.right,
+.carousel-div .carousel-inner .item.left {
+    transform: translateX(0);
+}
+
+.carousel1 .carousel-inner .item.left.active {
+    transform: translateX(-50%);
+}
+
+.carousel1 .carousel-inner .item.right.active {
+    transform: translateX(50%);
+}
+
+.carousel1 .carousel-inner .item.next {
+    transform: translateX(50%);
+}
+
+.carousel1 .carousel-inner .item.prev {
+    transform: translateX(-50%);
+}
+.carousel1 .carousel-inner .item.right,
+.carousel1 .carousel-inner .item.left {
+    transform: translateX(0);
+}
+
+.carousel-inner{
+    margin: 0 auto;
+    width: 70%;
+}
+
+.full-item p{
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Tabs section */
+
+/* .search-tab .flex-container {
+    justify-content: center;
+} */
+
+
+
+
+.flex-container .tabs{
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 10px 10px 0 0;
+    font-weight: bold;
+    border-bottom: 0;
+}
+
+
+
+/* Tab images */
+.flex-container .tabs img{
+    width: 22px;
+}
+
+/* Carousel Div */
+.carousel-div {
+    width: 100%;
+    text-align: center;
+}
+
+/* Carousel Heading */
+.carousel-div h4 {
+    font-weight: bold;
+    color: #000;
+}
+
+/* Landing Page Hajj Quote */
+.landing-hajj-quote{
+    margin-top: 30px;
+    text-align: center;
+}
+
+/* Search Page Div */
+.search-tab {
+    padding-top:8%;
+}
+
+/* Landing background images */
+.uh-landing-background-acc {
+    background-image: url(../../images/umrah/landing-accommodation-uh.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	border-top: none;
+}
+
+/* Preview background images */
+.uh-landing-background-acc-preview {
+    background-image: url(../../images/umrah/landing-accommodation-uh.jpg) !important;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	border-top: none;
+}
+
+.uh-landing-background-transfer {
+    background: url(../../images/umrah/landing-transfer-uh.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+	border-top: none;
+}
+
+/* @media only screen and (min-width: 1440px) {
+    .search-tab {
+        padding-top: calc(100vh - 703px);
+		-webkit-padding-top: calc(100vh - 703px);
+        -moz-padding-top: calc(100vh - 703px);
+    }
+} */
+
+/* @media only screen and (min-width: 1441px) and (max-width: 1536px) {
+    .search-tab {
+        padding-top: 8%;
+    }
+} */
+
+.search-tab .jumbotron {
+    border-top: 1px solid #000;
+    border-bottom: 1px solid #000;
+    border-radius: 0 !important;
+    background-color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 0;
+}
+
+.landing-carousel-section .flex-container {
+    margin-right: 41px;
+	margin-left: 20px
+}
+
+/* Destination Search Dropdown */
+.search_taps .tt-suggestion p {
+    font-size: 16px;
+    background: rgba(255,255,255,1) !important;
+}
+
+.tt-suggestion p {
+    color : black !important;
+}
+.tt-cursor p {
+    color : white !important;
+}
+
+/* Search Hotels button */
+.search-hotel-btn-umrah {
+    padding: 7px 25px 6px 25px;
+    margin-top: 25px;
+    background: #DC140A;
+    color: #fff;
+    border: 2px solid grey;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Destination search box */
+.search_textbox {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+}
+
+/* x icon on search box */
+.clearTypeahead{
+    margin-bottom: 4px !important;
+    color: black !important;
+}
+
+/* Calender image */
+.glyphicon-calendar.calendar-img{
+    margin-top: 4px;
+}
+
+/* Rooms & Occupancy */
+.rooms-occupancy{
+    border: 2px solid #000;
+    padding: 0.67rem;
+    background-color: #fff;
+    color: grey;
+    cursor: pointer;
+}
+
+/* Search Label */
+.search-label{
+    font-weight: bold !important;
+}
+
+/* Input RIght Image */
+.input-right-image {
+    background: rgba(255, 255, 255, 1);
+    border: 2px solid #000;
+    border-radius: 0;
+}
+
+/* Destination min-width */
+.search_taps .destinationSe {
+    min-width: 236px !important;
+}
+
+/* Search Div */
+.flex-container .search-div {
+    margin: 0 4px 0 6px;
+}
+
+/* Input right image */
+.input-right-image img{
+    width: 22px;
+}
+
+/* Input inside search div */
+input:focus{
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+
+/* SubPCC Checkbox */
+#subpccCheckbox{
+    margin-left: 15px;
+    margin-top: 10px;
+}
+
+/* Margin for accommodation form */
+#accommodation form{
+    margin: 10px 0 25px 0;
+}
+
+/* Form padding (ACC) */
+.search_taps .tab-content{
+    padding: 15px 20px 15px 20px !important;
+}
+
+.search_taps ul, .search_taps .tt-dropdown-menu {
+    background: rgba(255, 255, 255, 1) !important;
+    overflow:auto;
+    height:250px;
+}
+
+/* Destination dropdown*/
+.tt-suggestion, .tt-suggestions, .tt-dropdown-menu{
+    background: rgba(255,255,255,1) !important;
+}
+
+.uh-booking-mgt-destination .tt-suggestion p {
+    color: black;
+}
+
+/*special code textbox*/
+.code-flex-container{
+    flex-wrap: nowrap;
+    display: flex;
+    margin-top: 10px;
+}
+
+/* Pcc Code box */
+/* .code-flex-container #uhsubPCC{
+    margin-right: 30px;
+} */
+
+.code-flex-container #pccCheckBox{
+    margin-top: 10px;
+}
+
+/* Raghu */
+/* Chrome, Safari, Edge, Opera */
+#popover_content_wrapper input::-webkit-outer-spin-button,
+#popover_content_wrapper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+#popover_content_wrapper input[type='number'] {
+    -moz-appearance: textfield;
+    padding: 5px !important;
+}
+
+#popover_content_wrapper input[type='number'] {
+    text-align: center;
+    width: 100%;
+    font-size: 12px;
+    color: #575757 !important;
+}
+
+.input-div {
+    display: flex;
+    justify-content: center;
+}
+
+.input-button {
+    position: absolute;
+    border: none;
+    background: transparent;
+}
+
+.left-button {
+    left : 0;
+    cursor: pointer;
+}
+
+.right-button {
+    right: 0;
+    cursor: pointer;
+}
+
+.different-occupancy {
+    display: none;
+}
+.input-container {
+    position: relative;
+    font-weight: normal;
+}
+
+.row {
+    margin-top: 5px;
+}
+
+.roomName {
+    font-weight: bold;
+    font-size: 14px;
+}
+.children-age-content .input-container {
+    margin-top: 5px;
+}
+#switchToDifferentOccupancy {
+    bottom: 10px;
+    font-weight: bold;
+}
+
+.same-occupancy {
+    margin-top: 20px;
+}
+
+.smart-popover {
+    font-size: 10px;
+}
+.noOfRooms {
+    margin-top: 10px;
+}
+.noOfPersons {
+    margin-top: 4px;
+}
+#switchToDifferentOccupancy > .toggle{
+    margin-left: 5px;
+}
+.popover.bottom>.arrow {
+    top: -25px;
+    border-bottom-color: rgba(0,0,0);
+    border-left-width: 12px;
+    border-right-width: 12px;
+}
+.popover>.arrow {
+    border-width: 24px;
+}
+.popover.bottom>.arrow:after {
+    margin-left: -12px;
+    border-left-width: 12px;
+    border-right-width: 12px;
+}
+
+.popover>.arrow:after {
+    border-width: 24px;
+}
+
+.popover.bottom {
+    margin-top: 24px;
+}
+
+
+/* mod */
+.search-div .popover-container{
+    font-size: 12px;
+    background: #ffffff;
+    min-height: 210px;
+    max-height: 340px;
+    padding: 20px;
+    position: absolute;
+    z-index: 3;
+    min-width: 380px;
+    overflow-y: auto;
+    border: 2px solid grey;
+    margin-top: 9px;
+    margin-left: -110px;
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    overflow-x: hidden;
+}
+
+/* mod */
+.search-div .popover-container_subpcc, .subPCCForm .popover-container_subpcc{
+    font-size: 12px;
+    background: #ffffff;
+    min-height: 210px;
+    max-height: 340px;
+    padding: 20px;
+    position: absolute;
+    z-index: 3;
+    min-width: 45%;
+    overflow-y: auto;
+    border: 2px solid grey;
+    margin-top: 9px;
+    box-shadow: 0 10px 16px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19) !important;
+    overflow-x: hidden;
+}
+
+#subpcc_parent{
+    display: flex;
+}
+
+#subpcc_parent .subpcc_item{
+    width:210px;
+}
+
+.subpcc_item .heading {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.subpcc_list .heading {
+    margin-bottom: 20px;
+}
+
+.subpcc_add_item{
+    margin-bottom: 5px;
+}
+
+.subpcc_add .add_snew_subpcc, .subPCCRes .search_subpcc {
+    background: #DC140A;
+    color: #fff;
+    margin-top:5px;
+    width: 145px;
+    height: 30px;
+}
+
+.subpcc_item label {
+    font-size:10px !important;
+    font-weight: 500 !important;
+    display:block !important;
+}
+
+.uh-tworooms-popover{
+    min-width: 560px !important;
+    max-width: 560px !important;
+}
+
+#searchForm .childrenAgesHolder label{
+    color: #000;
+    font-size: 12px !important;
+}
+
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+
+/* mod end */
+/* Raghu end */
+
+/* Rooms & Occupancy Box */
+#btn-popover {
+    background: rgba(255, 255, 255, 1);
+    border: 2px solid grey;
+    height: 3.8rem;
+    width: 205px;
+}
+
+/* Popover flex container */
+.popover-flex-container {
+    flex-wrap: nowrap;
+    display: flex;
+    justify-content: space-between;
+    max-width: 330px;
+}
+
+/* No Of Rooms TextBox */
+.right-textbox {
+    padding: 0;
+}
+
+#searchForm input.roomsNo {
+    background: rgba(255, 255, 255, 1);
+    border: 2px solid grey;
+    border-radius: 0;
+    /* height: 29px; */
+    font-weight: bold;
+}
+
+/* No of rooms Label */
+.noOfRoomsLabel {
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+/* Plus minus icon */
+.quantity-icon {
+    margin: 8px;
+}
+
+/* Counts box */
+.counts-box {
+    width: 100% !important;
+}
+
+/* Popover input div */
+.popover-input-div {
+    margin-top: -24px;
+}
+
+/* Child Ages */
+.child-ages-label {
+    padding: 0;
+    margin-top: 5px;
+    font-weight: bold !important;
+}
+
+/* Children ages text box */
+.children-age-input {
+    padding: 0;
+    margin-right: 3%;
+    width: 30% !important;
+}
+
+/* Child age quantity icon */
+.child-age-left-btn {
+    margin-top: 5px;
+    margin-left: 8px;
+}
+
+.child-age-right-btn{
+    margin-top: 5px;
+    margin-right: 9px;
+}
+
+.child-age-input-box{
+    width: 100% !important;
+}
+
+/* Slider * */
+.switch {
+    margin-top: 5px;
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 18px !important;
+    float: right;
+}
+
+#walletList .switch {
+    margin-top: 0px;
+    float: none;
+    margin-left: 20px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: '';
+    height: 12px;
+    width: 12px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+#popover_content_wrapper input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+#popover_content_wrapper input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}
+
+#walletList input:checked + .slider {
+    background-color: #DC140A;
+}
+
+#walletList input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+#walletList input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/*subpcc textbox hide on load*/
+#uhsubPCC {
+    display: none;
+}
+
+#uhspecialCode {
+    display: none;
+}
+
+/* Diff occupancy label */
+.diff-occ-label {
+    margin-top: 7px;
+    font-size: 12px;
+}
+
+.search_taps .childrenAgesHolder {
+    max-width: none !important;
+    width: 104%;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.search_taps .uh-other-tour-container .childrenAgesHolder {
+    max-width: 170px !important;
+    width: auto;
+}
+
+/* Making quantity icons lighter */
+.light-icon {
+    font-family: '' !important; /* Remove Bold from quantity icons */
+}
+
+#content {
+    background: #fff;
+}
+
+/* Rooms Container */
+.rooms-container {
+    margin-top: 21px;
+}
+
+.uh-hotel-transfer {
+    min-height: 100%;
+} 
+
+.different-occupancy1 {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.occupancy-room {
+    width: 245px;
+    /* float: left; */
+    padding-right: 15px;
+}
+
+.occupancy-room .children-count {
+    margin-top: 5px;
+}
+
+.roomName-separate{
+	border: 0.5px solid #949393;
+	margin-top: 5px;
+	margin-bottom: 0;
+}
+
+/* Hotel Searches here */
+#hotel-search .flex-container{
+    justify-content: center;
+}
+
+/* Change Search Btn */
+.change-search-btn-uh {
+    margin-top: 24px;
+    background: #dc140a !important;
+    color: #fff !important;
+    font-weight: 100 !important;
+    padding: 1.04rem 10px !important;
+    border: 2px solid grey !important;
+    border-radius: 0 !important;
+}
+
+.coming-soon-services{
+	border-radius: 5px;
+	width: 82px;
+	font-size: 10px !important;
+	line-height: 16px;
+	margin: 0 auto !important;
+	margin-top: 3px;
+}
+
+.childrenAgesHolder div{
+	display: block;
+}
+
+/* Hajj Quote Flex container */
+.uh-quote-flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: baseline;
+    margin-top: 24px;
+}
+
+#uh-quote-right {
+    margin-left: 2px;
+}
+
+/* Making the width 100% after removing sidebar */
+.uh-remove-sidebar {
+    width: 100% !important;
+}
+
+/*hide icons*/
+.main-container .icon-creditcard, .main-container .icon-minprice{
+    display: none;
+}
+
+.modal-backdrop.in {
+    height: 0 !important;
+}
+
+.modal-open .modal {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.modal-backdrop.in {
+    height: 0 !important;
+}
+
+.modal-open .modal {
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.flex-container .uh-search-destination {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-container .uh-search-destination-checkbox {
+    margin-top: -40px;
+}
+
+@-moz-document url-prefix() {
+    .flex-container .uh-search-destination-checkbox {
+        margin-top: 0;
+    }
+}
+
+#guest_termsandconditions p{
+	font-size: 14px;
+}
+
+/* Booking Landing container */
+.uh-booking-landing-container {
+    padding: 30px;
+}
+
+/* Booking Management Search form */
+#uh-booking-search-form-div {
+    border: 2px solid #bebebe;
+    border-radius: 2px;
+    padding: 20px;
+}
+
+.uh-booking-search-heading {
+    margin-top: -30px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding: 0 7px;
+    background: #fff;
+    width: 120px;
+}
+
+.uh-justify-content-between {
+    justify-content: space-between;
+}
+
+.uh-justify-content-center {
+    justify-content: center;
+}
+
+.uh-align-items-center {
+    align-items: center;
+}
+
+.uh-booking-management .uh-booking-mgmt-form-label {
+    font-weight: normal;
+}
+
+.uh-booking-management .uh-booking-mgmt-calender {
+    cursor: pointer;
+}
+
+.uh-booking-management .uh-booking-mgmt-filter-table {
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.uh-booking-management .uh-submit-section {
+    margin-top: 10px;
+}
+
+/* Widths (In Percentage) */
+.uh-width-100 {
+    width: 100% !important;
+}
+
+/* Added top space for input field */
+.uh-width-add-space {
+    margin-top: 10px !important;
+}
+
+.uh-width-25 {
+    width: 25% !important;
+}
+
+.uh-width-40 {
+    width: 40% !important;
+}
+
+.uh-width-60 {
+    width: 60% !important;
+}
+
+.uh-width-20 {
+    width: 20% !important;
+}
+
+.uh-label-td {
+    text-align: center;
+}
+
+/* Widths (In Pixels) */
+.uh-width-170-px {
+    width: 170px !important;
+}
+
+/* Submit Button */
+.uh-submit-section input {
+    padding: 7px 25px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Advanced Search Button */
+.uh-submit-section a {
+    color: #DC140A;
+    margin-left: 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+#uh-advanced-divider {
+    margin: 5px 0 !important;
+}
+
+#BookingForm .form-group {
+    margin-bottom: 0 !important;
+}
+
+#uh-result-table .uh-table-head-dark {
+    background-color: #dedede;
+    color: #000;
+}
+
+.uh-text-align-center {
+    text-align: center !important;
+}
+
+.uh-vertical-center {
+    vertical-align: middle !important;
+}
+
+#bookingResults .results-table-div {
+    border: 2px solid #bebebe;
+    margin-top: 20px;
+    border-radius: 2px;
+}
+
+.uh-export-section {
+    float: right;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+#uh-result-table {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#uh-result-table .uh-manage-btn {
+    padding: 3px;
+    text-transform: uppercase;
+    color: #DC140A;
+}
+
+.uh-maqam-result-logo {
+    width: 22px;
+    opacity: 0.6;
+}
+
+.uh-no-results {
+    margin-top: 10px;
+    border: 2px solid #bebebe;
+    padding: 20px;
+    text-align: center;
+    color: #DC140A;
+    text-transform: uppercase;
+    font-size: 15px;
+}
+
+/* Min width css */
+.uh-min-width-50 {
+    min-width: 50px !important;
+}
+
+.uh-min-width-100 {
+    min-width: 100px !important;
+}
+
+.uh-min-width-120 {
+    min-width: 120px !important;
+}
+
+.uh-min-width-100-actions {
+    min-width: 100px !important;
+    background-image: none !important;
+}
+
+.uh-min-width-200 {
+    min-width: 200px !important;
+}
+
+.uh-min-width-150 {
+    min-width: 150px !important;
+}
+
+/* Class to set display none */
+.uh-no-display {
+    display: none !important;
+}
+
+/* Group occupancy flex container */
+.group-occupancy-flex-container {
+    flex-wrap: nowrap;
+    display: flex;
+    /*justify-content: space-between;*/
+}
+
+/* Vertical flex container */
+.vertical-flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Add room group button */
+#add-room-group-btn {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Group-Occupancy CSS */
+.group-occupancy-label {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.group-occupancy-sub-label {
+    font-size: 9px;
+}
+
+#group-occupancy .input-container {
+    margin-top: 4px;
+    margin-bottom: 4px;
+    width: 60px;
+}
+
+.uh-grp-occ-mr {
+    margin-right: 10px;
+}
+
+/* Group Occupancy delete icon */
+.uh-delete-icon-div {
+    flex-direction: column-reverse !important;
+}
+
+.uh-delete-icon-div .uh-delete-icon {
+    color: red;
+    font-size: 16px;
+}
+
+/* Max Occupancy Alert */
+#max-group-occupancy-alert {
+    margin-top: 10px;
+}
+
+/* Max Occupancy Alert Icon */
+#max-group-occupancy-alert .max-occ-alert-icon {
+    font-size: 10px;
+}
+
+.grp-child-age-flex-container {
+    align-items: baseline !important;
+}
+
+.group-child-age-input-container {
+    margin-right: 10px;
+}
+
+.uh-center-container {
+    margin-top: 8px;
+    margin-bottom: 5px;
+}
+
+/* Individual Occupancy div css */
+#individual-occupancy {
+    overflow: hidden;
+}
+
+.adults-occupancy-label-arabic {
+    width: 95px;
+}
+
+.children-occupancy-label-arabic {
+    width: 58px;
+}
+
+/* Jquery UI draggable div CSS */
+.uh-draggable-div {
+    border: 1px solid rgb(0, 0, 0);
+    padding: 5px;
+    background: rgb(255, 208, 208);
+    border-radius: 3px;
+    margin-top: 5px;
+    cursor: all-scroll;
+}
+
+/* Draggable div label */
+.uh-draggable-div label {
+    margin-left: 10px;
+}
+
+/* Booking Details CSS */
+.highlighted-column {
+    width: 11%;
+    background: #EEEBEA;
+}
+
+.booking-details-table {
+    border: 1px solid #bebebe
+}
+
+.booking-details-table td {
+    padding: 12px !important;
+    font-weight: bold;
+    vertical-align: middle !important;
+}
+
+.booking-details-table-head {
+    background: #EEEBEA;
+}
+
+.booking-details-cancel-button {
+    padding: 5px;
+    background-color: red;
+    color: white;
+    float: right;
+}
+
+.booking-details-status {
+    color: green;
+    text-transform: uppercase;
+}
+
+.booking-details-status-section {
+    font-size: 20px;
+    float: right;
+    font-weight: bold;
+}
+
+.booking-details-reference-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin-right: 30px;
+    margin-bottom: 0;
+    text-transform: uppercase;
+
+}
+
+.uh-booking-details-heading {
+    margin-top: -30px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding: 0 7px;
+    width: 140px;
+}
+
+.uh-booking-details-container {
+    padding: 30px;
+    clear: both;
+}
+
+.uh-booking-details-pax-th {
+    text-align: center;
+}
+
+.booking-details-flex-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.booking-details-back-btn {
+    margin-left: 30px;
+    font-size: 15px;
+    text-transform: uppercase;
+    display: block;
+    text-decoration: none !important;
+}
+
+.booking-details-active {
+    background: cornsilk;
+}
+
+.uh-input-btn {
+    padding: 2px;
+}
+
+.uh-voucher-btn {
+    background: url("../../images/icons/print_btn_ico_no_back.png");
+}
+
+td .buttons_container {
+    margin-top: 0 !important;
+}
+
+.uh-booking-details-pax-table {
+    text-align: center !important;
+}
+
+.supplier_room_group{
+    overflow: inherit !important;
+}
+
+.uh-other-acc-container {
+    display: flex !important;
+    /* justify-content: center !important; */
+}
+
+.uh-other-acc-container .search_row {
+    margin-bottom: 0px;
+    margin-top: 10px;
+}
+
+.uh-other-acc-container .search_row_advanced, .uh-other-acc-container .childrenAgesHolder {
+    margin-bottom: 0px;
+}
+
+.uh-itinerary-button {
+    background-color: none;
+}
+
+.uh-other-acc-container .numberOfNights, .uh-other-acc-container .searchRoomsNo {
+    width: 125px;
+}
+
+.main-container .icon-info {
+    background-image: url(../../images/icons/infoicon.png) !important;
+    background-size: 27px 26px;
+    width: 27px !important;
+    height: 26px !important;
+}
+
+.main-container .icon-location {
+    background-image: url(../../images/icons/mapicon.png) !important;
+    background-size: 30px 26px;
+    width: 30px !important;
+    height: 26px !important;
+}
+.main-hotel-info .glyphicon, .mapIcon .glyphicon {
+    color: #191919 !important;
+    font-size: 20px !important;
+}
+.uh-maqam-nonmaqam-toggle-div {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.uh-maqam-nonmaqam-toggle-switch {
+    margin: 10px 20px 10px 20px;
+}
+
+.uh-maqam-nonmaqam-toggle-switch .switch {
+    margin-top: 0px;
+    height: 22px !important;
+    width: 44px;
+}
+
+.uh-maqam-nonmaqam-toggle-switch .slider {
+    background-color: black;
+}
+.uh-maqam-nonmaqam-toggle-switch .disabled {
+    background-color: #b1acac !important;
+}
+.uh-maqam-nonmaqam-toggle-div input:checked + .slider {
+    background-color: black;
+}
+
+.uh-maqam-nonmaqam-toggle-div input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+.uh-maqam-nonmaqam-toggle-div .slider:before {
+    height: 16px;
+    width: 15px;
+}
+
+.uh-maqam-nonmaqam-toggle-div input:checked + .slider:before {
+    -webkit-transform: translateX(22px);
+    -ms-transform: translateX(22px);
+    transform: translateX(22px);
+}
+
+.uh-non-maqam-acc {
+    margin-top: 10px;
+}
+
+/* CSS for Carousel with two items */
+
+.carousel1 .inner-item {
+    padding: 0px;
+    width: 50%;
+}
+
+.header-right-logos .dropdown {
+    top: 10px;
+    width: 70px;
+    float: left;
+}
+
+.header-right-logos ul {
+    background: rgba(204, 204, 204, 1);
+    margin: 0;
+    padding: 0;
+}
+
+.header-right-logos ul li a {
+    color: rgba(0, 0, 0, 1);
+}
+
+.header-right-logos .btn-primary {
+    border-color: none !important;
+}
+
+.uh-hamburger-menu {
+    width: 50px;
+    height: 30px;
+    background-image: url(../../images/umrah/Hamburger-menu.png) !important;
+    background-repeat:no-repeat;
+    background-color: #DC140A !important;
+    background-size: 50px 30px !important;
+    border-color: #DC140A !important;
+}
+.supplier_room_group{
+    overflow: inherit !important;
+}
+
+
+.umrah_search_book_loader_container {
+    width: 720px;
+    height: 100%;
+    background-color: #FFF;
+    background-image: url(../../images/pattern.jpg) !important;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.umrah_search_book_loader_content {
+    background-color: rgba(255,255,255,0.8);
+    height: 100%;
+    padding: 80px 40px 20px 40px;
+    text-align: center;
+    font-family: 'Montserrat';
+    font-weight: 600;
+    font-size: 19pt;
+    border-radius: 5px;
+}
+
+.preloader-spinner {
+    height: 100px;
+    width: 100px;
+    text-align: center;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+
+
+.umrah-sb-search-text {
+    font-size: 15pt;
+    margin: 0;
+}
+
+
+.umrah-sb-refresh-text {
+    font-size: 13pt;
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+.loader-bg-booking{
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    background-color: rgb(0, 0, 0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    text-align: center;
+    direction: ltr;
+    z-index: 999;
+    display: none;
+}
+
+.uh-other-trf-container {
+    display: flex !important;
+    /* justify-content: center !important; */
+}
+
+.uh-other-trf-container .searchButtonsContainer {
+    margin-top: 24px;
+}
+
+.customer-admin-sidenav {
+    width: 22%;
+    background: #fff;
+    padding: 8px 0;
+    vertical-align: middle;
+    height: 100vh;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+    margin-top: 10px;
+}
+
+.customer-admin-sidenav a {
+    padding: 8px 24px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: black;
+    margin: 18px 60px;
+    display: block;
+}
+
+.customer-admin-sidenav a:hover, .customer-admin-sidenav a:focus {
+    padding: 8px 24px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 18px 60px;
+    display: block;
+    border-radius: 5px;
+}
+
+.ca-li-image {
+    padding: 15px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    float: left;
+    width: 50px;
+}
+
+.ca-li-id {
+    font-size: 16px;
+    font-weight: bold;
+    color: black;
+    text-align: center;
+    float: left;
+    margin-left: 15px;
+}
+
+.ca-li-container {
+    overflow: hidden;
+    padding: 10px 52px 0px;
+}
+
+/* CSS Changes for UH-745-Wallet Management */
+
+.customer-admin-wallet-management {
+    width: 75%;
+    background: #fff;
+    padding: 0px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100vh;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-wallet-management .booking_details {
+    border: 1px solid #ebeaea;
+    color: black !important;
+}
+
+.customer-admin-wallet-management h3, .customer-admin-wallet-management h4 {
+    font-weight: bold;
+}
+
+.customer-admin-wallet-management .wallet-mgnt-table-content {
+    padding-top: 30px;
+}
+
+.customer-admin-wallet-management .wallet-mgnt-table-content .wallet-mgnt-label {
+    text-align: right;
+    padding-right: 10px;
+}
+
+.customer-admin-wallet-management .wallet_heading {
+    border-bottom: none !important;
+}
+
+.customer-admin-wallet-management .registered_wallets h4{
+    margin-top: 40px;
+}
+
+.customer-admin-wallet-management .wallet_add_btn {
+    font-size: 15px;
+    letter-spacing: 1px;
+    line-height: 20px;
+    font-family: inherit;
+    border: none;
+    font-weight: bold;
+    padding: 8px 25px 8px 25px;
+    margin-left: 12px;
+}
+
+.customer-admin-wallet-management .wallet_list_tab {
+    border-left: 1px solid #CECECE;
+    border-right: 1px solid #CECECE;
+    border-bottom: 1px solid #CECECE;
+}
+
+.customer-admin-wallet-management .wallet_list_tab td {
+    padding: 8px !important;
+}
+
+.customer-admin-wallet-management .uh_errors_list {
+    color: #FF0000;
+}
+
+.customer-admin-wallet-management .onoffswitch {
+    position: relative;
+    width: 45px;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select: none;
+    margin-left: 25px;
+}
+
+.customer-admin-wallet-management .onoffswitch-checkbox, .sub_cust_wallet_onoff {
+    display: none;
+}
+
+.customer-admin-wallet-management .onoffswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.customer-admin-wallet-management .onoffswitch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s;
+    -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s;
+    transition: margin 0.3s ease-in 0s;
+}
+
+.customer-admin-wallet-management .onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 19px;
+    padding: 0;
+    line-height: 19px;
+    font-size: 11px;
+    color: white;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.customer-admin-wallet-management .onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 7px;
+    background-color: #5cb85c;
+    color: #FFFFFF;
+}
+
+.customer-admin-wallet-management .onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 5px;
+    background-color: #DC140A;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.customer-admin-wallet-management .onoffswitch-switch {
+    display: block;
+    width: 14px;
+    margin: 2px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    -moz-transition: all 0.3s ease-in 0s;
+    -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s;
+    transition: all 0.3s ease-in 0s;
+}
+
+.customer-admin-wallet-management .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+.customer-admin-wallet-management .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0;
+}
+
+.customer-admin-wallet-management .delete_cls {
+    font-size: 16px;
+    margin-right: 10px;
+}
+.customer-admin-wallet-management .wallet_share {
+    font-size: 16px;
+    margin-left:10px;
+}
+
+.customer-admin-wallet-management .wallet_list_tab a, .wallet_list_tab a:hover {
+    text-decoration: none;
+    color: #868686;
+}
+
+.customer-admin-wallet-management .wallet_share_dis{
+    font-size: 16px;
+    margin-left:10px;
+    color: #ced4da;
+}
+
+.customer-admin-wallet-management .delete_cls_dis{
+    font-size: 16px;
+    color: #ced4da;
+    margin-right: 10px;
+}
+
+.customer-admin-wallet-management .wallet_head{
+    border-bottom: 2px solid #C1C1C0;
+    width: 90%;
+    padding-bottom: 5px;
+}
+
+/* END of CSS Changes for UH-745-Wallet Management */
+
+/* Search Hotels button for Other Accomodation */
+
+.search-hotel-btn-othracc-umrah {
+    padding: 7px 25px 7px 25px;
+    background: #DC140A;
+    color: #fff;
+    border: 2px solid grey;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.search-trf-btn-othrtrf-umrah {
+    padding: 8px 25px 8px 25px;
+    background: #DC140A;
+    color: #fff;
+    border: 2px solid grey;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: normal;
+}
+
+.rate-loader-search-text{
+    font-size: 15pt;
+    margin: -18px;
+}
+
+/* CSS CHANGES FOR UH-744 MY-PROFILE*/
+
+.customer-admin-my-profile-container {
+    width: 75%;
+    background: #fff;
+    padding: 0 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat', sans-serif; 
+    float: left;
+}
+
+.customer-admin-my-profile-container h3{
+    font-weight: bold;
+}
+
+.ca-my-profile-content {
+    padding: 30px 0;
+}
+
+.ca-my-profile-content .ca-mp-table {
+    border-collapse: collapse; 
+    width: 100%;
+}
+
+.ca-my-profile-content .ca-mp-table td{
+    padding: 10px;
+}
+
+.ca-my-profile-content .my-profile-tb {
+    width: 400px;
+}
+
+.ca-my-profile-content .my-profile-cc-tb, .ca-my-profile-content .ca-mp-cc-td {
+    width: 120px !important;
+}
+
+.ca-my-profile-content .my-profile-tn-tb {
+    margin-left: 10px;
+    width: 267px;
+}
+
+.ca-my-profile-content .ca-mp-required {
+    color: red;
+    font-weight: bold;
+}
+
+.ca-my-profile-content .ca-mp-reset-pwd {
+    margin-top: 10px;
+    color: red;
+    font-weight: bold;
+    display: block;
+}
+
+.ca-my-profile-content .ca-mp-save-button {
+    background-color: #DC140A;
+    color: white;
+    width: 80px;
+    height: 30px;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+}
+
+.ca-my-profile-content .glyphicon-plus-sign {
+    font-size: 18px;
+    color: green;
+    margin-left:10px;
+    margin-top:10px;
+}
+
+.ca-my-profile-content .emailContainer input:read-only, .ca-my-profile-content .ca-mp-table .readonly-field {
+    background-color: #ececec !important;
+    background-image: url(../../images/umrah/lock.png) !important;
+    background-size: 12px 15px !important;
+    background-repeat: no-repeat !important;
+    background-position: 98% 50% !important;
+}
+.ca-mp-table .reset-td-margin{padding-top:19px!important;}
+
+.customer-admin-my-profile-container .buttons_container .add_user_btn {
+    margin-left:12px;
+    padding: 8px;
+}
+
+.customer-admin-my-profile-container .buttons_container .add_user_btn:hover {
+    color: #DC140A;
+}
+
+/* END OF CSS CHANGES FOR UH-744 MY-PROFILE*/
+
+/** Wallet Management **/
+
+#wallet-modal .switch {
+    float: none;
+}
+
+#wallet-modal input:checked + .slider {
+    background-color: #DC140A;
+}
+
+#wallet-modal input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+#wallet-modal input:checked + .slider:before {
+    -webkit-transform: translateX(19px);
+    -ms-transform: translateX(19px);
+    transform: translateX(19px);
+}
+
+#wallet-modal td {
+    border-top: none;
+    border-bottom: 2px solid black;
+}
+
+.wallet_modal {
+    margin: 40px 60px;
+}
+
+.wallet_notification_btn {
+    width: 80px;
+    color: white;
+    border: none;
+    background-color: #DC140A;
+    padding: 5px;
+}
+
+.notification_div {
+    margin: 0px 60px;
+}
+
+.notification_div input {
+    width: 360px;
+}
+
+.notification_btn_div {
+    text-align: center;
+    margin-top: 10px;
+}
+
+/*** Booking popup ***/
+#booking-payment-modal td {
+    border-top: none;
+}
+
+#booking-payment-modal .table {
+    margin-bottom: 0px !important;
+}
+
+#booking-payment-modal select {
+    width: 100%;
+    height: 30px;
+}
+
+#booking-payment-modal .iban-wallet-select .bp-authentication-code {
+    margin-bottom: 20px;
+}
+
+#booking-payment-modal.bp-authentication-code {
+    margin-top: 20px;
+}
+
+.iban-authentication-section {
+    overflow: hidden;
+}
+
+.bp-send-code-btn {
+    color: white;
+    background-color: red;
+    margin-left: 205px;
+    margin-bottom: 15px;
+    width: 35%;
+    height: 30px;
+    border: none;
+}
+
+.shared-wallet-text {
+    color: red;
+    font-size: 11px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.iban-wallet-select {
+    padding: 10px 10px 0px 10px;
+}
+
+#btn-wallet-container {
+    margin-top: 10px;
+}
+
+.show_email_msg {
+    font-size: 12px;
+    text-align: center;
+    color: #1e7e34;
+}
+
+.new_wallet_div {
+    margin: 12px 0 0 0;
+}
+
+.new_wallet_div .btn_wallet {
+    height: 32px;
+    width: 50px;
+    background-color: #DC140A;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+}
+
+.invalid-wallet-number {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+.new_wallet_div .preloader {
+    float: right;
+    margin-right: 50px;
+}
+
+/* Non-Maqam Btns div */
+.non-mqm-btn-td {
+    width: 20%;
+}
+
+#codeLoader{
+    float: right;
+    margin-right: 80px;
+}
+/** Wallet Management **/
+
+/* CSS for UH-818 Branches management  */
+
+.customer-admin-branch-management {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-branch-management h3 {
+    font-weight: bold;
+}
+
+.uh-branch-mgmt-filter-table {
+    border-collapse: separate;
+    border-spacing:0 15px;
+}
+
+.uh-branch-mgmt-filter-table .search_textbox {
+    width: 300px;
+}
+
+.customer-admin-branch-management #uh-booking-search-form-div {
+    margin-top: 30px;
+}
+
+.customer-admin-branch-management #branchResults .results-table-div {
+    border: 2px solid #bebebe;
+    margin-top: 20px;
+    border-radius: 2px;
+}
+
+.customer-admin-branch-management .uh-export-section {
+    float: right;
+    margin: 30px 0;
+}
+
+.customer-admin-branch-management .uh-export-section .search_btn {
+    padding:10px;
+    margin-top:0;
+    margin-right:20px;
+}
+
+.customer-admin-branch-management .uh-branch-mgmt-form-label {
+    font-weight: 500 !important;
+}
+
+.customer-admin-branch-management .ca-bm-success-notification {
+    background-color: #3b9a3b;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.customer-admin-branch-management .ca-bm-error-notification {
+    background-color: #DC140A;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.customer-admin-branch-management .ca-bm-success-notification .glyphicon, .ca-bm-error-notification .glyphicon {
+    font-size: x-large;
+    vertical-align: middle;
+}
+
+.customer-admin-branch-management .ca-bm-notification-text {
+    margin-left: 20px;
+}
+
+.customer-admin-branch-management .ca-bm-notification-close {
+    float: right;
+    cursor: pointer;
+}
+
+.customer-admin-branch-management .tt-suggestion {
+    padding: 3px 2px !important;
+}
+
+.customer-admin-branch-management .tt-dropdown-menu .tt-cursor p, .tt-dropdown-menu .tt-suggestion p:hover {
+    background-color:  rgba(97, 97, 97, 1) !important;
+}
+/* End of CSS for UH-818 Branches management  */
+
+/* CSS Changes for UH-842 Add branch  */
+
+.customer-admin-add-branch {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-add-branch h3 {
+    font-weight: bold;
+}
+
+.float-container {
+    border: 3px solid #fff;
+    padding: 20px;
+}
+
+.float-child {
+    width: 50%;
+    float: left;
+    padding: 20px;
+    border: 2px solid red;
+}
+
+.ca-add-branch-container {
+    font-size: 12px;
+}
+
+.ca-add-branch-row-item {
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.ca-add-branch-container .page-header h5 {
+    font-weight: bold;
+}
+
+.ca-add-branch-container label {
+    font-weight: 600;
+    text-align: right;
+}
+
+.ca-add-branch-container .buttons_container {
+    overflow: hidden;
+    margin-right: 40px;
+    margin-bottom: 50px;
+}
+
+.ca-add-branch-container .buttons_container .field-holder {
+    float:right;
+    text-align:right;
+}
+
+.ca-add-branch-container .buttons_container .from_update_btn {
+    margin-left:12px;
+    font-size: 14px;
+    line-height: 10px;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgba(220, 20, 10, 1);
+    border: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: rgba(226, 226, 226, 1);
+    background: -webkit-linear-gradient(top, rgba(226, 226, 226, 1), rgba(162, 162, 162, 1));
+}
+
+.ca-add-branch-container .required:after {
+    font-size: 12px;
+    content: '*';
+    color: #ff1600;
+    padding-left: 2px;
+    position: absolute;
+}
+
+.ca-add-branch-container .ca-addbranch-select {
+    width: 100%;
+}
+
+/* End of CSS changes for UH-842 Add branch */
+
+/* CSS CHANGES FOR UH-814 MY-Company*/
+
+.customer-admin-my-company-container {
+    width: 75%;
+    background: #fff;
+    padding: 0px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-my-company-container h3{
+    font-weight: bold;
+}
+
+.customer-admin-my-company-container label {
+    font-weight: 500 !important;
+}
+
+.ca-my-company-content {
+    padding: 30px 0px;
+}
+
+.ca-my-company-content .ca-mc-table .logo-container {
+    width: 226px;
+    height: 122px;
+    background: #ddd;
+}
+.ca-my-company-content .ca-mc-table .branchlogo-container {
+    width: 226px;
+    height: 122px;
+    background: #ddd;
+}
+.ca-my-company-content .ca-mc-table .banner-container {
+    width: 726px;
+    height: 119px;
+    background: #ddd;
+}
+
+.ca-my-company-content .ca-mc-table {
+    border-collapse: collapse;
+    display: inline-table;
+}
+
+.ca-my-company-content .ca-mc-table input{
+    margin-left: 40px;
+}
+
+.ca-my-company-content .ca-mc-table input[disabled]{
+    background-color: #ececec !important;
+}
+
+.ca-my-company-content .ca-mc-table textarea {
+    margin-left: 40px;
+}
+
+.ca-my-company-content .ca-mc-table td{
+    padding: 10px;
+}
+
+.ca-my-company-content .ca-mc-table .lock-image{
+    position: relative;
+    left: -25px;
+}
+
+.ca-my-company-content .my-company-tb {
+    width: 400px;
+}
+
+.ca-my-company-content .my-company-tn-tb {
+    margin-left: 10px;
+}
+
+.ca-my-company-content .ca-mc-required {
+    color: red;
+    font-weight: bold;
+}
+
+.ca-my-company-content .ca-mc-save-button {
+    width: 80px;
+    height: 30px;
+    font-weight: bold;
+    border: none;
+    border-radius: 3px;
+}
+
+.ca-my-company-content .fileinput-button {
+    position: relative;
+    overflow: hidden;
+}
+
+.ca-my-company-content .fileinput-button input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 0;
+    opacity: 0;
+    font-size: 200px;
+    direction: ltr;
+    cursor: pointer;
+}
+
+.ca-my-company-content .ca-pay-table {
+    display: inline-table;
+    float: right;
+    height: 180px;
+}
+
+.ca-my-company-content .ca-pay-table td{
+    border: 0.5px solid #e7e7e7 !important;;
+    border-collapse: collapse;
+}
+
+.ca-my-company-content .search_textbox {
+    width: 70%;
+}
+
+/* END OF CSS CHANGES FOR UH-814 MY-COMPANY*/
+
+#bookingContainer #stage1:after {
+    z-index: 1 !important;
+}
+
+#bookingContainer #stage2:after {
+    z-index: 1 !important;
+}
+
+
+#bookingContainer #stage2:before {
+    z-index: 0 !important;
+}
+
+#bookingContainer #stage3:before {
+    z-index: 0 !important;
+}
+
+.customer-admin-sidenav-active{
+    padding: 8px 24px;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 18px 60px;
+    display: block;
+    border-radius: 5px;
+}
+
+.customer-admin-wallet-management .has-error{
+    border:1px solid #FF0000 !important;
+}
+
+
+ /* CSS for UH-853 add edit user  */
+
+.customer-admin-add-user-management {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-add-user-management h3 {
+    font-weight: bold;
+}
+
+.customer-admin-add-user-management h4 {
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.ca-add-user-container {
+    margin-top: 30px;
+    font-size: 12px;
+}
+
+.ca-add-user-rights-container {
+    margin-top: 0 !important;
+    font-size: 12px;
+}
+
+.ca-add-user-row-item {
+    margin-bottom: 15px;
+}
+
+.ca-add-user-rights-row-item {
+    margin-bottom: 10px;
+}
+
+.customer-admin-add-user-management .clear-form input[type="text"], .customer-admin-add-user-management .clear-form input[type="password"] {
+    background-color: #FFFFFF !important;
+}
+
+.ca-add-user-container .cat, .ca-add-user-container label , .ca-add-user-rights-container.cat, .ca-add-user-rights-container label {
+    font-weight: 600;
+}
+
+.ca-add-user-rights-container-table {
+    margin-top: 40px;
+}
+
+.ca-add-user-rights-container .onoffswitch-inner:before {
+    content: "Yes";
+    padding-left: 7px;
+    background-color: #5cb85c;
+    color: #FFFFFF;
+}
+
+.ca-add-user-rights-container .onoffswitch-inner:after {
+    content: "No";
+    padding-right: 5px;
+    background-color: #DC140A;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.ca-add-user-rights-container .buttons_container {
+    overflow: hidden;
+    margin-bottom: 40px;
+}
+
+.ca-add-user-rights-container .buttons_container .field_holder {
+    float:right;
+    text-align:right;
+}
+
+.ca-add-user-rights-container .buttons_container .from_update_btn {
+    margin-left:12px;
+    font-size: 14px;
+    line-height: 10px;
+    padding: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgba(220, 20, 10, 1);
+    border: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: rgba(226, 226, 226, 1);
+    background: -webkit-linear-gradient(top, rgba(226, 226, 226, 1), rgba(162, 162, 162, 1));
+}
+
+.ca-add-user-rights-row-item .right-item {    
+    width:182px
+}
+
+.ca-add-user-row-item #regeneratePassword {
+    padding: 10px;
+}
+
+.ca-add-user-row-item #regeneratePassword:hover{
+    color: #DC140A;
+}
+
+.customer-admin-add-user-management .ca-add-user-container .lock-image{
+    position: relative;
+    left: -25px;
+}
+
+.customer-admin-add-user-management .ca-add-user-container .edit-user-login-disable input[disabled]{
+    background-color: #ececec !important;
+}
+
+.customer-admin-add-user-management .emailContainer input:read-only {
+    background-color: #ececec !important;
+    background-image: url(../../images/umrah/lock.png) !important;
+    background-size: 12px 15px !important;
+    background-repeat: no-repeat !important;
+    background-position: 98% 50% !important;
+}
+
+.ca-add-user-container .ca-add-user-row-item .ca-add-user-selectbox{
+    width:49%;
+}
+
+/* End of CSS for UH-853 add edit user  */
+
+/* CSS for UH-847 user management  */
+
+.customer-admin-user-management {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-user-management h3 {
+    font-weight: bold;
+}
+
+.uh-user-mgmt-filter-table {
+    border-collapse: separate;
+    border-spacing:0 15px;
+}
+
+.uh-user-mgmt-filter-table .search_textbox {
+    width: 300px;
+}
+
+.customer-admin-user-management #uh-booking-search-form-div {
+    margin-top: 30px;
+}
+
+.customer-admin-user-management #userResults .results-table-div {
+    border: 2px solid #bebebe;
+    margin-top: 20px;
+    border-radius: 2px;
+}
+
+.customer-admin-user-management .uh-export-section {
+    float: right;
+    margin: 30px 0;
+}
+
+.customer-admin-user-management .uh-user-mgmt-form-label {
+    font-weight: 500 !important;
+}
+
+.customer-admin-user-management .ca-um-success-notification {
+    background-color: #3b9a3b;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.customer-admin-user-management .ca-um-error-notification {
+    background-color: #DC140A;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.customer-admin-user-management .ca-um-success-notification .glyphicon, .ca-um-error-notification .glyphicon {
+    font-size: x-large;
+    vertical-align: middle;
+}
+
+.customer-admin-user-management .ca-um-notification-text {
+    margin-left: 20px;
+}
+
+.customer-admin-user-management .ca-um-notification-close {
+    float: right;
+    cursor: pointer;
+}
+
+.customer-admin-user-management .add_user_btn_container {
+    margin-right: 15px;
+    margin-top: 0 !important;
+    float: left;
+    clear: left;
+}
+
+#userResults .glyphicon-pencil, #userResults .glyphicon-user {
+    color: #DC140A;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.customer-admin-user-management .table-responsive.results-table-div {
+    border: 2px solid #ccc !important;
+}
+
+/* End of CSS for UH-847 user management  */
+
+.ca-wallet-mgmt-share-modal table tr td {
+    padding: 8px !important;
+}
+
+
+/* CSS changes for Customer Admin all modules in common */
+
+.customer-admin-wrapper {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.customer-admin-wrapper .customer-admin-sidenav {
+    height: inherit;
+    border-radius: 5px;
+}
+
+/* End of CSS changes for Customer Admin all modules in common */
+
+
+/* Branch Management Edit profile CSS changes */
+
+.customer-admin-bm-edit-profile {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;   
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+
+.customer-admin-bm-edit-profile .booking_details {
+    color: black !important;
+    font-family: 'Montserrat';
+}
+
+.customer-admin-bm-edit-profile .booking_details label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.customer-admin-bm-edit-profile .booking_details .form-group {
+    overflow: hidden;
+}
+
+.customer-admin-bm-edit-profile h3 {
+    font-weight: bold;
+}
+
+.customer-admin-bm-edit-profile .add-email{
+    font-size: 18px;
+    color: green;
+    margin-left:10px;
+}
+
+.customer-admin-bm-edit-profile .remove-email{
+    font-size: 18px;
+    color: red;
+    margin-left:10px;
+}
+/* End of CSS changes for Branch Management Edit profile */
+/* CSS changes for UH-902 Lead passenger */
+
+.lead-passenger-notification-section {
+    margin: 10px 20px;
+}
+
+.lead-passenger-error-notification {
+    background-color: #DC140A;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.lead-passenger-error-notification .glyphicon {
+    font-size: x-large;
+    vertical-align: middle;
+}
+
+.lead-passenger-notification-text {
+    margin-left: 20px;
+}
+
+.lead-passenger-notification-close {
+    float: right;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.uh-lead-passenger-table-section {
+    margin-top: 0 !important;
+    padding-bottom: 0 !important;
+    border-bottom: 0 !important;
+}
+
+.uh-lead-passenger-table {
+    border-collapse: separate;
+    border-spacing: 50px 20px;
+    color: #5d5d5d;
+}
+
+.customer-admin-user-management .tt-suggestion {
+    padding: 3px 2px !important;
+}
+
+.customer-admin-user-management .tt-dropdown-menu .tt-cursor p, .tt-dropdown-menu .tt-suggestion p:hover {
+    background-color:  rgba(97, 97, 97, 1) !important;
+}
+
+/* End of CSS changes for Branch Management Edit profile */
+
+/* CSS changes for UH-731 - Overview */
+
+.customer-admin-overview-section {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: 100%;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat', sans-serif;
+    float: left;
+}
+
+.customer-admin-overview-section h3 {
+    font-weight: bold;
+}
+
+.customer-admin-overview-section .grid-stack { 
+    margin: 20px 0;
+}
+
+.customer-admin-overview-section .grid-stack-item-content {
+    border-radius: 5px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+}
+
+.customer-admin-overview-section .grid-stack-item-content .fa-times-circle {
+    color: 	#D3D3D3;
+    float: right;
+    font-size: large;
+    cursor: pointer;
+}
+
+.customer-admin-overview-section .grid-stack-item-content .fa.fa-arrows {
+    color: 	#D3D3D3;
+    cursor: move;
+}
+
+.customer-admin-overview-section .grid-stack-item-content.red-item {
+    font-weight: bold;
+}
+
+.customer-admin-overview-section .grid-stack-item-content.red-item .red-item-content{
+    padding: 0 50px;
+    font-size: larger;
+}
+
+.customer-admin-overview-section .grid-stack-item-content.red-item .red-item-content .content-item-para {
+    margin-bottom: 35px;
+}
+
+.customer-admin-overview-section .grid-stack-item-content .grid-pad{
+    padding: 0 10px;
+    font-weight: 500;
+}
+.customer-admin-overview-section .grid-stack-item-content .grid-heading{
+    text-align: center;
+    font-weight: 800;    
+    margin-top: 10px;
+}
+.customer-admin-overview-section .grid-stack-item-content .grid-hr{
+    border-top: 2px solid darkgrey;
+    margin-top: 10px!important;
+    margin-bottom:10px!important;
+}
+.customer-admin-overview-section .grid-stack-item-content .loginfailtxt{
+    color:#D71222;
+    font-weight: 700;
+}
+.customer-admin-overview-section .grid-stack-item-content .loginsucesstxt{
+    color:#1CAE77;
+    font-weight: 700;
+}
+
+.customer-admin-overview-section .grid-stack-item-content .content-item-blocks{
+    text-align: center;
+    padding: 20px;
+}
+.customer-admin-overview-section .grid-stack-item-content .content-item-number{
+    font-size: 35px;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+.customer-admin-overview-section .grid-stack-item-content .content-item-heading{
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.customer-admin-overview-section .grid-stack-item-content .loginredtxt{
+    font-weight: 700;
+    font-size: 16px;
+}
+.customer-admin-overview-section .grid-stack-item-content .logingreentxt{
+    color:#1CAE77;
+    font-weight: 700;
+    font-size: 16px;
+}
+.customer-admin-overview-section .grid-stack-item-content .loginblacktxt{    
+    font-weight: 700;
+    font-size: 16px;
+}
+.customer-admin-overview-section .grid-stack-item-content .newwindow-icon{
+    margin-right: 10px;
+    font-size: 20px;
+
+}
+
+.customer-admin-overview-section .customer-overview-button {
+    background-color: #DC140A;
+    color: white; 
+    font-weight: 600;
+    border: none;
+    border-radius: 14px;
+    padding: 10px 20px;
+}
+.customer-admin-overview-section .content-item-blocks{
+    text-align: center;
+    padding: 20px;
+}
+.customer-admin-overview-section a.add-icon{
+    color:#000000;    
+}
+.customer-admin-overview-section .glyphicon-plus-sign{
+    font-size:22px;
+}
+.customer-admin-overview-section .add-widget-list{
+    font-size: 16px;
+    font-weight: 600;
+    font-size: 16px;
+    text-align: left;
+    font-weight: 600;    
+    padding-left: 127px;
+}
+
+.customer-admin-overview-section .pullleft{
+    text-align:left;
+}
+
+.overview-flag-icon {
+    margin-bottom: 2px;
+    width: 23px;
+    height: 16px;
+}
+/* End of CSS changes for UH-731 - Overview */
+
+.uh-display-block{
+    display:block !important;
+    margin-bottom: -20px;
+    margin-top: 4px;
+}
+
+.ca-mp-table .reset-label{margin-bottom: 25px;}
+.ca-mp-table .reset-password-label{ padding-top: 11px;}
+/* Start of CSS changes for Booking Amendment Process */
+
+.amendment-details-flex-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+.amendment-details-reference-number {
+    font-size: 20px;
+    font-weight: bold; 
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+.amendment-details-back-btn {  
+    color: #DC140A;
+    font-size: 15px;
+    text-transform: uppercase;
+    display: block;
+    text-decoration: none !important;
+}
+    
+.amendment-booking-details-container {
+    padding: 30px 3px;
+    clear: both;
+}
+#amendment-booking-search-form-div {
+    border: 2px solid #bebebe;
+    border-radius: 2px;
+    padding: 20px;
+}
+
+.amendment-booking-search-heading {
+    margin-top: -30px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding: 0 7px;
+    background: #fff;
+    width: 120px;
+    color: #DC140A;
+}
+.amendment-details-status-section {
+    font-size: 20px;
+    float: right;
+    font-weight: bold;
+}
+.amendment-details-table {
+    border: 1px solid #bebebe;
+}
+.amendment-details-table td {
+    padding: 12px !important;
+    font-weight: bold;
+    vertical-align: middle !important;
+}
+.highlighted-columns {
+    width: 11%;
+    background: #EEEBEA;
+}
+.amendment-details-status{
+    color: green;
+    text-transform: uppercase;
+}
+.amendment-booking-details-heading{
+    margin-top: -30px;
+    margin-bottom: 10px;
+    margin-left: 20px;
+    padding: 0 7px;
+    background: #fff;
+    width: 140px;
+    color: #DC140A;
+}
+.changedetailsTable .tabel_category{
+    background-color: rgb(238, 235, 234);
+    border: 1px solid #ddd;
+    font-size: 14px;
+    color:#333;
+    font-weight: bold;
+}
+.changedetailsTable{
+    font-size: 14px;
+    color:#333;
+    font-weight: bold;
+  
+}
+.ammend_textbox {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+    height: 45px;
+}
+.ammend_calender {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border-top:2px solid grey !important;
+    border-right: 2px solid grey !important;    
+    border-bottom: 2px solid grey !important;    
+    border-left: 0px solid grey !important;    
+    background: rgba(255,255,255,1) !important;
+    height: 45px;
+}
+.ammend_select {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+    width:158px!important;
+    height:45px!important;
+   
+}
+#passengerContainer,#bookingInfoContainer{
+    border-radius: 0 !important;    
+}
+.noborder-radius{
+    border-radius: 0 !important;    
+}
+.ammend_textarea{
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 0 !important;
+        border:2px solid grey!important;     
+        font-weight: normal;
+        padding: 8px;
+        width: 100%;
+        background: #fff!important;
+    
+}
+/* End of CSS changes for Booking Amendment Process */
+/* CSS CHANGES FOR UH-871 - Payment via E-Wallet Checkout */
+
+.umrah-accom-wallet-cfrm .modal-header {
+    display: none;
+}
+
+.umrah-accom-wallet-cfrm h1 {
+    font-weight: bold;
+}
+
+.umrah-accom-wallet-cfrm .modal-content .wallet-red-cross-button-right{
+    padding: 14px 16px;
+    background-color: #DC140A;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    border: 1px solid black;
+    position: relative;
+    left: 48px;
+    z-index: 1;
+    top: -1px;
+}
+
+.umrah-accom-wallet-cfrm .modal-content .wallet-red-cross-button-left {
+    padding: 14px 16px;
+    background-color: #DC140A;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    border: 1px solid black;
+    position: absolute;
+    left: -48px;
+    z-index: 1;
+    top: -1px;
+}
+
+.umrah-accom-wallet-cfrm .modal-content .wallet-red-cross-button {
+    padding:14px 16px; 
+    background-color:#DC140A; 
+    color: white; 
+    font-size: 22px;
+    font-weight: bold; 
+    border: 1px solid black; 
+    position: relative; 
+    left: 68px; 
+    z-index: 1; 
+    top: -21px;
+}
+
+.uh-overflow-y-hidden {
+    overflow-y: hidden !important;
+}
+
+.umrah-accom-wallet-cfrm .modal-body {
+    background-color: #fff;
+    border-radius: 0 0 0 0;
+}
+
+@media only screen and (min-width: 768px) {
+    .modal .umrah-accom-wallet-cfrm {
+        width: 900px !important;
+    }
+}
+
+.uh-wallet-amount-footer-text {
+    font-weight: bold; 
+    font-size: 14px; 
+    float: left; 
+    display:none;
+}
+
+.uh-overflow-hidden {
+    overflow: hidden;
+}
+
+.uh-e-wallet-crfn-heading {
+    font-weight: bold; 
+    margin-bottom: 20px;
+}
+
+.uh-wallet-numbers-select {
+    height: 28px; 
+    margin-left: 10px; 
+    border: 2px solid grey !important;
+}
+
+#booking-payment-modal.bp-authentication-code label {
+    font-size: 13px;
+}
+/* End of CSS CHANGES FOR UH-871 - Payment via E-Wallet Checkout */
+
+/* CSS for Changes UH-871 - Payment via Credit card checkout */
+
+.bootbox.paymentBootbox .modal-header, .bootbox.paymentBootbox .modal-footer {
+    display: none;
+}
+
+.bootbox.paymentBootbox .modal-content {
+    background-image: url(../../images/umrah/Payment.jpg);
+    padding: 0 0 0 36%;
+    background-repeat: no-repeat;
+    background-size: 35% 100%;
+}
+
+.bootbox.paymentBootbox .modal-content .search_textbox{
+    padding: 6px 8px !important;
+}
+
+@media only screen and (min-width: 768px) {
+    .bootbox.paymentBootbox .modal-dialog {
+        width: 70% !important;
+    }
+}
+
+.bootbox.paymentBootbox .modal-content {
+    border-radius: 6px 0 6px 6px;  
+}
+
+.bootbox.paymentBootbox .modal-content .red-cross-button {
+    padding:10px 15px;
+    background-color:#DC140A;
+    color: white;
+    font-size: 22px;
+	font-weight: bold;
+    border: 0;
+    position: relative;
+    left: 44px;
+    z-index: 1;
+    /* top: -16px; */
+    box-shadow: 0 5px 10px rgba(0, 0, 0, .5);
+}
+
+.bootbox.paymentBootbox .modal-content .tooltip {
+    opacity: 1;
+    position: relative;
+    display: inline-block;
+    margin-right: 10%;
+    color:#DC140A;
+    cursor: pointer;
+}
+
+.bootbox.paymentBootbox .modal-content .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 10px;
+    position: absolute;
+    z-index: 1;
+    bottom: 150%;
+    left: 15%;
+    margin-left: -60px;
+}
+
+.bootbox.paymentBootbox .modal-content .tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: black transparent transparent transparent;
+}
+
+.bootbox.paymentBootbox .modal-content .tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+.bootbox.paymentBootbox .modal-content .checkbox-inline {
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.uh-credit-card-footer-text {
+    font-weight: bold;     
+    float: left; 
+    margin-top: 40px; 
+    margin-left: 20px;
+}
+
+.uh-cc-helper-class {
+    position: absolute;
+    right: 0;
+}
+
+.uh-credit-card-terms-conditions {
+    margin-right: 30px !important;
+}
+
+.uh-credit-card-terms-conditions input[type="checkbox"] {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+/* End of CSS for Changes UH-871 - Payment via Credit card checkout */
+
+.glyphicon-ok-sign:before {
+    content: "\e084";
+    color: #38af5c;
+}
+.green-tick
+{
+    margin-left:18px;
+    margin-bottom:4px;
+    
+}
+
+.btn-hover
+{
+    padding: 6px !important;
+}
+
+
+/* Chrome, Safari, Edge, Opera */
+.uh-lead-passenger-table input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+.uh-lead-passenger-table input[type=number] {
+  -moz-appearance: textfield;
+}
+.lead-passenger-notification-section button.close{
+    position: relative;
+    top: -3px;
+}
+/* Lead passenger changes*/
+.uh-lead-passenger-table .twitter-typeahead .tt-dropdown-menu{
+    width:98%!important;
+}
+/* Reset password css strats here*/
+.reset-hint {
+    display: block !important;
+    position: relative !important;
+    top: -30px !important;
+    left: 316px !important;
+    color: rgba(0, 0, 0, 1);
+}
+/* Reset password css strats Ends here*/
+
+
+/*pay now button*/
+.uh_pay_now_btn{
+    background: url("../../images/icons/paynow.png") no-repeat top left;
+    padding-left: 35px;
+    height: 32px;
+    color: #DC140A;
+    border: none;
+}
+/**********UH 920 distance to haram********/
+.umrahHaramDistance {
+    font-size: 14px;
+    color: #000;
+	margin-left: 39px;
+}
+/* Custom registration link*/
+.copy-icon{
+    font-size:19px;
+    margin-left: 3px;
+}
+/* Custom registration link*/
+
+.customer-admin-branch-management .results-table-div {
+    border: 2px solid #bebebe;
+    margin-top: 20px;
+    border-radius: 2px;
+}
+
+.no-sort{
+    background-image: none !important;
+}
+
+
+.uh_pay_now_timer{
+    color: #DC140A;
+    margin-left: 30px;
+}
+
+.uh_pay_now_cancellation_alert{
+    max-width: 200px;
+}
+
+.overview-graph{
+    max-height: 472px;
+    border:1px solid gray;
+}
+
+.graph-options{
+    text-align: center !important;
+   
+}
+
+.graph-options a{
+    font-weight: 600;
+    color :black !important;
+}
+
+.graph-options a.active{
+    color: rgba(220, 20, 10, 0.8) !important;
+    
+}
+.form-horizontal .totalpos{
+    position: relative;
+    bottom: 18px;
+}
+.ammend_selects {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+    width:158px!important;
+    height:45px!important;
+    margin-bottom:5px
+}
+
+.unit {
+    position: absolute;
+    left: 7px;
+    top: 14px !important;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+input[type=number]::-webkit-outer-spin-button, 
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button !important;
+}
+
+
+/* Freshdesk css starts */
+.mar-left-10{
+    margin-left:10px;
+    width: 250px;
+}
+.greybg{   
+    padding: 10px 20px;
+    margin-top: 60px;
+}
+.greybg-1{  
+    padding: 10px 20px;
+    
+}
+.customer-care-dashboard .whitebg{
+    background-color:white;
+    padding:10px 20px;    
+}
+.tickets-lists {
+    min-height: 92px;
+    border-radius: 2px;
+    background-color: #fff;
+    box-shadow: 0 1px 0 0 #cfd7df;
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 8px;
+}
+.lists-contents {
+    padding-left: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    display: table-cell;
+    float: none;
+    vertical-align: middle;
+}
+.lists-filter-wrap .lists-filter {
+    padding-left: 0;
+    font-size: 13px;
+}
+.lists-check-wrap {
+    width: 70px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.custom-checkbox{
+    position: absolute;
+    left: 22px;
+    top: 31px;
+    display: block;
+    content: "";
+    border: 1px solid #cfd7df;
+    height: 18px;
+    width: 18px;
+    background-color: #fff;
+    transition: all .2s ease;
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+.lists-content-wrap {
+    padding-left: 16px;
+    display: table-cell;
+    vertical-align: middle;
+}
+.lists-check-wrap .app-user-photo {
+    position: relative;
+    top: 0;
+    margin-left: 43px;
+}
+.avatar-icon.avatar-icon--circle {
+    border-radius: 100%;
+}
+.avatar-icon.avatar-icon--large {
+    width: 55px;
+    height: 55px;
+}
+.avatar-icon {
+    position: relative;
+}
+.avatar-icon, .avatar_initial {
+    display: inline-block;
+    text-align: center;
+}
+.avatar-icon.avatar-icon--circle .avatar-block {
+    border-radius: 6px;
+}
+.avatar_initial--1 {
+    background-color: #cdebc4;
+}
+.avatar_initial {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+}
+.avatar_initial--icon-wrapper {
+    text-transform: uppercase;
+    position: absolute;
+    transform: translateX(-50%) translateY(-50%);
+    top: 50%;
+    left: 50%;
+    fill: #fff;
+    font-weight: 500;
+}
+.newtag-wrapper{
+    margin-bottom: 10px;
+}
+.new-tag {
+    display: inline;
+    padding: 0 4px 1px;
+    margin-right: 4px;
+    background-color: #e0f5f0;
+    color: #007958;
+    border: 1px solid #b4e5d9;
+    border-radius: 4px;   
+    font-size: 14px;    
+    font-weight: 500;
+}
+.ticket-subject{
+    font-size: 16px!important;
+    color: #000;
+    font-weight: 600;
+}
+.ticket-info {    
+    color: #6f7c87;
+    font-size: 13px;
+}
+.divdisplay{
+    display:inline-block;
+    
+}
+.envelope-icon{
+    color: #000!important;
+    margin-right: 7px;
+}
+.ticket-sub{
+    color:#6f7c87;
+}
+.padtop{
+    padding-top:8px;
+}
+.check-span{
+    margin-right: 0;
+    position: absolute;
+    left: 5px;    
+    top: 17px;
+}
+
+.sort-checkbox {    
+    display: inline-block;
+    content: "";
+    border: 1px solid #cfd7df;
+    height: 18px;
+    width: 18px;
+    background-color: #fff;
+    transition: all .2s ease;
+    box-sizing: border-box;
+    border-radius: 2px;
+}
+.m-l-26{margin-left: -26px;}
+.sortingby-checkbox{
+    position: relative;
+    top: -4px;
+    left: 9px;
+    font-weight: 700;
+}
+.sort-column{
+    padding-left: 26px;
+}
+/* Dropdown */
+
+.sortdropdown {
+    display: inline-block;
+    position: relative;
+    padding-left: 12px;
+  }
+  
+  .dd-button {
+    display: inline-block;    
+    border-radius: 4px;
+    padding: 12px 0px 10px 20px;    
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: #EBEFF3!important;
+    border:0px!important;
+    position: relative;
+    top: -3px;
+    left: 7px;
+    font-weight: 600;
+  }
+  .dd-status {
+    display: inline-block;    
+    border-radius: 4px;
+    padding: 10px 0px 10px 20px;    
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: #FFF!important;
+    border:1px solid grey!important;
+    position: relative;
+    top: -3px;
+    left: 17px;
+    font-weight: 600;
+  }
+  .sortby-option{
+    background-color: #fff!important;
+  }
+  
+  .dd-button:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid black;
+  }
+  
+  .dd-button:hover {
+    background-color: #eeeeee;
+  }
+  
+  
+  .dd-input {
+    display: none;
+  }
+  
+  .dd-menu {
+    position: absolute;
+    top: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0;
+    margin: 2px 0 0 0;
+    box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    list-style-type: none;
+    z-index: 1;
+    width: 200px;
+    font-weight: 500;
+  }
+  
+  
+  .status-col{margin-left:30px;}
+
+  .new-dropdown {
+    display: inline-block;
+    position: relative;
+    left: 88px
+  }
+  .add-new{
+    margin-top: 60px;
+    text-align: right;
+  }
+  
+  .new-button {
+    display: inline-block;
+    border: 1px solid gray;
+    border-radius: 4px;
+    padding: 10px 30px 10px 20px;
+    background-color: #EBEFF3!important;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .new-button a {
+      text-decoration: none !important;
+  }  
+  .new-button:hover {
+    background-color: #eeeeee;
+  }
+  
+  .new-menu {
+    position: absolute;
+    top: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0;
+    margin: 2px 0 0 0;
+    box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+    background-color: #ffffff;
+    list-style-type: none;
+    z-index:1;
+  }
+  
+  .new-input + .new-menu {
+    display: none;
+  } 
+  
+  .new-input:checked + .new-menu {
+    display: block;
+  } 
+  
+  .new-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .new-menu li:hover {
+    background-color: #f6f6f6;
+  }
+  #new-test{visibility: hidden;}
+  .new-menu li a {
+    display: block;
+    margin: -10px -20px;
+    padding: 10px 20px;
+  }
+  
+  .low-button {
+    display: inline-block;
+    border-radius: 4px;
+    padding: 12px 0px 10px 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    background-color: #FFF!important;
+    border: 0px!important;
+    position: relative;
+    top: -3px;
+    left: 7px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.create-ticket-textbox{
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+    width:320px;
+}
+.create-profile-content{
+    padding: 30px 0;
+}
+.create-profile-content .labeltxt{
+    margin-top:12px;
+}
+.create-profile-content .labeltxt2{
+    margin-top: 12px;
+    margin-left: 31px;
+}
+.create-profile-content .email-column{
+    position: relative;  
+    right: 53px;
+}
+.create-profile-content .create-required {
+    color: red;
+    font-weight: bold;
+}
+.create-profile-content .m-top-20{
+    margin-top: 20px;
+}
+.create-profile-content .rich-txt{
+    margin-top: 25px;
+padding-left: 0px;
+padding-right: 32px;
+}
+.create-profile-content .btn-cancal{
+    background-color: #f3f5f7;
+    color: #183247;
+    border: 1px solid #dadfe3;
+    font-weight: bold;
+    background-image: linear-gradient(to bottom,#fff,#f3f5f7);
+}
+.create-profile-content .btn-cancal a{color:#000!important;
+    text-decoration: none;}
+.create-profile-content .btn-create{
+    background-color: #DC140A;
+    color: #fff;
+    border: 1px solid #DC140A;
+    font-weight: bold;
+}
+.create-profile-content .description-sec{
+    margin-top: 20px;
+    text-align: right;
+    padding-right: 45px;
+}
+.create-profile-content .mar-r-10{
+    margin-right:10px;
+}
+.create-new:focus {
+    color: #fff;
+    text-decoration: none;
+    border: none!important;
+}
+.view-details-back-btn {
+    margin-left: 21px;
+    color: #DC140A;
+    font-size: 15px;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 16px;
+    text-decoration: none !important;
+}
+.view-ticket-colmn .m-l-55{
+    margin-left: -42px;
+
+}
+.view-ticket-colmn .ticket-subj{
+    font-size: 16px;
+    font-weight: 700;
+}
+.avatar-icons.avatar-icons--large {
+    width: 35px;
+    height: 35px;
+}
+.avator-i{
+    margin: 0 -8px;
+}
+.avatar_initial--2 {background-color:#ebc4e9;}
+.ticket-username{color:#6f70cf;font-weight: 700;}
+.create-profile-content .rich-txts {   
+    padding-left: 10px;
+    padding-right: 32px;
+}
+.customer-ticket {
+    width: 75%;
+    background: #fff;
+    padding: 0px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    height: auto;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+}
+.view-ticket-active{
+    background-color: #faa57787;
+    max-width: 90%;
+    padding: 10px 19px;
+    margin-left: -6px;
+    margin-top: 20px;   
+}
+#freshdeskTicketdetail div{  
+    max-width:100%!important;
+}
+
+.avatar_initial--3{background-color: #cbc8ca;}
+.textbox-space-1{display: inline-block;
+width:100px;}
+.textbox-space-2{display: inline-block;
+    width:320px;}
+
+    .customer-admin-freshdesk-management {
+        width: 75%;
+        background: #fff;
+        padding: 0px 30px;
+        margin-left: 30px;
+        margin-top: 10px;
+        vertical-align: middle;   
+        border-radius: 5px;
+        box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+        font-family: 'Montserrat';
+        float: left;
+        min-height: 750px;
+    }
+     
+    .customer-admin-freshdesk-management .booking_details {
+        border: 1px solid #ebeaea;
+        color: black !important;
+    }
+     
+    .customer-admin-freshdesk-management h3, .customer-admin-freshdesk-management h4 {
+        font-weight: bold;
+    }    
+
+    .create-new
+    {
+        background-color:#DC140A;
+        color:#fff;
+        font-weight: bold;
+    }
+    .create-new:hover
+    {
+        background-color:#DC140A;
+        color:#fff;
+        font-weight: bold;
+    }
+    .pagination{
+        display: inline-block;
+        padding: 0;
+        margin: 8px 0;
+    }
+    .w3-border {
+        border: 1px solid #ccc!important;
+    }
+    .pagination li{
+        display: inline;
+    }
+    .pagination li a{
+        color: black;
+        float: left;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+    .w3-border-right {
+        border-right: 1px solid #ccc!important;
+    }
+    .pagination-list{
+    display: inline-block;
+    position: relative;
+    bottom: 23px;
+    font-size: 15px;
+    font-weight: 500;
+    padding-right: 10px;
+    }
+    .floatright{
+        float:right;
+    }
+
+/* Freshdesk css ends */
+
+/* Edit commission changes starts here*/
+
+.results-table-div .editcommission_textbox {
+    padding: 3px !important;
+    border-radius: 3px !important;
+    border: 1px solid grey;
+    background: rgba(255,255,255,1) !important;
+    width:60px;
+    margin-right: 10px;
+}
+.results-table-div .editcommission_textbox:focus {
+    border: 2px solid #DC140A;
+    outline: none;
+}
+
+.results-table-div .editcommission_span a{
+    color:#DC140A;
+    text-decoration: underline;
+}
+.results-table-div .login_btn{
+    font-size: 12px;
+    line-height: 10px;
+    padding: 10px;
+    font-weight: bold;
+    color: rgba(220, 20, 10, 1);
+    border: none;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    background: rgba(226, 226, 226, 1);
+    background: -webkit-linear-gradient(top, rgba(226, 226, 226, 1), rgba(162, 162, 162, 1));
+}
+
+.table > tbody > tr > td{
+    vertical-align: middle!important;
+}
+/* Edit commission changes ends here*/
+
+
+html[dir="rtl"] .country_code_dropdown {
+    direction: rtl;
+}
+/* background color for greying out btn color */
+.uh-btn-disable {
+    background-color: grey !important;
+    cursor: not-allowed;
+}
+/*CSS for E wallet */
+
+.umrah-accom-wallet-cfrm .left-part {   
+    background: url(../../images/umrah/Payment.jpg);   
+    background-size: 105% 100%;
+    /* border-radius: 6px 0 6px 6px; */
+    height: 684px;
+    background-repeat: no-repeat;
+}
+.no-padding{padding:0px!important;}
+.umrah-accom-wallet-cfrm .modal-body{
+    padding:0px!important;
+}
+.umrah-accom-wallet-cfrm .modal-content{
+    background-color: unset!important;
+}
+
+/******Wallet checkout shared wallet notification message*****/
+
+.right-part{
+    position: relative;
+    bottom: 62px;
+}
+/******Wallet checkout shared wallet notification message*****/
+
+html[dir="rtl"] .booking-details-reference-number {
+    font-size: 20px;
+    font-weight: bold;
+    margin-left: 30px;
+    margin-bottom: 0;
+    text-transform: uppercase;
+}
+
+html[dir="rtl"] .booking-details-back-btn {
+    margin-right: 30px;
+    color: #DC140A;
+    font-size: 15px;
+    text-transform: uppercase;
+    display: block;
+    text-decoration: none !important;
+}
+#freshdeskTicketdetail  img {
+    max-width:100%;
+}
+
+.view-ticket-active.customerclass {
+    background-color: #ffefe687 !important;   
+}
+
+.avatar_initial--3.customerclass {
+    background-color:#cdebc4 !important;  
+}
+
+.ticket-data img{
+   max-width: 100% !important;
+}
+
+.reply-overflow{
+    overflow-x:auto;
+}
+
+.total-col{
+    text-align: right;
+}
+.total-col-left{
+    text-align: left;
+}
+.Booking-save {
+    background: #efefef;
+    width: 108px;
+    margin-top: 5px;
+    border: 1px solid #868383;
+    cursor: pointer;
+}
+/*************Offline package************************/
+.offlinepackge .uh-offlinelanding-background{
+    background-image: url(../../images/umrah/package-bg.png);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    border-top: none;
+    height: 394px;
+
+}
+.offlinepackge #packagecontent{
+    background: #fff;
+    clear: both;
+    width: 100%;
+}
+.offlinepackge .offlinesearch_panel {
+    /* width: 304px; */
+    float: left;
+    max-width: 304px;
+    height: 100%;
+    padding-top: 30px;
+    padding-right: 24px;
+    padding-bottom: 30px;
+    padding-left: 24px;
+    
+}
+.offlinepackge .offlineContent {
+    margin: 0px;
+    padding-top: 13px;
+    padding-right: 0px;
+    padding-bottom: 13px;
+    padding-left: 0px;
+    font-size: 12px;
+    color: #414141;
+}
+.offlinepackge .squaredThre{
+    float: left;
+    position: relative;
+}
+.offlinesearch_panel .checkbox_label{
+    float: left;
+    margin-left: 30px;
+    margin-bottom: 18px;
+    font-weight: normal;
+    width: 190px;
+}
+.offlinesearch_panel  .squaredThre label{
+    cursor: pointer;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    border-radius: 4px;
+    min-width: 20px;
+    background:#ffffff;
+    border: 2px solid #DC140A;
+}
+.offlinesearch_panel  .squaredThre label:after {   
+    filter: alpha(opacity=0);
+    opacity: 0;
+    content: '';
+    position: absolute;
+    width: 9px;
+    height: 5px;
+    background: transparent;
+    top: 5px;
+    left: 5px;
+    border: 3px solid #DC140A;
+    border-top: none;
+    border-right: none;
+    transform: rotate(-45deg);
+}
+.offlinesearch_panel  .squaredThre input[type=checkbox]:checked + label:after{    
+    opacity: 1;
+}
+.offlinesearch_panel h3{font-size: 14px;
+    border-top: 1px solid #cccccc;
+    padding-top: 13px;
+    padding-bottom: 10px;
+    font-weight: bold;}
+.offlinepackge .col-space{
+    border:1px solid #cccccc;
+    margin-right: 5px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    width:330px!important; 
+    height:450px;
+    float: left;
+}    
+.offlinepackge .content-col{
+    padding-left: 50px;
+    padding-right: 50px;
+}
+.offlinepackge .filter-text{
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+    display: inline-block;    
+}
+.offlinepackge .price-text{
+    color: #000000;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.offlinepackge .package-text{
+    font-weight: 600;
+    margin-bottom:10px;
+   
+}
+.offlinepackge .places-txt{
+    color:#858585;
+    font-size: 12px;
+    margin-bottom: 10px;
+   
+} 
+.offlinepackge .glyphicon-star{
+    color: #f2993f;
+}
+.offlinepackge .review-txt{
+    color:#858585;  
+    margin-left: 10px;
+}
+.offlinepackge .img-hgt{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    
+}
+
+.offlinepackge .pad-10{
+    padding:10px;
+    position: relative;
+    top: 58%;
+}
+.offlinesearch_panel #am1, .offlinesearch_panel #minAmt {
+    border: 0;
+    background: none;
+    width: 49%;
+    float: left;
+    color: #00b8b5;
+    font-weight: bold;
+}
+.offline-img{
+    border-top-left-radius:5px;
+    border-top-right-radius:5px;
+    height: auto;
+    max-height: 400px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+.offlinesearch_panel #am2, .offlinesearch_panel #minAmt {
+    border: 0;
+    background: none;
+    width: 49%;
+    float: left;
+    color: #00b8b5;
+    font-weight: bold;
+}
+.offlinepackge .glyphicon-calendar.calendar-img {
+    position: absolute;
+    right: 10px;
+    vertical-align: middle;
+    line-height: 26px; 
+    color: #000000;  
+}
+.offlinepackge .search_container {    
+    color: #cccccc;
+    font-family: 'Sintony', sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 56px;
+    margin-top: 28px;
+}
+.offlinepackge .search_label {
+    padding: 5px 8px;
+    color:#000;
+}
+.offlinepackge .input-sm {
+    height: 50px;
+    padding: 10px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    width: 100%;
+    color: #8e8e8d!important;
+}
+.offlinepackge .fltright{
+    float:left;
+}
+.offlinepackge .sort-box{   
+    border: 1px solid #cccccc;
+    height: 74px;
+    border-radius: 5px;
+
+}
+.offlinepackge .sort-width{
+    width: 97%;
+    margin-bottom: 30px;   
+}
+.offlinepackge .bannertxt{
+    position: absolute;
+    top: 322px;
+    left: 63px;
+    color: #DC140A;
+    font-size: 40px;
+    font-weight: 900;
+}
+#package-check input[type=checkbox] + label {
+    display: inline-block;
+    margin: 18px 5px;
+    cursor: pointer;
+    padding: 2px 8px;
+    color: #8e8e8d;
+  }
+  
+  #package-check input[type=checkbox] {
+    display: none;
+  }
+  
+  #package-check input[type=checkbox] + label:before {
+    content: "\2714";
+    border: 0.1em solid #f1f1f1;
+    border-radius: 0.2em;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    padding-left: 0.2em;
+    padding-bottom: 0.3em;
+    margin-right: 10px;
+    vertical-align: bottom;
+    color: transparent;
+    background-color: #f1f1f1;
+  }
+  
+  
+  #package-check input[type=checkbox]:checked + label:before {
+    background-color: #DC140A;
+    border-color: #DC140A;   
+  }
+  .rsetbutton{
+    color: #8e8e8d!important;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    padding: 7px 19px;
+    background: white;
+  }
+  .reset-col{
+    display: inline-block;
+    margin-left: 105px;
+  }
+  .offlinedescrption .desc-width{
+      /* width: 496px; */
+      text-align: justify;
+      margin-bottom: 30px;
+    }
+  .offlinedescrption .description-header{
+    color: #000000;
+        font-size: 28px;
+        font-weight: 600;
+        display: inline-block; 
+        margin-top:4px;   
+    }    
+    .offlinedescrption .uh-offlinelanding-background{
+        background-image: url(../../images/umrah/package-bg.png);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        border-top: none;
+        height: 394px;    
+    }
+    .offlinedescrption .bannertxt{
+        position: absolute;
+        top: 322px;
+        left: 63px;
+        color: #DC140A;
+        font-size: 40px;
+        font-weight: 900;
+    }
+    .offlinedescrption .glyphicon-star{
+        color: #f2993f;
+    }
+    .offlinedescrption .review-txt{
+        color:#858585;  
+    }
+    .offlinedescrption .description-header1 {
+        color: #000000;
+        font-size: 15px;
+        font-weight: 600;        
+    }
+    .offlinedescrption .hotel-stars .glyphicon-star {
+        color: #f2993f;
+        font-size: 15px;
+    }
+    .offlinedescrption .hotel-stars .review-txt {
+        color: #858585;
+        font-size: 15px;
+    }
+    .offlinedescrption .hotel-stars .start-txt{
+        font-size: 15px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.offlinedescrption .mar-t-b-10{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.offlinedescrption .mar-b-10{   
+    margin-bottom: 10px;
+}
+.offlinedescrption .mar-b-30{   
+    margin-bottom: 30px;
+}
+.offlinedescrption .mar-t-30{   
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.offlinedescrption .textr{
+    width: 500px!important;
+border: 1px solid #ccc;
+border-radius: 5px;
+height: 138px;
+padding: 10px;
+resize: none;
+}
+#packagedescription{padding-left: 50px!important;
+    padding-right: 50px!important;padding-top: 40px;}
+    .offlinedescrption .mar-r-20{
+        margin-right: 50px;
+    }
+    #description-check input[type=checkbox] + label {
+        display: block;
+        margin: 0px;
+        cursor: pointer;
+        padding: 2px 0px;
+        color: #8e8e8d;
+        word-break: break-all;
+    }    
+    #description-check input[type=checkbox] {
+        display: none;
+    }
+   
+    
+    #description-check input[type=checkbox] + label:before {
+        content: "\2022";
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        padding-left: 0.2em;
+        padding-bottom: 0.3em;
+        vertical-align: bottom;
+		font-size: 28px;
+		color: #DC140A;
+    }
+    #packagedescription .booking{
+        border: 1px solid #cccccc;
+        border-radius: 5px;
+        margin-bottom: 30px;
+		float: left;
+    }
+    #packagedescription .booking-header{
+        padding: 20px;
+    background-color: #DC140A;  
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: 900;
+    }
+    #packagedescription .search_textbox {
+        padding: 10px !important;
+        border-radius: 0 !important;
+        border: 2px solid grey ;
+        background: rgba(255,255,255,1) !important;
+    }
+    #packagedescription .glyphicon-calendar.calendar-img {
+        position: absolute;
+        right: 10px;
+        vertical-align: middle;
+        line-height: 26px;
+        color: #000000;
+    }
+    #packagedescription .pad-all-10{
+        padding:5px 10px;
+    }
+	#packagedescription .pad-all-5{
+        padding:5px 5px;
+    }
+	#packagedescription .pad-5{
+        padding:5px 5px 0 5px !important;
+    }
+	#packagedescription .pad-0{
+        padding:0 !important;
+    }
+	#packagedescription .pad-top-5{
+        padding-top: 5px;
+		padding-left: 0;
+    }
+
+	#packagedescription .pad-right-0{
+        padding-right:0 !important;
+    }
+	
+	#packagedescription .search_textarea {
+        padding: 10px !important;
+        border-radius: 0 !important;
+        border: 2px solid grey ;
+        background: rgba(255,255,255,1) !important;
+		width: 100%;
+    }
+    #packagedescription .my-profile-tb {
+        width: 100%;
+    }
+    #packagedescription label{
+        display:block;
+    }
+    #packagedescription .user_btn, .user_btn:active,#packagedescription .user_btn:hover {
+        -webkit-border-radius: 5px;
+        -moz-border-radius: 5px;
+        border-radius: 5px;
+        border: none;
+        font-family: 'Sintony', sans-serif;
+        min-width: 100%;
+        padding: 11px;
+        color: #fff;
+        text-transform: uppercase;
+        font-size: 14px;
+      background-color: #DC140A;      
+        background-size: 1% 400%;
+        position: relative;
+        text-decoration: none;
+    }
+    #packagedescription .pricetext{         
+        /* margin-left: 60px;*/
+		text-align: right;
+    }
+    #packagepdf {
+        padding-left: 50px!important;
+        padding-right: 50px!important;
+        padding-top: 40px;
+    }
+    .offlinepdfitinerary .description-header1 {
+        color: #000000;
+        font-size: 20px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .offlinepdfitinerary .mar-b-30 {
+        margin-bottom: 30px;
+    }
+    .offlinepdfitinerary .textr {
+        width: 500px!important;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        height: 138px;
+        padding: 10px;
+    }
+    .offlinepdfitinerary .mar-r-20 {
+        margin-right: 20px;
+    }
+    #packagepdf-price {
+        padding-left: 50px!important;
+        padding-right: 50px!important;
+        padding-top: 40px;
+        padding-bottom: 40px;
+    }
+    #packagepdf-price .description-header1 {
+        color: #000000;
+        font-size: 20px;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .inlineBlock{
+        display:inline-block;
+        font-weight: 600;
+    }
+    .searchbutton {
+        color: #fff!important;
+        border-radius: 5px;
+        padding: 16px 19px;
+        background-color: #DC140A;
+        float: right;
+        height: 50px;
+        font-size: 16px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .Booking-save {
+        background: #efefef;
+        width: 108px;
+        margin-top: 5px;
+        border: 1px solid #868383;
+        cursor: pointer;
+    }
+    
+    .container-red {
+        display: block;
+        position: relative;
+        padding-left: 35px;
+        margin-bottom: 30px;
+        cursor: pointer;
+        font-size: 12px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      
+    
+      .container-red input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+      }
+      
+     
+      .checkmark {
+        position: absolute;
+        top: -4px;
+        left: 0;
+        height: 25px;
+        width: 25px;
+        background-color: #fff;
+        border: 2px solid #DC140A;
+        border-radius: 4px;
+      }
+      
+      
+      .container-red:hover input ~ .checkmark {
+        background-color: #ccc;
+      }
+      
+     
+      .container-red input:checked ~ .checkmark {
+        background-color:#DC140A;
+        ;
+      }
+      
+    
+      .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+      }
+      
+     
+      .container-red input:checked ~ .checkmark:after {
+        display: block;
+      }
+      
+      
+      .container-red .checkmark:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+      }
+ 
+    .mar-r-10{
+        margin-right: 10px;
+    }
+    .pad-l-20{
+        padding-left:10px;
+    }
+    .pad-lb{
+        padding-left: 10px;       
+    }
+    .pad-l-40{
+        padding-left:10px;
+        padding-bottom: 5px;
+    }
+    .mar-btom-5{
+        margin-bottom: 5px!important;
+        margin-top: 5px!important;
+    }
+
+    /*************Offline package Pagination************************/
+  .offline-pagination {
+    display: inline-block;
+    margin-bottom: 30px;
+  }
+  .offline-pagination a {
+    color: black;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+  
+  .offline-pagination a.active {
+    background-color: #f50808;
+    color: white;
+    border-radius: 5px;
+  }
+  
+  .offline-pagination a:hover:not(.active) {
+    background-color: #ddd;
+    border-radius: 5px;
+  }
+
+  .offline-datefilter{
+    left:140px !important;
+   
+  }
+
+  .offlineContent .price-left{
+      float:left;
+  }
+
+  .offlineContent .price-right{
+    float:right;
+}
+/*******Umrah operator css********/
+.umrah-operator {
+    width: 75%;
+    background: #fff;
+    padding: 0px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    /* height: 100vh; */
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+    padding-bottom:30px!important;
+}
+.umrah-operator-wrapper {
+    display: flex;
+    margin-bottom: 30px;
+}
+.umrah-operator h3, .umrah-operator h4 {
+    font-weight: bold;
+}
+.umrah-operator .UO_add_btn {
+    font-size: 15px;
+    letter-spacing: 1px;
+    line-height: 20px;
+    background: #DC140A;
+    color: white;
+    font-family: inherit;
+    border: none;
+    font-weight: bold;
+    padding: 8px 25px 8px 25px;
+    margin-left: 12px;
+    margin-right: 12px;
+}
+.umrah-operator .UO_tab td {
+    padding: 8px !important;
+}
+.UO_tab {
+    border-left: 1px solid #CECECE;
+    border-right: 1px solid #CECECE;
+    border-bottom: 1px solid #CECECE!important;
+    border-top: 1px solid #CECECE;
+}
+.UO_textbox {
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+}
+.UO-mar-t-45{
+    padding-top: 45px!important;
+}
+.UO-mar-b-45{
+    padding-top: 45px;
+}
+.UO-Status-approve{
+    color:#008000;
+}
+.UO-Status-reject{
+    color:#ff0000;
+}
+
+.UO-Status-pending{
+    color:#ffa500;
+}
+.UO-Status-approvebutton{
+    background-color:green;
+    color:#fff;
+    border:none;
+}
+.UO-Status-rejectbutton{
+    background-color:#DC140A;
+    color:#fff;
+    border:none;
+}
+
+.UO-payment-request-status{
+    color:rgb(60, 167, 18); 
+}
+
+.has-error {
+    border:1px solid #FF0000 !important;
+}
+
+.offline-current-page{
+    cursor: default;
+}
+
+.offline-day-itinerary{
+    margin-left:10px;
+    margin-top:10px;   
+    padding:15px;
+}
+
+.offline-search{
+    align-items: center;
+    justify-content: center;
+}
+
+.offline-search .search {
+    width: 400px;
+    padding: 7px;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+}
+
+.offline-search .search-item {
+    margin-right: 10px;
+}
+
+.offline-search #searchbtn {
+    background: #DC140A;
+    color: #fff;
+    border-radius: 5px;
+    border: 1px solid #fff;
+    padding: 8px 55px;
+}
+
+.offline-search .cal-icon {
+    margin-right: 5px;
+}
+/* CSS changes for UH-746 Sub PCC  */
+
+.customer-admin-pccmanagement h3 {
+    font-weight: bold;
+}
+
+.ca-pcc-bottom-container {
+    margin-top: 100px;
+    font-weight: bold;
+}
+
+.ca-pcc-bottom-container table td, th {
+    border: 1px solid #dddddd;
+    padding: 10px 5px;
+}
+
+.ca-pcc-bottom-container table td {
+    font-weight: 500;
+}
+
+.ca-pcc-bottom-container .glyphicon-trash {
+    color: #DC140A;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.ca-pcc-bottom-container .glyphicon-pencil {
+    font-size: large;
+    width: 5px;
+    cursor: pointer;
+}
+
+.customer-admin-pccmanagement .glyphicon-calendar.calendar-img {
+    position: relative;
+    right: 46px;
+    vertical-align: middle;
+    line-height: 26px;
+    color: #000;
+}
+.customer-admin-pccmanagement {
+    width: 75%;
+    background: #fff;
+    padding: 10px 30px;
+    margin-left: 30px;
+    margin-top: 10px;
+    vertical-align: middle;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: 'Montserrat';
+    float: left;
+    padding-bottom: 30px;
+}
+.customer-admin-pccmanagement .search_textboxs {
+    padding: 6px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey !important;
+    background: rgba(255,255,255,1) !important;
+    width: 150px;
+    max-width : 150px;
+}
+.customer-admin-pccmanagement .uh-subpcc-mgmt-form-label {
+    font-weight: 500 !important;
+}
+
+.uh-subpcc-mgmt-filter-table {
+    border-collapse: separate;
+    border-spacing:0 15px;
+}
+
+.uh-subpcc-mgmt-filter-table .search_textbox {
+    width: 300px;
+}
+/* End of CSS changes for UH-746 Sub PCC  */
+
+.subpcc_list_item_radio {
+    display: flex;
+    align-items:center;
+    margin-bottom: 22px !important;
+    margin-top: 10px;
+}
+
+.subpcc_list_item_radio input[type=radio]{
+    display: block;
+    margin-top: 0;
+    margin-right:5px;
+}
+
+.subpcc_list_item_radio label {
+    margin : 0 !important;
+}
+
+.flash-img {
+    position: absolute;
+    right: 10px;
+    vertical-align: middle;
+    margin-top: 4px;
+    line-height: 26px;
+}
+
+.ca-pcc-bottom-container .glyphicon-remove {
+    color: #DC140A;
+    cursor: pointer;
+    margin-top: 5px;
+}
+
+.ca-pcc-bottom-container .glyphicon-floppy-saved {
+    font-size: large;
+    width: 5px;
+    cursor: pointer;
+}
+
+.subpcc-remove {
+    right: 20px;
+    top: 2px;
+    cursor: pointer;
+    content: "\e014";
+    font-size: 10px;
+    color: grey;
+}
+
+#noSubPccResultsFound{
+    color: #D50000;
+    font-weight: bold;
+    text-align: center;
+    cursor:pointer;
+}
+.customer-admin-pccmanagement .clearnotepos{
+    position: relative;
+    right: 40px;
+}
+.customer-admin-pccmanagement .ccalenderepos{
+    position: relative;
+    right: 39px;
+    top: 0px;
+    border-radius: 0px!important;}
+
+    @media only screen and (min-width: 992px) {
+
+.uh-subpcc-mgmt-filter-table .search_textbox {
+    width: 248px;}
+
+}
+.customer-admin-pccmanagement .input-group-addon {
+    background-color: unset;
+    border:0px;
+}
+
+div#popover_content_wrapper_subpcc::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 16px;
+    background-color: #F5F5F5;
+}
+
+div#popover_content_wrapper_subpcc::-webkit-scrollbar
+{
+    width: 5px;
+    background-color: #000000;
+}
+
+div#popover_content_wrapper_subpcc::-webkit-scrollbar-thumb {
+    border-radius: 16px;
+    -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, .3);
+    background-color: #DC140A;
+}
+.manage-tag{
+    padding: 7px 10px;
+    margin-left: 50px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.manage-taggs{
+    padding: 7px 10px;  
+    background-color: #DC140A;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: bold;
+}
+.subpcc-heading {
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+#uh-result-table .manage-icons{
+    width:21px;
+}
+.add-service a{
+    float: left;   
+    text-align: right;
+    color:#fff;
+    position: relative;
+    top: 0px;
+    background-color: #DC140A;   
+    left: 20px;
+    padding: 5px 7px;
+    border-radius: 3px;
+    text-decoration: none;
+}
+.add-service a:hover{
+    text-decoration: none;
+}
+.add-service select{
+    float: left;
+    width: 40%;
+    margin-left: 8px;
+}
+.add-service .float-right{
+    float: right;
+    padding-left: 76px;
+}
+.add-service #itineraryAddService{
+    width: 190px;
+}
+@media screen and (max-width: 1024px){ 
+    .reset-col {
+    display: inline-block;
+    margin-left: 40px;
+}
+}
+
+
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+    .uh-subpcc-mgmt-filter-table .search_textbox {
+        width: 141px;
+    }
+    .customer-admin-pccmanagement {
+        width: 71%;
+        background: #fff;
+        padding: 10px 30px;
+        margin-left: 30px;
+        margin-top: 10px;
+        vertical-align: middle;
+        border-radius: 5px;
+        box-shadow: rgb(0 0 0 / 24%) 0px 3px 8px;
+        font-family: 'Montserrat';
+        float: left;
+        padding-bottom: 30px;
+    }
+
+}
+
+@media only screen and (min-width: 992px) {
+
+    .uh-branch-mgmt-filter-table .search_textbox {
+        width: 248px;
+    }
+    .uh-user-mgmt-filter-table .search_textbox {
+        width: 248px;
+    }
+    .ca-my-profile-content .my-profile-tn-tb {
+        margin-left: 10px;
+        width: 266px;
+    }
+    .add_user_btn, .add_user_btn:active {
+        min-width: 196px;
+    }
+}
+.mycompany-logowidth{
+    width:224px;
+}
+
+.maqam-booking-form-buttons {
+    display: flex;
+    justify-content: space-between;
+    column-gap: 10px;
+    margin-top: 15px;
+    float: right;
+}
+.itn_city_div{
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.offline-booking-mar{
+    margin-bottom: 5px!important;
+}
+.offline-inludes-sec{
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    margin-bottom: 30px;
+    padding: 0px 10px;
+	clear: both;
+}
+.ui-datepicker td.highlight a{
+	border-color: #DC140A !important;
+} 
+
+.date-box {
+	width: 15px;
+	height: 15px;
+	border: 1px solid rgba(0, 0, 0, .2);
+	float: left;
+}
+  
+.avl-date-box {
+	border: 2px solid #DC140A;
+}
+  
+.dis-date-box {
+	background: #c1c1c1;
+}
+
+.cal-text{
+	float:left;
+	margin-left:10px;
+}
+
+
+.mar-t-20{
+    margin-top:20px;
+}
+
+.head-fa-bars,.head-fa-bars:hover,.head-fa-bars:focus {
+    font-size: 35px;
+    color: white;
+}
+.download-icon{
+    font-size: 20px;
+    top: 5px;
+    color: #000!important;
+}
+
+.text-font-coupon{
+    color:#DC140A!important;
+    font-weight:500!important;
+    border: unset!important;
+    padding: 10px 0px!important;
+}
+.pasenger-reservation{
+    border:1px solid #ebeaea!important;
+    border-radius: 5px!important;
+    padding-left: 8px;
+
+}
+.booking-amount-details{
+    padding-top: 10px;
+}
+.orgPrice{
+    color: #DC140A !important;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.discPrice{
+    color: #787878 !important;
+    font-size: 17px;
+    font-weight: bold;
+    display: none;
+}
+
+.striped{
+    text-decoration: line-through;
+    text-decoration-color: #DC140A;
+}
+
+.psg_apply_btn{
+    width: 100px!important;
+    float: none!important;
+    display: inline-block!important;
+    background: #DC140A!important;
+    border-radius: 0px!important;
+    font-size: 12px!important;
+    font-weight: 100!important;
+    color: #FFF !important;
+}
+.psg-text{
+    padding: 10px !important;
+    border-radius: 0 !important;
+    border: 2px solid grey;
+    background: rgba(255,255,255,1);
+    width: 200px!important;
+    display: inline-block!important;
+}
+.psg-pos{
+    position: relative;
+    bottom: 66px;
+}
+
+.coupon_code_error {
+    margin-top: 5px;
+}
+
+#uh-result-table .couponList{
+        text-transform: none;
+}
+
+.booking-link{
+    background: transparent !important;
+    color: #000 !important;
+    font-size: 12px;
+}
+
+a.booking-link:hover,a.booking-link:active{
+    text-decoration: none!important;
+}
+
+.umrah-with-visa-badge{
+    margin-left: -15px; 
+    margin-top: -20px;
+    font-size: 11px;
+    position: relative;
+    left: 17px;
+    bottom: 22px;
+    border: 1.5px solid #000;
+    background-color: #c92222;
+    padding: 5px!important;
+    border-radius: 8px;
+    text-transform: uppercase;  
+  }
+  
+  .badge-danger{
+    padding:3px;
+  }
+  .visa-tab-new{
+    padding-left: 22px!important;
+    padding-right: 0!important;
+   }
+.loading{
+    background-color: #ffffff;
+    background-image: url(../../images/loader.gif);
+    background-size: 25px 25px;
+    background-position:right center;
+    background-repeat: no-repeat;
+}
+.announcement{
+    text-align: center;
+}
+.alignRightCarousel{
+   display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-bottom: 5%;
+}
+/* .landing-carousel-section div.flex-container div.gridster li{
+	width:338px;
+}  */
+.uhiSearchTabs{
+	margin-left: 45px;
+}
+.umrahfeaturedtext {
+    font-size: 14px;
+    color: #000;
+	margin-left: 48px;
+	font-weight: 600;
+}
+#searchTaps .jumbotron {
+    margin-bottom: 0px;
+}
+
+/***** Non maqam 40 rooms*****/
+.popover-container-nonMaqam {
+    min-width: 525px !important;
+}
+
+.nationality_sel_uh{
+    padding: 7px !important;
+    color: #575757 !important;
+}
+
+#group-occupancy .input-container-uh {
+    margin-top: 3px;
+    margin-bottom: 4px;
+    width: 150px;
+}
+.nationality-flex-container{
+    align-items: flex-start;
+}
+.advanced_uh_search {
+    margin-left:10px;
+}
+
+.uh-other-acc-container .search-hotel-btn-umrah{
+    margin-top: 0;
+}
+.occupancy-room .nationality{
+    margin-top: 5px;
+}
+#individual-occupancy .tt-dropdown-menu{position: relative!important;}
+
+.uh-special-request-table {
+    border-collapse: separate;
+    border-spacing: 50px 5px;
+    color: #5d5d5d;
+}
+
+.uh-itinerary-button {
+    background-color: #FFF;
+    color: #000;
+}
+
+.uh-itinerary-button:hover {
+    color: #000;
+    background-color: #FFF;
+}
+
+.passenger_details_banner {
+    border: 1px #ccc solid;
+    margin: 10px 0 10px 0;
+    padding: 20px;
+    font-weight: bold;
+    color: rgba(220, 20, 10, 1);
+    background: #ebeaea;
+}
+
+/*** Tour ****/
+.uh-other-tour-container {
+    display: flex !important;
+}
+
+.uh-other-tour-container .search_row_advanced .dropdown-toggle {
+    background: rgba(255,255,255,1) !important;
+}
+
+#tour-search-results .search_filters #slider-range-panel .ui-slider .ui-slider-range {
+    background: rgba(220, 20, 10, 1);
+}
+
+.ca-my-company-content .ca-mc-table .customerregistrationlogo-container {
+    width: 226px;
+    height: 122px;
+    background: #ddd;
+}
+.hide-rooms-btn {
+    display: none;
+}
+.ca-my-company-content .ca-mc-table .wlbanner-container {
+    width: 726px;
+    height: 119px;
+    background: #ddd;
+}
+
+/* UHI new menu  */
+.header-details .header-nav .active {
+    color: rgba(220, 20, 10, 0.8) !important;
+    background: none !important;
+}
+.email-block{
+	position: relative;
+}
+.envelope-icon-bm{
+	color: #111111;
+	font-size: 18px;
+	position: absolute;
+	top: 0px;
+	padding-left: 4px;
+}
+.envelope-badge{
+	position: absolute;
+	left: 20px;
+	bottom: 10px;
+	font-size: 8px;
+}
+.content-align{
+	text-align: left !important;
+}

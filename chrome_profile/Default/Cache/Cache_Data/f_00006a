@@ -1,0 +1,676 @@
+"use strict";
+// MAQAM_MAX_ROOMS is defined in  views\customer_interface\accommodation\uh_search_form.blade.php
+
+var UHAccommodation = {
+    disableRow: function (row) {
+        var _self = UHAccommodation;
+        $("select, input", row).each(function () {
+            var $this = $(this);
+            $this.prop("disabled", "disabled");
+
+            if ($this.data("selectpicker")) {
+                $this.selectpicker("refresh");
+            } // this part of code delete nationality content field when is added more than one
+            // room from customer interface. This prevent populate nationaitly field with default value
+
+            /*if($this.attr('name').match(/nationality/g))
+                  {
+                      $this.parent().find('.clearTypeahead').click();
+                  }*/
+        });
+    },
+    enableRow: function (row) {
+        var _self = UHAccommodation;
+        $("select, input", row).each(function () {
+            var $this = $(this);
+            $this.prop("disabled", false);
+
+            if ($this.data("selectpicker")) {
+                $this.selectpicker("refresh");
+            }
+
+            if ($this.attr("name") === undefined) {
+                return true;
+            }
+
+            if ($this.attr("name").match(/childrenCount/g)) {
+                _self.updateChildren($this);
+            }
+        });
+    },
+    hideRow: function (row) {
+        row.hide();
+    },
+    displayRow: function (row) {
+        row.show();
+    },
+    insertRooms: function () {
+        var index = parseInt($("#searchRoomsNo").val(), 10);
+
+        for (var i = 1; i <= 30; i++) {
+            if (i <= index) {
+                this.enableRow($("#search_row" + i));
+                this.displayRow($("#search_row" + i));
+            } else {
+                this.disableRow($("#search_row" + i));
+                this.hideRow($("#search_row" + i));
+            }
+        }
+    },
+    updateChildren: function (element) {
+        var index = parseInt($(element).val(), 10);
+        var row = $(element).parent().parent().parent().parent().data("row");
+
+        if (index > 0) {
+            $("#search_row" + row + " .childrenAgesHolder label").show();
+        } else {
+            $("#search_row" + row + " .childrenAgesHolder label").hide();
+        }
+
+        var i = 0;
+        $(
+            ".childrenAgesHolder input",
+            $(element).parent().parent().parent().parent()
+        ).each(function () {
+            if (i < index) {
+                $(this).parent().parent().show();
+            } else {
+                $(this).val("3");
+                $(this).parent().parent().hide();
+            }
+
+            i++;
+        });
+    },
+    isSameOccupancy: function () { // Considering this as the group-occupancy
+        return !document.getElementById("differentOccupancy").checked;
+    },
+    updateRoomOccupancy: function () { // not used anymore
+        if (UHAccommodation.isSameOccupancy()) {
+            var adultPerRoom = parseInt(
+                $('#searchForm [name*="adultsCount[1]"]').val(),
+                10
+            );
+            $('#searchForm [name*="adultsCount"]:enabled').each(function () {
+                $(this).val(adultPerRoom);
+            });
+            var childAgesPerRoom = [];
+            $(".childrenAgesHolder input:enabled", $("#search_row1")).each(
+                function () {
+                    childAgesPerRoom.push(parseInt($(this).val(), 10));
+                }
+            ); //update numChildren
+
+            var childrenPerRoom = parseInt(
+                $('#searchForm [name*="childrenCount[1]"]').val(),
+                10
+            );
+            $('#searchForm [name*="childrenCount"]:enabled').each(function (idx) {
+                $(this).val(childrenPerRoom); //update children ages
+
+                $(
+                    ".childrenAgesHolder input:enabled",
+                    $("#search_row" + (idx + 1))
+                ).each(function (idx) {
+                    $(this).val(childAgesPerRoom[idx]);
+                });
+            });
+        }
+    },
+    updateRooms: function () {
+        var _this = this;
+
+        var roomsSelected = parseInt($("#searchRoomsNo").val(), 10);
+        if (roomsSelected > 1 && !_this.isSameOccupancy()) {
+            $('.search-div .popover-container').addClass('uh-tworooms-popover');
+        } else {
+            $('.search-div .popover-container').removeClass('uh-tworooms-popover');
+        }
+        $(".occupancy-room").each(function (idx) {
+            idx += 1;
+
+            if (idx <= roomsSelected) {
+                _this.enableRow($("#search_row" + idx));
+
+                if (!_this.isSameOccupancy()) {
+                    _this.displayRow($("#search_row" + idx));
+                }
+            } else {
+                _this.hideRow($("#search_row" + idx));
+
+                _this.disableRow($("#search_row" + idx));
+            }
+
+            if (_this.isSameOccupancy() && idx > 1) {
+                _this.hideRow($("#search_row" + idx));
+            }
+        });
+        //setTimeout(this.updateRoomOccupancy(), 50);
+    },
+    displayRows: function () {
+        var index = UHAccommodation.getSelectedRooms();
+
+        for (var i = 1; i <= 30; i++) {
+            if (i <= index) {
+                this.displayRow($("#search_row" + i));
+            } else {
+                this.hideRow($("#search_row" + i));
+            }
+        }
+
+
+    },
+    getSelectedRooms: function () {
+        return parseInt($("#searchRoomsNo").val(), 10);
+    },
+    updateOccupancy: function () {
+        var adultsCount = 0;
+        var childrenCount = 0;
+        var noOfAdultsText = document.getElementById("noOfAdultsText");
+        $('.occupancy-room', $('#searchForm')).each(function (idx) {
+
+            $('.adultsCount:enabled', $(this)).each(function () {
+                adultsCount += parseInt($(this).val(), 10);
+                if (adultsCount > 1) {
+                    noOfAdultsText.innerText = ' ' + adultsText;
+                } else {
+                    noOfAdultsText.innerText = ' ' + adultText;
+                }
+            });
+
+            $('.childrenCount:enabled', $(this)).each(function () {
+                childrenCount += parseInt($(this).val(), 10);
+            });
+
+        });
+
+        $("#noOfAdults").text(adultsCount);
+        $("#noOfChildren").text(childrenCount);
+    },
+
+    showDiffOccupancy: function () { /* Function to toggle different occ and group occ based on toggle button */
+        var id = 'differentOccupancy';
+
+        if ($("input[name='" + id + "']:checked").length === 0) { /* diffOccupancy checkbox not checked currently */
+            // Un-hide the group div
+            $('#group-occupancy').removeClass('uh-no-display');
+            // Remove the individual div
+            $('#individual-occupancy').addClass('uh-no-display');
+            // hide the group div
+            $('#add-room-group-btn').removeClass('hide');
+        } else {
+            // Remove the group div
+            $('#group-occupancy').addClass('uh-no-display');
+            // Un-hide the individual div
+            $('#individual-occupancy').removeClass('uh-no-display');
+            // Un-hide the group div
+            $('#add-room-group-btn').addClass('hide');
+        }
+    },
+
+    updateGroupOccupancyStyle: function () { /* Function for group-occupancy to toggle the style of display of rooms div */
+        var _self = UHAccommodation;
+        const uhFilledClassName = 'uh-filled'; // Class name for indicating filled
+        if (_self.isSameOccupancy()) { // Only running if group-occupancy
+            /* Resetting everything first (Since this fn will run every time from scratch) */
+            for (var j = 1; j <= MAQAM_MAX_ROOMS; j++) {
+                var disableRowDiv = $("#search_row" + j);
+                _self.disableRow(disableRowDiv); // disabling the row first
+                _self.hideRow(disableRowDiv); // hiding the row next
+                if (disableRowDiv.hasClass(uhFilledClassName))
+                    disableRowDiv.removeClass(uhFilledClassName); // Removing uh-filled class if any
+
+            }
+
+            /* Setting roomsNo value with the total rooms on group-occupancy */
+            UHAccommodation.updateDiffOccTotalRoomCount();
+
+            // Looping through the group-occupancy-main divs (upto max-rooms-count)
+            $('.group-occupancy-main', $('#searchForm')).each(function (idx) {
+                idx += 1; // iteration
+                var groupChildAgesPerRoom = []; // Empty array for child ages per room (initial)
+                var roomGroupDiv = $('input[name=groupRoomsNo' + idx + ']');
+
+                /* Getting the total adult & child count of the current iterated div */
+                var groupAdultCountPerRoom = parseInt($('input[name=groupAdultsCount' + idx + ']').val());
+                var groupChildCountPerRoom = parseInt($('input[name=groupChildrenCount' + idx + ']').val());
+
+				if($('.group-occupancy-main').hasClass('grp-occ-nonuh')) {
+                    var groupNatioanlityPerRoom = parseInt($('input[name=groupNationality' + idx + ']').val());
+                    var groupResidencyPerRoom = parseInt($('input[name=groupResidency' + idx + ']').val());
+                }
+
+                /* Getting the children ages by looping */
+                $('.groupChildAgesContainer input', $('#default-group-row' + idx)).each(function () {
+                    groupChildAgesPerRoom.push(parseInt($(this).val(), 10)); // Pushing to array
+                });
+
+                /* Checking if current input is enabled or disabled (group input) */
+                if (!roomGroupDiv.prop("disabled")) {
+                    var roomCount = parseInt(roomGroupDiv.val());
+
+                    /* Looping upto room count for this div */
+                    for (var i = 1; i <= roomCount; i++) {
+                        /* Checking if the current row is enabled or disabled */
+                        var searchRowDiv = $("#search_row" + i);
+                        _self.enableRow(searchRowDiv); // Enabling diff occ row here
+                        _self.displayRow(searchRowDiv); // Displaying the diff occ row here
+
+                        for (var k = 1; k <= MAQAM_MAX_ROOMS; k++) {
+                            var searchRowDivK = $('#search_row' + k);
+                            if (!searchRowDivK.hasClass(uhFilledClassName)) {
+                                /* Appending the adultCount & ChildrenCount per room */
+                                $('#individual-occupancy [name="adultsCount[' + k + ']"]').val(groupAdultCountPerRoom).trigger('change');
+                                $('#individual-occupancy [name="childrenCount[' + k + ']"]').val(groupChildCountPerRoom).trigger('change');
+
+								if(searchRowDivK.hasClass('nonuh-row')){
+                                    $('#individual-occupancy [name="nationality[' + k + ']"]').val(groupNatioanlityPerRoom).trigger('change');
+                                    $('#individual-occupancy [name="residency[' + k + ']"]').val(groupResidencyPerRoom).trigger('change');
+                                }
+
+                                /* Appending the child ages */
+                                $('.childrenAgesHolder input', searchRowDivK).each(function (idy) {
+                                    $(this).val(groupChildAgesPerRoom[idy]).trigger('change')
+                                });
+
+                                /* Adding uh-filled class to current div */
+                                searchRowDivK.addClass(uhFilledClassName);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            })
+        }
+    },
+
+    showGroupOccChildrenAgesDivs: function (element) { /* Function to toggle child ages divs (onchange called from html) */
+        /* getting the value of the childrenCount input */
+        var childCount = parseInt($(element).val());
+        /* Getting current iteration row value */
+        var row = $(element).parent().parent().parent().parent().parent().data("row");
+
+        /* Showing the labels based on row and childCount */
+        if (childCount > 0) {
+            $('#uh-child-ages-label' + row).show()
+        } else {
+            $('#uh-child-ages-label' + row).hide()
+
+        }
+
+        var i = 0;
+        /* Looping through to show/hide the child age div */
+        $(".groupChildAgesContainer input", $(element).parent().parent().parent().parent().parent()).each(function () {
+            if (i < childCount) {
+                $(this).parent().parent().show();
+            } else {
+                $(this).val("3");
+                $(this).parent().parent().hide();
+            }
+
+            i++;
+        });
+    },
+
+    showMaxRoomError: function () { /* Function to show max rooms reached in group-occupancy */
+        $('#max-group-occupancy-alert').removeClass('hide'); // showing the error alert
+        setTimeout(function () {
+            $('#max-group-occupancy-alert').addClass('hide');
+        }, 5000); // Removing the alert after 5 seconds
+    },
+
+    addRoomGroupFunc: function () { /* Function to add a new room group */
+        /* Increasing the hidden room count first */
+        var _self = UHAccommodation;
+        var totalRoomCount = _self.increaseHiddenTotalRoomCountGrpOcc();
+
+        /* Checking if totalRoomCount is greater than equal to 25 */
+        if (!totalRoomCount) { // Not allowed to add room group because max room count reached
+            _self.showMaxRoomError();
+
+            /* Returning false to end compilation here */
+            return false;
+        }
+
+        /* Allowed to add room group */
+        for (var i = 1; i <= MAQAM_MAX_ROOMS; i++) { // Looping through the divs
+            var rowGroup = $('#default-group-row' + i);
+            if (rowGroup.css('display') === 'none') {
+                rowGroup.css('display', 'block'); // Making it visible
+                UHAccommodation.enableRoomGroupCount(i); // enabling the room count input
+                break;
+            }
+        }
+
+        /* Calling change occupancy */
+        _self.updateGroupOccupancyStyle();
+    },
+
+    removeRoomGroupFunc: function (removeCount, divIdToHide) { /* Function to remove a room group */
+        /*
+        * removeCount - Total number of rooms to remove
+        * divToHide - Which div id (number) to hide on delete press
+        * */
+        var rowGroup = $('#default-group-row' + divIdToHide); // Getting the div
+
+        /* Changing values of the div to default */
+        $('input[name=groupRoomsNo' + divIdToHide + ']').val(1).trigger('change'); // Rooms count
+        $('input[name=groupAdultsCount' + divIdToHide + ']').val(2).trigger('change'); // Adults count
+        $('input[name=groupChildrenCount' + divIdToHide + ']').val(0).trigger('change'); // Children count
+        /*
+        * Child age default value code is already handled in showGroupOccChildrenAgesDivs() function
+        * */
+
+        /* Changing the hidden room count */
+        UHAccommodation.decreaseHiddenTotalRoomCountGrpOcc(removeCount);
+        // Applying the css none
+        rowGroup.css('display', 'none');
+        /* Disabling the row */
+        UHAccommodation.disableRoomGroupCount(divIdToHide);
+
+        /* Calling change occupancy */
+        UHAccommodation.updateGroupOccupancyStyle();
+    },
+
+    enableRoomGroupCount: function (id) { /* Function to enable room group count input */
+        /* Removing the disabled attribute */
+        if (UHAccommodation.isSameOccupancy()) // only if group-occupancy
+            $('input[name=groupRoomsNo' + id + ']', $('#group-occupancy')).removeAttr('disabled');
+    },
+
+    disableRoomGroupCount: function (id) { /* Function to disable room group count input */
+        /* Adding the disabled attribute */
+        if (UHAccommodation.isSameOccupancy()) // only if group-occupancy
+            $('input[name=groupRoomsNo' + id + ']', $('#group-occupancy')).attr('disabled', 'disabled');
+    },
+
+    increaseHiddenTotalRoomCountGrpOcc: function (diff) { /* Function to increase room count and return true if value can be increased */
+        /* Getting the room count first */
+        var totalRoomCountInput = $('#group-occupancy-room-count');
+        var totalRoomCount = parseInt(totalRoomCountInput.val());
+
+        /* Checking if room count is 25 or less */
+        if (totalRoomCount === MAQAM_MAX_ROOMS || totalRoomCount >= MAQAM_MAX_ROOMS) // 25 is max room count for maqam
+            return false; // returning false to not able to add
+
+        /* increasing value by 1 */
+        let newTotalRoomCount = totalRoomCount + (diff || 1);
+        totalRoomCountInput.val(newTotalRoomCount).trigger('change');
+
+        return true; // else returning the new count
+    },
+
+    decreaseHiddenTotalRoomCountGrpOcc: function (countToRemove) { /* Function to decrease room count and return true if value can be decreased */
+        /* Getting the room count first */
+        var totalRoomCountInput = $('#group-occupancy-room-count');
+        var totalRoomCount = parseInt(totalRoomCountInput.val());
+
+        /* Decreasing value here based on function parameter */
+        var newTotalRoomCount = totalRoomCount - parseInt(countToRemove);
+        totalRoomCountInput.val(newTotalRoomCount).trigger('change');
+    },
+
+    updateDiffOccTotalRoomCount: function () {
+        /* Setting roomsNo value with the total rooms on group-occupancy */
+        var totalRoomsOfGroupOccupancy = parseInt($('#group-occupancy-room-count').val());
+        var diffRoomsNo = $('input[name=roomsNo]');
+        diffRoomsNo.val(totalRoomsOfGroupOccupancy).trigger('change');
+    },
+
+    init: function () {
+
+        var noOfRooms = document.getElementById("noOfRooms");
+        var noOfRoomsText = document.getElementById("noOfRoomsText");
+        var occupancyToggle = document.getElementById("switchToDifferentOccupancy");
+
+        var _self = UHAccommodation;
+        _self.insertRooms();
+        _self.updateOccupancy();
+        _self.enableRoomGroupCount(1); // Enabling the first room group count (Group-occupancy)
+        _self.updateGroupOccupancyStyle(); // Updating occupancy divs on init (after 50ms)
+
+        $("#searchRoomsNo").trigger('click');
+
+        $("#btn-popover").on("click", function () {
+            $("#searchRoomsNo").trigger('click');
+            document.getElementById("popover_content_wrapper").classList.toggle("hide");
+        });
+
+        $(".subPCCInput").on("click", function () {
+            $(".subPCCInput").attr("disabled",true);
+            document.getElementById("popover_content_wrapper_subpcc").classList.toggle("hide");
+        });
+
+        $('#group-occupancy-room-count').on('change', function () { /* Setting roomsNo value with the total rooms on group-occupancy */
+            UHAccommodation.updateDiffOccTotalRoomCount();
+        });
+
+        $(".popover-container").on("click", ".input-button", function () {
+            var type = $(this).data("type");
+            var $input = $(this).siblings('input');
+            var maxVal = Number($input.attr('max'));
+            var minVal = Number($input.attr('min'));
+
+            if (type === "decrement") {
+                /* Basic check here for group occupancy */
+                if (UHAccommodation.isSameOccupancy()) {
+                    /* Checking the data-row type */
+                    if ($input.data("row") === 'roomCount') { // Only allowing to enter if room count is changed
+                        if (Number($input.val()) !== 1) { // Checking current value of input
+                            UHAccommodation.decreaseHiddenTotalRoomCountGrpOcc(1);
+                            changeValue(-1);
+                        }
+                    } else { // Other inputs (Allowed to decrease)
+                        changeValue(-1);
+                    }
+                } else { // Diff occupancy (Allowed to decrease)
+                    changeValue(-1)
+                }
+            }
+
+            if (type === "increment") {
+                /* Basic check here for group occupancy */
+                if (UHAccommodation.isSameOccupancy()) {
+                    /* Checking the data-row type */
+                    if ($input.data("row") === 'roomCount') { // Only allowing to enter if room count is changed
+                        if (UHAccommodation.increaseHiddenTotalRoomCountGrpOcc()) { // Checking if the value can be increased
+                            changeValue(1)
+                        } else {
+                            UHAccommodation.showMaxRoomError();
+                        }
+                    } else { /* Every other boxes */
+                        changeValue(1);
+                    }
+                } else { // Diff occupancy (Allowed to increase)
+                    changeValue(1)
+                }
+            }
+
+            function changeValue(step) {
+                var currentVal = Number($input.val()) || 0;
+                var newVal = currentVal + step;
+                if (newVal > maxVal) {
+                    newVal = maxVal;
+                } else if (newVal < minVal) {
+                    newVal = minVal;
+                }
+                $input.val(newVal).trigger('change');
+
+                /* Calling change occupancy here as well */
+                UHAccommodation.updateGroupOccupancyStyle();
+            }
+
+            $(this).siblings("input").trigger("change");
+            // setTimeout(UHAccommodation.updateRoomOccupancy(), 50);
+            // setTimeout(UHAccommodation.updateOccupancy(), 70);
+        });
+
+        $(".changingNumberInput").on("change", function () {
+            let $input = $(this).siblings('input');
+            let me = $(this);
+
+            const currVal = me.val();
+            if ($.trim(currVal) === '' || parseInt(currVal, 10) <= 0) {
+                if ($input.hasClass('childrenCount')) {
+                    me.val(0);
+                } else {
+                    me.val(me.data('val'));
+                }
+            }
+
+            let maxVal = Number($input.attr('max'));
+            let minVal = Number($input.attr('min'));
+
+            if (currVal > maxVal) {
+                me.val(maxVal);
+            } else if (currVal < minVal) {
+                me.val(minVal);
+            }
+
+            let oldVal = parseInt(me.data('val'), 10);
+            let type = 'decrement';
+            let diff = Math.abs(parseInt(me.val(), 10) - oldVal);
+            if (parseInt(me.val(), 10) > oldVal) {
+                type = 'increment';
+            }
+
+            if (type === "decrement") {
+                if (oldVal - diff <= 0 && !$input.hasClass('childrenCount')) {
+                    diff -= 1;
+                }
+                /* Basic check here for group occupancy */
+                if (UHAccommodation.isSameOccupancy()) {
+                    /* Checking the data-row type */
+                    if ($input.data("row") === 'roomCount') { // Only allowing to enter if room count is changed
+                        if (Number($input.val()) !== 1) { // Checking current value of input
+                            UHAccommodation.decreaseHiddenTotalRoomCountGrpOcc(diff);
+                        }
+                        changeValue(-diff);
+                    } else { // Other inputs (Allowed to decrease)
+                        changeValue(-diff);
+                    }
+                } else { // Diff occupancy (Allowed to decrease)
+                    changeValue(-diff)
+                }
+            }
+
+            if (type === "increment") {
+                /* Basic check here for group occupancy */
+                if (UHAccommodation.isSameOccupancy()) {
+                    /* Checking the data-row type */
+                    if ($input.data("row") === 'roomCount') { // Only allowing to enter if room count is changed
+                        if (UHAccommodation.increaseHiddenTotalRoomCountGrpOcc(diff)) { // Checking if the value can be increased
+                            changeValue(diff)
+                        } else {
+                            UHAccommodation.showMaxRoomError();
+                        }
+                    } else { /* Every other boxes */
+                        changeValue(diff);
+                    }
+                } else { // Diff occupancy (Allowed to increase)
+                    changeValue(diff)
+                }
+            }
+
+            function changeValue(step) {
+                let currentVal = Number($input.val()) || 0;
+                let newVal = currentVal + step;
+                if (newVal > maxVal) {
+                    newVal = maxVal;
+                } else if (newVal < minVal) {
+                    newVal = minVal;
+                }
+                $input.val(newVal).trigger('change');
+                if (me.val() === '0' && !$input.hasClass('childrenCount')) {
+                    me.val(1);
+                    me.data('val', 1);
+                } else {
+                    me.data('val', newVal);
+                }
+
+                /* Calling change occupancy here as well */
+                UHAccommodation.updateGroupOccupancyStyle();
+            }
+        });
+
+        $(".adultsCount").on('change', function () {
+            //setTimeout(UHAccommodation.updateRoomOccupancy(), 50);
+            setTimeout(UHAccommodation.updateOccupancy(), 70);
+        });
+
+        $(".childrenCount").on('change', function () {
+            //setTimeout(UHAccommodation.updateRoomOccupancy(), 50);
+            setTimeout(UHAccommodation.updateOccupancy(), 70);
+        });
+
+		$(".nationality_sel_uh").on('change', function () {
+            UHAccommodation.updateGroupOccupancyStyle();
+        });
+
+        $("#searchRoomsNo").on("click change paste input", function (e) {
+            var numRooms = e.target.value;
+            noOfRooms.innerText = numRooms;
+
+            if (numRooms > 1) {
+                occupancyToggle.classList.remove("hide");
+                noOfRoomsText.innerText = ' ' + roomsText;
+                if (!UHAccommodation.isSameOccupancy()) {
+                    $(".sameOcc").addClass("hide");
+                    // $(".diffOcc").removeClass("hide");
+                    // $(".roomName").removeClass("hide");
+                }
+            } else {
+                // occupancyToggle.classList.add("hide");
+                noOfRoomsText.innerText = ' ' + roomText;
+                $(".sameOcc").removeClass("hide");
+                // $(".diffOcc").addClass("hide");
+                // $(".roomName").addClass("hide");
+            }
+
+            setTimeout(UHAccommodation.updateRooms(), 25);
+            setTimeout(UHAccommodation.updateOccupancy(), 70);
+            // setTimeout(UHAccommodation.updateRoomOccupancy(), 50);
+        });
+
+        $("#differentOccupancy").on("change", function (e) {
+            _self.showDiffOccupancy();
+            $(".sameOcc").toggleClass("hide");
+            $(".diffOcc").toggleClass("hide");
+            // $(".roomName").toggleClass("hide");
+            setTimeout(UHAccommodation.updateRooms(), 25); // setTimeout(UHAccommodation.updateRoomOccupancy(), 50);
+            setTimeout(UHAccommodation.updateOccupancy(), 70);
+            UHAccommodation.updateGroupOccupancyStyle();
+        });
+
+        $("#searchForm").on("submit", function () {
+            document.getElementById("popover_content_wrapper").classList.add("hide");
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $("#popover_content_wrapper");
+            var btn = $("#btn-popover");
+
+            if (!container.is(e.target) && !btn.is(e.target) &&
+                container.has(e.target).length === 0 && btn.has(e.target).length === 0) {
+                container.addClass('hide');
+            }
+        });
+
+        $(document).mouseup(function (e) {
+            var container = $("#popover_content_wrapper_subpcc");
+            var btn = $(".subPCCInput");
+            var con = $("#ui-datepicker-div");
+            if (!container.is(e.target) && !btn.is(e.target) && !con.is(e.target) &&
+                container.has(e.target).length === 0 && btn.has(e.target).length === 0 && con.has(e.target).length === 0) {
+                container.addClass('hide');
+                btn.attr('disabled',false);
+            }
+        });
+
+        /* Funtionality for add room group button click */
+        $('#add-room-group-btn').on("click", function () {
+            _self.addRoomGroupFunc();
+        })
+    }
+};

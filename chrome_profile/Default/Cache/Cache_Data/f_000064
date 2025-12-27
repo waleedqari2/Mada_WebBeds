@@ -1,0 +1,3008 @@
+Number.prototype.formatMoney = function(decPlaces, thouSeparator, decSeparator) {
+	var n = this,
+		decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? DECIMAL_POINTS || 2 : decPlaces,
+		decSeparator = decSeparator == undefined ? DECIMAL_SEPARATOR || '.' : decSeparator,
+		thouSeparator = thouSeparator == undefined ? THOUSAND_SEPARATOR || ',' : thouSeparator,
+		sign = n < 0 ? "-" : "",
+		i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
+		j = (j = i.length) > 3 ? j % 3 : 0;
+	return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+};
+
+var log = function () {
+	if (window.console && window.console.log) {
+		if (arguments.length === 0) {
+			window.console.log('Nothing to log');
+		} else if (arguments.length > 1) {
+			window.console.log(arguments);
+		} else {
+			window.console.log(arguments[0]);
+		}
+	}
+};
+// fix for ie7, ie8
+Object.keys = Object.keys || function(
+	o, // object
+	k, // key
+	r  // result array
+) {
+	// initialize object and result
+	r = [];
+	// iterate over object keys
+	for (k in o)
+		// fill result array with non-prototypical keys
+		r.hasOwnProperty.call(o, k) && r.push(k);
+	// return result
+	return r;
+};
+
+if (typeof window.jQuery == 'undefined')
+{
+	throw new Error('Oops! jQuery is missing.');
+}
+
+jQuery.ajaxSetup({
+	statusCode: {
+		302: function() {
+            AlertError.show(trans('errors.sessionExpired'), trans('modalTitle.error'), function() {
+                // redirect to login
+                window.location = BASE_CI_URL + '/login';
+            });
+		}
+	}
+});
+
+var Translations = {
+	_data: {},
+	setData: function(data) {
+		$.extend(true, this._data, data);
+	},
+	getText:function(item) {
+		return item.split('.').reduce(function(o, x) {
+			return o[x] || '';
+		}, this._data);
+	}
+};
+
+function trans(item)
+{
+	return Translations.getText(item);
+}
+
+var ShoppingCart = (function ($)
+	{
+		var obj = {
+			templateEmpty: '<h5 class="alert alert-danger">{{ emptyText }}</h5>',
+			template:      
+			"<div id='shoppingCartList'>"
+				+ '<table width="100%" class="shopping_cart_tabel" border="0" cellspacing="0" cellpadding="0">'
+				   + '<tr class="shopping_cart_tabel_header">'
+					   + '<td>{{ trans.type }}</td>' 
+					   + '<td>{{ trans.name }}</td>' 
+					   + '<td>{{ trans.description }}</td>' 
+					   + '<td>{{ trans.city }}</td>' 
+					   + '<td>{{ trans.from }}</td>' 
+					   + '<td>{{ trans.to }}</td>' 
+					   + '<td>{{ trans.price }}</td>' 
+					   + '<td width="50">&nbsp;</td>'
+				   + '</tr>'
+				   + '{{#products}}'
+					   + "<tr {{#booked}} class='success' {{/booked}}>"
+						   + '<td><p class="{{ serviceIcon }}"></p></td>'
+						   + '<td>{{ serviceName }}</td>'
+						   + '<td>{{ serviceDescription }}</td>'
+						   + '<td>{{ serviceLocation}}</td>'
+						   + '<td>{{ dates.fromShort }}</td>'
+						   + '<td>{{ dates.toShort }}</td>'
+						   + '<td>{{ price }}</td>'
+						   + '<td>'
+						   + '{{#booked}}'
+						   	+ '{{ trans.booked }}'
+						   + '{{/booked}}'
+						   + '{{^booked}}'
+						   	+ '<a href="javascript:void(0)" data-booking="{{ code }}" class="cancelBooking"><span class="glyphicon glyphicon-remove"></span></a>'
+						   + '{{/booked}}'
+						   + '</td>'
+					   + '</tr>'
+				   + '{{/products}}'
+			+ "</table></div>",
+			templateAddService: '<div class="col-sm-4">'
+							+ '<select name="addService" id="itineraryAddService" style="width:110%;" class="form-control">'
+							+ '{{#services}}'
+							+ '{{#visible}}'
+							+ '<option value="{{type}}">{{title}}</option>'
+							+ '{{/visible}}'
+							+ '{{/services}}'
+							+ '</select>'
+							+ '</div>'
+							+ '<div class="col-sm-2" style="padding-top: 10px"><a href="javascript:void(0)" class="add_service_iten" onclick="addService(this)" >+ {{ addButton }}</a></div>',
+			products:      [],
+			cartBtn:       '.shoppingCartBtn',
+			cartItemsNo:   'span.cartItemsNo',
+			itinerary_top: '.itinerary_top',
+			itinerary_bottom: '.itinerary_bottom',
+            itinerary_total: 'div.total',
+			services: [],
+			retainSelectionTab : 'no'
+		};
+
+		obj.booted = false;
+
+		obj.errors = [];
+
+		obj.toggleBottom = function(show) 
+		{
+			var _self = this;
+			if(show)
+			{
+                $(_self.itinerary_bottom).show();
+                obj.toggleBottomTotal(show);
+                obj.toggleBottomItinerary(show);
+			}
+			else
+			{	
+                obj.toggleBottomTotal(show);
+                
+                if($(obj.cartItemsNo).text() == 0)
+                {
+                    obj.toggleBottomItinerary(show);
+                    //0 items for itinerary
+                    $(_self.itinerary_bottom).hide();
+                }
+			}
+		};
+        
+        obj.toggleBottomTotal = function(show) 
+        {
+            var _self = this;
+            if(show)
+            {
+                $(_self.itinerary_total).show();
+            }
+            else
+            {
+            	if (_self.retainSelectionTab == 'no'){
+                    $(_self.itinerary_total).hide();
+				}
+            }
+        };
+        
+        obj.toggleBottomItinerary = function(show) 
+        {
+
+            var _self = this;
+            if(show)
+            {
+                $(_self.cartBtn).show();
+            }
+            else
+            {
+                $(_self.cartBtn).hide();
+            }
+            topBannerPosition();
+        };
+		
+		obj.init = function (event)
+		{
+			BookItineraryCnt.itineraryForceCCPayment = false;
+
+			webbedsWidget.init();
+
+			webbedsWidget.onReady(function() {
+				$('#completedCreditCardDetails').attr('disabled', false);
+			});
+
+
+			BookItineraryCnt.loadItinerary(function (response)
+			{
+				BookItineraryCnt.itineraryBookingCodes = [];
+
+				var count = 0;
+				if (response == null) 
+				{
+					ShoppingCart.products = [];
+				}
+				else
+				{   
+                    ShoppingCart.products = [];
+                    $.each(response, function(key, responseItem)
+                    {
+                        if(key == "commission")
+                        {
+                            BookItineraryCnt.setCommission(responseItem);
+                        } 
+                        else 
+                        {
+                            var rsp = $($.parseXML(responseItem));
+                            if ('FALSE' == rsp.find('result request successful').text())
+                            {
+                                ShoppingCart.errors.push(rsp.find('result request error details').text());
+                            }
+                            else
+                            {
+                                var result = rsp.find('result');
+                                result.find('containing product').each(function (i, item)
+                                {
+                                    //log(item);
+                                    var product = $(item);
+        							//payment mode
+									var itineraryForceCCPayment = product.find('paymentMode');
+									if(typeof itineraryForceCCPayment[0] !== 'undefined' && itineraryForceCCPayment.text() == 'CC') {
+										BookItineraryCnt.itineraryForceCCPayment = true;
+									}
+
+                                    // skip cancelled booking for a booked itinerary
+                                    if (product.find('status').text() == 1667) // change this with constant value - CANCELLED
+                                    {
+                                        return true;
+                                    }
+                                    var onRequest = (product.find('onRequest').text() == 'yes') | 0;
+        
+                                    product.find('dates date').each(function(idx, date)
+                                    {
+                                        onRequest += parseInt($(date).find('dayOnRequest').text(), 10);
+                                    });
+        
+                                    var extraMeals = product.find('selectedExtraMeals mealPlanDate mealPlan meal');
+                                    var extraMealsPrice = 0;
+                                    $.each(extraMeals, function (idx, meal)
+                                    {
+                                        var units = parseInt($(meal).find('units').text()) || 1;
+                                        extraMealsPrice += parseFloat(meal.getElementsByTagName('mealPrice')[0].firstChild.nodeValue) * units;
+                                    });
+        
+                                    var servicePrice = parseFloat(item.getElementsByTagName('servicePrice')[0].firstChild.nodeValue);
+        
+                                    servicePrice += extraMealsPrice;
+        
+                                    var productType = product.find('service').text();
+        
+                                    // try and add some content to the service description area on the "shopping cart" for products != hotel
+                                    var serviceDescription = product.find('roomName').text();
+        
+                                    if (productType == 'Transfer')
+                                    {
+                                        serviceDescription = product.find('vehicleBrand').text();
+                                    }
+                                    if (productType == 'Visa')
+                                    {
+                                        serviceDescription = product.find('serviceLocation').text();
+                                    }
+                                    if (productType == 'Tour')
+                                    {
+                                        serviceDescription = product.find('serviceLocation').text();
+                                    }
+        
+                                    var isBooked = product.find('booked').text() == 'yes';
+                                    var currency = product.find('currencyShort').text();
+                                    
+                                    var bookingCode = product.find('code').eq(0).text();
+                                    var data = {
+                                        code:               bookingCode,
+                                        service:            productType,
+                                        serviceIcon:        productType.toLowerCase(),
+                                        serviceId:          product.find('serviceId').text(),
+                                        serviceName:        product.find('serviceName').eq(0).text(),
+                                        booked:             isBooked,
+                                        onRequest:          onRequest,
+                                        currencyShort:      currency,
+                                        servicePrice:       product.find('servicePrice formatted').text(),
+                                        price:              currency + ' ' + product.find('servicePrice formatted').text(),
+                                        serviceLocation:    product.find('serviceLocation').text(),
+                                        serviceDescription: serviceDescription,
+                                        dates:              {
+                                            from:      product.find('from').text(),
+                                            to:        product.find('to').text(),
+                                            fromShort: product.find('fromShort').text(),
+                                            toShort:   product.find('toShort').text()
+                                        }
+                                    };
+        
+                                    obj.products.push(data);
+                                    
+                                    count++;
+        
+                                    if(! isBooked)
+                                    { 
+                                        if( ! onRequest || productType === 'Visa')
+                                        {
+                                            BookItineraryCnt.addBookingCode(bookingCode);
+                                        }
+                                    }
+                                    
+                                    BookItineraryCnt.currency = currency;
+                                });
+                            }
+                        } 
+                    });
+                   
+				}
+				$(obj.cartItemsNo).text(count);
+
+                if(count > 0)
+                {
+                    obj.toggleBottom(true);
+                    obj.toggleBottomTotal(false);
+                } 
+                else 
+                {
+                    obj.toggleBottom(false);
+                }
+
+                if (typeof event !== 'undefined') $(document).trigger(event);
+                
+			});
+			obj.booted = true;
+            return this;
+		};
+
+		obj.container = null;
+		obj.modal = null;
+		
+		obj.hide = function() 
+		{
+			if(this.modal)
+			{
+				this.modal.modal('hide');
+			}
+			return this;
+		};
+		
+		obj.show = function()
+		{
+			Loader.show();
+			var _self = this;
+
+			if (! obj.booted) 
+			{
+				obj.init();
+			}
+			
+			if (_self.products.length)
+			{
+				_self.container = Mustache.render(obj.template, {
+					products: _self.products, 
+					trans: trans('cart.label')
+				});
+			}
+			else
+			{
+				_self.container = Mustache.render(obj.templateEmpty, {emptyText: trans('cart.empty')});
+			}
+			
+			if(obj.errors.length)
+			{
+				var errors = obj.errors.map(function(item) { return '<p>' + item + '</p>'; });
+				var err = $('<div>', {
+					'class': 'alert alert-danger',
+					html: errors.join("\n")
+				});
+				_self.container = $(_self.container).prepend($(err));
+			}
+			
+			var dialogOptions = {
+				size: 'large',
+				className: 'shopping_cart_popup',
+				message: _self.container,
+				title: trans('cart.title'),
+				onEscape: function() {},
+				buttons: {
+					close: {
+						label: trans('cart.button.close'), 
+						className: 'btn-link btn-small'
+					}
+				}
+			};
+
+			var showBookingButton = _self.products.filter(function(item) {
+				return ! item.booked;
+			});
+
+			if(showBookingButton.length)
+			{
+				dialogOptions.buttons.success = {
+					label: trans('booking.button.finalize'), 
+					className: 'search_btn itineraryBtn',
+					callback: function() {
+							BookItineraryCnt.getItineraryQuotation();
+						}
+				};
+            }
+            
+            if(_self.products.length)
+            {
+                dialogOptions.buttons.clear = {
+                    label: trans('booking.button.clear'),
+                    className: 'search_btn clearItinerary itineraryBtn',
+                    callback: function() {
+                        return false;
+                    }
+                };
+			}
+            
+			this.modal = bootbox.dialog(dialogOptions);
+			var addService = Mustache.render(_self.templateAddService, {
+				trans: trans('cart.label'),
+				addButton: trans('cart.button.addService'),
+				services: _self.services
+			});
+			
+			this.modal.find('.modal-footer').prepend($(addService));
+			Loader.hide();
+			return this;
+		};
+		
+		obj.addButtonListeners = function() {
+
+			$(document).on('click', obj.cartBtn, function (event)
+			{
+				event.preventDefault();
+				ShoppingCart.show();
+			});
+
+			$(document).on('click', '.cancelBooking', function (event)
+			{
+				event.preventDefault();
+				var me = $(this);
+				bootbox.confirm({
+					message: trans('cart.cancelConfirm'),
+					buttons: {
+						confirm: {label: trans('cart.button.yes')},
+						cancel: {label: trans('cart.button.no')}
+					},
+					callback: function(result) {
+						if(result) {
+							ShoppingCart.hide();
+							BookItineraryCnt.cancelBooking(me.data('booking'), function(response) {
+								AlertInfo.show(trans('success.cancelled'), trans('modalTitle.success'));
+							});
+						}
+					}
+				});
+			});
+
+            $(document).on('mousedown', '.clearItinerary', function (event)
+            {
+                bootbox.confirm({
+					message: trans('cart.cancelAllConfirm'),
+					buttons: {
+						confirm: {label: trans('cart.button.yes')},
+						cancel: {label: trans('cart.button.no')}
+					},
+					callback: function(result) {
+						if(result) {
+							BookItineraryCnt.clearItinerary();
+							ShoppingCart.hide();
+                            $(document).trigger('clear.itinerary');
+						}
+					}
+				});
+            });
+            
+		};
+        
+        obj.setServices = function(servicesJson)
+        {
+            var _self = this;
+            _self.services = $.parseJSON(servicesJson);
+            _self.services.unshift({
+		            visible:  true,
+		            type:     SERVICE_TYPE_ALL,
+		            title:    trans('cart.selectService'),
+		            redirect: '',
+		            image:    ''
+	            }
+            );
+
+
+        };
+
+		return obj;
+})(jQuery);
+
+/*
+not used
+function _alert(message, type, callback)
+{
+	var title = trans('modalTitle.info');
+	switch (type)
+	{
+		case 'success':
+			title = trans('modalTitle.success');
+			break;
+		case 'error':
+			title = trans('modalTitle.error');
+			break;
+		case 'warning':
+			title = trans('modalTitle.warning') || 'Warning';
+			break;
+        default: 
+            title = trans('modalTitle.info') || 'Info';
+            break;
+	}
+
+	bootbox.alert({
+		title: title,
+		message: message,
+		callback: callback || function() {}
+	});
+}*/
+
+jQuery(function ($)
+{
+	ShoppingCart.init().addButtonListeners();
+
+	bootbox.setDefaults('size', 'large');
+    $(document).on('click', '.clearTypeahead', function(event) 
+    {
+        var me = $(this);
+        var $ttInput = me.parents('.pos-relative').find('input.tt-input');
+        $ttInput.data('ttTypeahead').input.query = '';
+        me.parents('.pos-relative').find(':input').val('').trigger('change');
+        $ttInput.focus();
+    });
+
+    // Top banner position
+    topBannerPosition();
+});
+
+/**
+ * Dependency list
+ *
+ * jQuery
+ * Loader
+ * bootbox
+ *
+ * Book Itinerary Obj responsible with itinerary booking
+ */
+var BookItineraryCnt = (function ($)
+	{
+		"use strict";
+
+		var obj = {};
+
+		var getPayableAmount = function (bookingCodes)
+		{
+			Loader.show();
+
+			var time = new Date().getTime();
+			var url = BASE_URL + (ROUTE_FOLDER ? ('/' + ROUTE_FOLDER) : '' ) + '/ajax/leftMenuAjax.php';
+			var payableAmount = 0;
+			if (! bookingCodes.length)
+			{
+				return [0];
+			}
+			bookingCodes = $.unique(bookingCodes.map(function(o) { return parseInt(o, 10); }).sort()); // sort is needed for older browsers
+
+			$.ajax({
+				url:      url,
+				async:    false,
+				data:     {
+					id:          time,
+					method:      'calculateBookingAmount',
+					bookingCode: bookingCodes.join(','),
+					getJSON:     1
+				},
+				dataType: 'json',
+				success:  function (result)
+				{
+
+					if (typeof result.payableAmount != 'undefined')
+					{
+						payableAmount = result.payableAmount;
+					}
+					else
+					{
+						payableAmount = -1;
+					}
+				}
+			});
+
+			Loader.hide();
+
+			if (payableAmount < 0)
+			{
+                AlertError.show(makeAMessagePanel(trans('errors.occured')), trans('modalTitle.error'));
+				return [];
+			}
+
+			return [payableAmount];
+		};
+
+		var resetItinerary = {
+			saved: null,
+            booked: null // saved or booked
+		};
+
+		obj.itinerary = resetItinerary;
+
+		obj.customerTypeCC = false;
+		obj.bookingForceCCPayment = false;
+		obj.itineraryForceCCPayment = false;
+		obj.requireCC = false;
+		obj.currency = '';
+		obj.commission = '';
+		obj.itineraryBookingCodes = [];
+
+		obj.defaults = {
+			confirmBtn: '.confirmBookingBtn'
+		};
+
+		obj.init = function (options)
+		{
+			obj.defaults = $.extend(true, obj.defaults, options);
+		};
+
+		obj.addBookingCode = function(bookingCode) 
+		{
+			this.itineraryBookingCodes.push(parseInt(bookingCode, 10));
+			this.itineraryBookingCodes = $.unique(this.itineraryBookingCodes);
+		};
+		
+        obj.setCommission = function(commission){
+            this.commission = commission;
+
+            //hide|show commission options
+            var selectCommision = $('[name="cc_commission"]');
+            if(selectCommision.length > 0){
+                //reset
+                selectCommision.parent().find('li').show();
+                
+                if(this.commission > 0){
+                    selectCommision.parent().find('li[data-original-index="0"]').hide();
+                    selectCommision.parent().find('li[data-original-index!="0"]').show();
+                } else if(this.commission === 0){
+                    selectCommision.parent().find('li[data-original-index="0"]').show();
+                    selectCommision.parent().find('li[data-original-index!="0"]').hide();
+                }
+                
+            }
+        };		
+		obj.resetItinerary = function ()
+		{
+			obj.itinerary = resetItinerary;
+        };
+
+		obj.setSavedItinerary = function (itineraryData)
+		{
+			obj.itinerary.saved = itineraryData;
+		};
+        
+        obj.setBookedItinerary = function (itineraryData)
+        {
+            obj.itinerary.booked = itineraryData;
+        };
+        
+        obj.clearItinerary = function()
+        {
+            Loader.show();
+            $.get(BASE_CI_URL + '/itinerary/clear-session', {_token: CSRF_TOKEN}, function (response)
+            {
+                if(response.error == ""){
+                    ShoppingCart.init('cleared.itinerary');
+                }
+            }).always(function() {
+                Loader.hide();
+            });
+        };
+
+		obj.confirm = function ()
+		{
+			Loader.show();
+
+			var data = $('form#quotationForm').serialize();
+
+			if ($('form#quotationForm').serialize().length == 0) {
+                var data = $('form#reconfirmItinerary').serialize();
+            }
+
+            var res = data.split("walletAuthenticationCode=");
+			if(res.length>1)
+			{
+				if(res['1'] == '')
+				{
+                    Loader.hide();
+                    AlertInfo.show('Please enter a valid wallet authentication code', 'Invalid authentication code');
+                    return false;
+				}
+			}
+
+            bootbox.hideAll();
+			// add commission if exists
+			var commission = $('#commission');
+			if(commission.length)
+			{
+				data += '&cc_commission=' + commission.val();
+			}
+
+			if (parseInt(obj.customerTypeCC) || obj.itineraryForceCCPayment || obj.bookingForceCCPayment)
+			{
+				var payable = getPayableAmount(obj.itineraryBookingCodes);
+
+				if ( ! payable.length)
+				{
+					return false;
+				}
+
+				obj.requireCC = payable.pop();
+			}
+			else
+			{
+				obj.requireCC = 0;
+			}
+
+			// book itinerary response callback
+			var responseCallback = function (response)
+			{
+                if (typeof response === 'object' && response.success === 'supplierWarning')
+                {
+                    Loader.hide();
+                    //$('#bookingModal').modal('hide');
+
+                    // display Modal For Different allocation
+                    AlertInfo.show(response.message, response.warningTitle);
+                    AlertInfo.setWidth('60%');
+                    $('#supplierWarningHolder').parents('.modal').on('click', function(e){e.preventDefault(); e.stopImmediatePropagation();});
+                } else {
+                    //CreditCardCnt
+                    data = $($.parseXML(response));
+                    var successful = data.find('result successful').text();
+
+                    if (successful == 'TRUE')
+                    {
+
+                        if(data.find('result returnedCode').text() > 0)
+                        {
+                            window.location.href = BASE_CI_URL + '/bookings?ref=' + data.find('result returnedCode').text();
+                        }
+                        else
+                        {
+                            window.location.href = BASE_CI_URL + '/bookings/'+ data.find('result bookings bookingCode:eq(0)').text();
+                        }
+
+                    }
+                    else if (successful == 'FALSE')
+                    {
+                        var errorMessage = data.find('result error details');
+                        if( errorMessage.length > 0)
+                        {
+                            errorMessage = data.find('result error extraDetails');
+                        }
+                        AlertError.show(makeAMessagePanel( errorMessage.length > 0 ? errorMessage.text() : trans('errors.unknown')), trans('modalTitle.error'));
+
+                        
+                        if(typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true)
+                        {
+                            jQuery('.modal-content .close').on('click', function(){  
+                                jQuery('.loader-bg-booking').hide(); 
+                            });
+                        }
+                    }
+                }
+
+			};
+
+            var FormDoSubmit = function(form)
+            {
+				$('body,html').scrollTop(0);
+				CreditCardCnt.hide();
+
+				// disable requiring the credit card info as we have it already
+				BookItineraryCnt.requireCC = 0;
+
+				// add up the data to submit to the server
+				if (typeof data !== 'string') {
+					data = data.serialize();
+				}
+				data += (data.length ? '&' : '') + form.serialize();
+
+				// do the ajax call with out callback
+				BookItineraryCnt.bookItinerary(data, 0, responseCallback);
+
+                return false;
+            };
+			
+			if (obj.requireCC)
+			{
+				Loader.hide();
+
+				//show the credit card modal
+				CreditCardCnt.show(function() {
+                    
+                    var form = CreditCardCnt.container.find('form');
+                    CreditCardCnt.searchCallback = FormDoSubmit;
+                    
+                    form.trigger('validate');
+                    
+                    return false;
+				})
+                .setPrices(obj.requireCC, obj.currency, obj.itinerary.saved, webbedsWidget.devicePayload)
+                .showCreditOption(this.commission);
+
+				return false;
+			}
+			
+			// do the ajax call with out callback
+			BookItineraryCnt.bookItinerary(data, 0, responseCallback);
+			return false;
+		};
+		obj.getItineraryQuotation = function (itineraryNumber, callback)
+		{
+			Loader.show();
+			if (itineraryNumber)
+			{
+				obj.setSavedItinerary(itineraryNumber);
+			}
+			
+			itineraryNumber = obj.itinerary.saved;
+
+			$.ajax({
+				url: BASE_CI_URL + '/itinerary/get/' + itineraryNumber,
+				dataType: 'html',
+				type: 'get',
+				async: true,
+				data: {_token: CSRF_TOKEN},
+				statusCode: {
+					302: function () {
+						window.location.href = BASE_CI_URL + '/login';
+					}
+				}
+			}).done(function (response) {
+				bootbox.dialog({
+					message: response,
+					title: trans('booking.title.quotation'),
+					buttons: {
+						close: {
+							label: trans('booking.button.close'),
+							className: 'btn-link btn-small',
+                            callback: function() {
+								$(document).trigger('close.quotation')
+                                //only hide booking form if dialog displayed from confirm
+//                                BookItineraryCnt.hideBookingForm(true);
+                            }
+						},
+						success: {
+							label: trans('booking.button.confirm'),
+							className: 'btn-success btn-small itineraryBtn',
+							callback: function() {
+								/*
+								* For umrah customer this popup wil not appear
+								*
+								* */
+								if (typeof IS_UMRAH_CUSTOMER === "undefined" || Boolean(IS_UMRAH_CUSTOMER) !== true) {
+									BookItineraryCnt.hideBookingForm();
+									BookItineraryCnt.confirm();
+								}
+							}
+						}
+					}
+				}).find('.modal-footer').addClass('rtlquotationfooter');
+				if($.isFunction(callback)) {
+					callback(response);
+				}
+				if(typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true) {
+					BookItineraryCnt.hideBookingForm();
+					BookItineraryCnt.confirm();
+				}
+			}).fail(function (xhr, err, errText) {
+				// only show the alert if the status is not a redirect
+				if(xhr.status != 302)
+				{
+					AlertError.show(xhr.responseText, trans('booking.title.quotation'));
+				}
+			}).always(function() {
+				Loader.hide();
+			});
+		};
+
+		obj.bookItinerary = function (data, creditCardPrice, callback)
+		{
+			if(typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true)
+			{
+                Loader.hide();
+				jQuery('#umrah_search_book_loader').modal('show');
+				jQuery('.loader-bg-booking').show();
+			}
+			else {
+				Loader.show();
+			}
+			if (typeof data !== 'string')
+			{
+				data = data.serialize();
+			}
+			data += '&_token=' + CSRF_TOKEN;
+
+			$.post(BASE_CI_URL + '/itinerary/confirm/' + obj.itinerary.saved, data, function(response) {
+
+                if ($.isFunction(callback)) callback(response);         
+
+			}).fail(function( jqXHR, textStatus, errorThrown ) {
+				
+				log(arguments)
+			}).always(function() {
+				Loader.hide();
+				if(typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true)
+				{
+					jQuery('#umrah_search_book_loader').modal('hide');
+					jQuery('.loader-bg-booking').show();
+				}
+
+			});
+
+			return false;
+		};
+
+		obj.loadItinerary = function (callback)
+		{
+            if (!obj.itinerary.saved && !obj.itinerary.booked)
+			{
+				callback(null);
+				return;
+			}
+
+			Loader.show();
+			var data = {};
+			data['_token'] = CSRF_TOKEN;
+
+			$.get(BASE_CI_URL + '/itinerary/load-session', data, function (response)
+			{
+				if ($.isFunction(callback)) {
+                    callback(response);
+                }
+
+			}, 'json').always(function() {
+				
+				Loader.hide();
+			});
+		};
+
+		obj.cancelBooking = function (bookingCode, callback)
+		{
+			Loader.show();
+			$.get(BASE_CI_URL + '/itinerary/cancelBooking/' + bookingCode, {_token: CSRF_TOKEN}, function (response)
+			{
+				var xml = $(response);
+				if (xml.find('result successful').text() == 'TRUE')
+				{
+					if (parseInt(xml.find('result productsLeftOnItinerary').text()) == 0)
+					{
+						BookItineraryCnt.resetItinerary();
+					}
+				}
+
+				ShoppingCart.init();
+				if ($.isFunction(callback)) callback(response);
+
+			}).always(function() {
+
+				Loader.hide();
+			});
+		};
+        
+        obj.hideBookingForm = function (showLoader)
+        {
+            showLoader = typeof(showLoader) != "undefined" ? showLoader : false;
+            
+            //if on passengers form, trigger back function
+	        var $backBtn = $('.back_btn');
+	        if($backBtn.length > 0 && $backBtn.is(':visible'))
+            {
+                popstateCallback(showLoader);
+            }
+        };
+
+        obj.determineSection = function ()
+        {
+            var section = '';
+            if(typeof Accommodation != "undefined")
+            {
+                section = 'Accommodation';
+            }
+            else if(typeof Transfer != "undefined")
+            {
+                section = 'Transfer';
+            }
+            else if(typeof Tour != "undefined")
+            {
+                section = 'Tour';
+            }
+            else if(typeof Visa != "undefined")
+            {
+                section = 'Visa';
+            }
+            
+            return section;
+        };
+        
+
+		return obj;
+	})(jQuery);
+
+/**
+ * Compare object that will handle the compare products process
+ */
+var Compare = {};
+
+Compare.maxCompareItems = 4;
+Compare.compareList = [];
+Compare.bookFromPopupList = false;
+Compare.show = function ()
+{
+    Compare.checkExpiredDate(Compare.compareList)
+    //var tableCellWidth  = {1: '80%', 2: '40%', 3: '28%', 4: '21%'};
+    var width           = {1: '70%', 2: '70%', 3: '80%', 4: '90%'};
+    var listLength      = Compare.compareList.length;
+    var popWidth        = width[listLength];
+    var $tmpl           = $('#hotelCompare').html();
+
+    if(listLength > 0 && typeof Compare.compareList[0] !== "undefined") {
+        var itemsToCompare = true
+    }
+
+    var properties = Compare.createTableHead();
+
+
+    tmplist = Compare.compareList;
+	for(var i = 0, j = tmplist.length; i < j; i++)
+	{
+		if (tmplist[i].roomPolicyRow != undefined && tmplist[i].roomPolicyRow.length > 0 ) {
+			var roomPolicyArr = tmplist[i].roomPolicyRow.split("^^^");
+		}
+		if (roomPolicyArr != undefined ) {
+            var $policyPrefix = ($.trim(roomPolicyArr[0]) == 'crBeforeText') ? trans('compare.crBeforeText') : false;
+		}
+
+		tmplist[i].dateFrom = $.datepicker.formatDate(JS_DATE_FORMAT_EXT, new Date(  tmplist[i].dateFromBookFormat ));
+		tmplist[i].dateTo = $.datepicker.formatDate(JS_DATE_FORMAT_EXT, new Date(  tmplist[i].dateToBookFormat ));
+
+		tmplist[i].rateType = trans('compare.rateType.' + tmplist[i].rateTypeNumeric);
+		if (tmplist[i].boardBasisCode != undefined ) {
+			tmplist[i].boardBasis[0] = trans('compare.boardBasis.' + tmplist[i].boardBasisCode);
+		}
+		else {
+			tmplist[i].boardBasis[0] = {};
+		}
+
+		if (tmplist[i].roomOccupancyRaw.adults != undefined) {
+			tmplist[i].roomOccupancy = trans('compare.adultsText') + ' : ' + tmplist[i].roomOccupancyRaw.adults + ' ' + trans('compare.childrenText' )  + ' : ' + tmplist[i].roomOccupancyRaw.children;
+		}
+        if ($policyPrefix != undefined && $policyPrefix)
+		{
+			if(roomPolicyArr[1].indexOf(String.fromCharCode(160)) > 0) {
+				roomPolicyArr[1] = $.trim(roomPolicyArr[1].substr(roomPolicyArr[1].indexOf(String.fromCharCode(160))));
+			}
+
+			var index = roomPolicyArr[1].indexOf('/');
+			if (index > -1) {
+				var suffix = roomPolicyArr[1].substr(index);
+				var newDate = roomPolicyArr[1].substr(0, index);
+			}
+			else {
+					newDate = roomPolicyArr[1];
+					suffix = '';
+			}
+            tmplist[i].roomPolicy =  $policyPrefix  + " " + $.datepicker.formatDate(JS_DATE_FORMAT_EXT, new Date( newDate )) + " " + getTime(new Date( newDate )) + " " + suffix ;
+        } else {
+            tmplist[i].roomPolicy = trans('compare.' + roomPolicyArr);
+        }
+
+        var promoText = $(tmplist[i].getPromotionRaw);
+
+        if (promoText.length > 0) {
+            tmplist[i].promotionsHtml = Compare.translatePromotion(promoText);
+        }
+	}
+    
+    var compareHtml = Mustache.render($tmpl, {
+        'tableHead': properties, 'data': tmplist, 'hasItems': itemsToCompare,
+        'currency' : getActiveCurrency(false, true)
+    });
+
+
+	AlertInfo.show(compareHtml, trans('compare.title'));
+    AlertInfo.setWidth(popWidth);
+    AlertInfo.div.css('z-index', 999);
+
+    /**** Hotel compare events ******/
+    if(typeof Accommodation !== "undefined")
+    {
+        Compare.initCompareEvents();
+    }
+
+};
+Compare.translatePromotion = function(data)
+{
+    var textTrans = [
+        'spNoBookSpecialNightsText',
+        'spNoBookPaidNightsText',
+        'spDiscountEachNightOnPeriodText',
+        'spNoSubseqDiscountedNightsText',
+        'spDiscountEachSubseqNightText',
+        'spConditionToQualifyText',
+        'spDescriptionText',
+        'spNotesText',
+        'spNoDetailsOnPromoText'
+    ];
+
+    for(var i = 0 ; i < textTrans.length; i++) {
+        textTrans[i] = $(data).find('input[name="' + textTrans[i] + '"]').val();
+        if (textTrans[i] != undefined) {
+            transPromo = trans('compare.' + textTrans[i]);
+            $(data).find('.'+ textTrans[i] ).text(transPromo);
+        }
+    }
+
+    if (data[0] != undefined) {
+        return data[0].innerHTML;
+    }
+
+};
+Compare.emptyList = function (keepList)
+{
+    // empty compare
+    if (!keepList || keepList == undefined) {
+    Compare.compareList = [];
+    }
+    Compare.updateCount();
+
+    return true;
+};
+/* add a new room to compare */
+Compare.add = function (roomId, runno, data)
+{
+	var cnt = Object.keys(Compare.compareList).length;
+    var cpKey = roomId + '-' + runno;
+    if (!Compare.compareList.hasOwnProperty(cpKey) && Compare.maxCompareItems > cnt) {
+
+        data.dateFromBookFormat = Compare.getDateFromBookFormat();
+        data.dateToBookFormat = Compare.getDateToBookFormat();
+
+        data.dateFrom = Compare.getDateFrom();
+        data.dateTo = Compare.getDateTo();
+        Compare.compareList.push(data);
+        Compare.updateCount();
+
+        Compare.visible(true);
+
+        return true;
+    }
+    Compare.filterCancellationTypes();
+    
+    return false;
+};
+/* check if have items in local storage and show when page is loaded*/
+Compare.checkCompareListStorage = function () {
+    try {
+        if (localStorage.getItem("localStorageObject") !== '[null]') {
+            Compare.compareList = Compare.getCompareListFromStorage();
+            Compare.updateCount();
+            Compare.visible(true);
+            var deletedIndex = [];
+			/* this part of code is used on search page result*/
+            $.each(Compare.compareList, function (idx, elem)
+            {
+                var listHotelId = elem.hotelId;
+                var hotelId = $('#hotel_' + listHotelId + '_row');
+                if (hotelId.length > 0) {
+					var activeUrl = Accommodation.Search.removeURLParameter(window.location.href.substr(window.location.href.indexOf("?") + 1));
+                    if (Compare.removeHtag(elem.urlSearch) === Compare.removeHtag(activeUrl)) {
+                        var $room = hotelId.find('.rdRow[data-roomid\\.1="' + elem.roomId + '"][data-board\\.1="' + elem.boardBasisCode + '"]' + '[data-roomformattedprice\\.1="' + elem.price + '"]');
+                        if ($room.length > 0) {
+                            var link = $room.children('.rdrLast').find('ul.dropdown-menu-right li a.addRoomToCompare');
+                            $(link).removeClass('addRoomToCompare').addClass('removeFromCompare');
+                            $(link).attr('data-addedElement', elem.customDeleteKey);
+                            // add remove to compare to btn
+                            $(link).empty().text(trans('compare.remove'));
+                            Compare.addOrRemoveBckColor($room);
+                        }
+                        if ($room.length == 0) {
+                            // add index for deleted rooms
+                            deletedIndex.push(idx);
+                            // remove background color for delete rooms
+                            Compare.addOrRemoveBckColor($room, 'remove');
+                        }
+                    }
+                }
+            });
+            Compare.checkExpiredDate(Compare.compareList);
+            /* used for delete rooms*/
+            if (deletedIndex.length > 0) {
+                // delete rooms from local storage
+                Compare.deleteItemFromLocalStorage(deletedIndex);
+            }
+        }
+    } catch (exception) {
+        console.log(exception);
+    }
+};
+Compare.removeHtag = function (urlToCheck) {
+	var currenturl = decodeURIComponent(urlToCheck);
+	//checks whether the url contains hash tag
+	var index = currenturl.indexOf('#');
+	//indexOf method returns the index of the '#' character
+	if (index > -1) {
+		currenturl = currenturl.substring(0, index);
+	}
+	return currenturl;
+};
+Compare.addOrRemoveBckColor = function(elem, action){
+    if (action == 'remove') {
+        $(elem).css({
+            'background-color' : '#fdfdfd'
+        })
+    } else {
+        $(elem).css({
+            'background-color' : '#f2f2f2f2'
+        })
+    }
+};
+Compare.compareOldItems = [];
+Compare.addCompareListInStorage = function (data)
+{
+    if (typeof(Storage) !== "undefined") {
+        Compare.compareOldItems = Compare.getCompareListFromStorage() || [];
+        Compare.compareOldItems.push(data);
+        if (Compare.compareOldItems.length > 0) {
+            localStorage.setItem('localStorageObject', JSON.stringify(Compare.compareOldItems));
+        }
+    }
+};
+Compare.getCompareListFromStorage = function() {
+    var retrievedObject = localStorage.getItem('localStorageObject');
+    return JSON.parse(retrievedObject);
+};
+Compare.deleteItemFromLocalStorage = function(key) {
+    var locObject = Compare.getCompareListFromStorage();
+    if (typeof key == 'object') {
+        $.each(key, function (idx, elem)
+        {
+            var link = Compare.getMooreOptionBtn(locObject[idx]['customDeleteKey']);
+            var element = $(link).parents('div.rdRow');
+            Compare.addOrRemoveBckColor(element, 'remove');
+            delete locObject[idx];
+        });
+    }
+    if (typeof key == 'number') {
+        $.each(locObject, function (idx, elem)
+        {
+            if (idx == key) {
+                delete locObject[key];
+            }
+        });
+    }
+    // remove null value from object
+    var newObject = locObject.filter(function (){ return true; });
+    // set again local storage
+    localStorage.setItem('localStorageObject', JSON.stringify(newObject));
+    // set compare-list object
+    Compare.compareList = Compare.getCompareListFromStorage();
+    // update compare list
+    Compare.updateCount();
+};
+Compare.getMooreOptionBtn = function(element) {
+    return $('#search-result_rows').find("[data-addedElement = '" + element + "']")
+        .removeClass('removeFromCompare').addClass('addRoomToCompare').empty().text(trans('compare.add'));
+};
+/* remove rooms from compare list if date is expire */
+Compare.checkExpiredDate = function (rooms) {
+	if (rooms != undefined) {
+		var arr = [];
+		for(var i = 0, rl = rooms.length; i < rl; i++)
+		{
+			if (Date.parse($.datepicker.formatDate( JS_DATE_FORMAT_EXT, new Date() )) > Date.parse(rooms[i].dateFrom))
+			{
+				arr.push(i);
+			}
+		}
+		Compare.deleteItemFromLocalStorage(arr);
+	}
+};
+Compare.removeLocalStorage = function (name) {
+    // remove from local storage an item
+    // empty local storage
+    if (typeof(Storage) !== "undefined") {
+        localStorage.removeItem(name);
+    }
+
+};
+/* get DATE from search field*/
+Compare.getDateFrom = function () {
+    return $.datepicker.formatDate( JS_DATE_FORMAT_EXT, new Date( $('#searchForm').find('#dateFrom').val() ) );
+};
+Compare.getDateFromBookFormat = function () {
+    return $('#searchForm').find('#dateFrom').val();
+};
+/* get DATE from search field*/
+Compare.getDateTo = function () {
+    return $.datepicker.formatDate( JS_DATE_FORMAT_EXT, new Date( $('#searchForm').find('#dateTo').val() ) );
+};
+
+Compare.getDateToBookFormat = function () {
+    return $('#searchForm').find('#dateTo').val();
+};
+
+Compare.visible = function (visible)
+{
+    if(visible && Compare.compareList.length > 0)
+    {
+        $('#compareRooms_container').removeClass('hidden');
+        $('#compare_top').removeClass('hidden');
+    } else {
+        $('#compareRooms_container').addClass('hidden');
+        $('#compare_top').addClass('hidden');
+		$('#hotelCompareForm').parent('.modal').modal('hide');
+    }
+};
+Compare.updateCount =  function()
+{
+    var cnt = Compare.compareList.length;
+    $('#compareRooms_container').find('.countRates span').empty().text(cnt);
+    $('#compareNo').empty().text(cnt);
+    if(parseInt(cnt) == 0)
+    {
+        Compare.visible(false);
+        $('.removeFromCompare').empty().text(trans('compare.add'));
+		$('#hotelCompareForm').parent('.modal').modal('hide');
+    }
+    else if(cnt == Compare.maxCompareItems)
+    {
+        var cpMaxReachedText = $('#addToCompareText').data('nocompare');
+        if(typeof cpMaxReachedText === 'undefined')
+        {
+            cpMaxReachedText = trans('compare.max');
+        }
+       $('.addRoomToCompare').empty().text(trans('compare.max'));
+    } else {
+        $('.addRoomToCompare').empty().text(trans('compare.add'));
+    }
+};
+/* remove a room from compare list*/
+Compare.remove = function (customDeleteKey, hotelId, ShowMoreOptionDeleteKey)
+{
+    // remove all hotels
+    if (hotelId === 'allHotels' && ShowMoreOptionDeleteKey == undefined) {
+        // delete remove class
+        var el = $('#search-result_rows').children().find('a.removeFromCompare');
+        $.each(el, function(key, item){
+            var link = $(item).removeClass('removeFromCompare').addClass('addRoomToCompare').empty().text(trans('compare.add'));
+            var elem = $(link).parents('div.rdRow');
+            Compare.addOrRemoveBckColor(elem ,'remove');
+        });
+        Compare.compareList = [];
+        // change btn nane from comapre max reach to add to comapre
+        $('.addRoomToCompare').empty().text(trans('compare.add'));
+        // check if the browser support local storage
+        if (typeof(Storage) !== "undefined") {
+            if (!isIE() || isIE() > 7) {
+                // remove all rooms form local storage
+                Compare.removeLocalStorage('localStorageObject');
+            }
+        }
+    }
+    else {
+        // remove hotels from popup window
+        if (customDeleteKey && ShowMoreOptionDeleteKey == undefined) {
+            $.each(Compare.compareList, function (key, item)
+       {
+                if (item['customDeleteKey'] == customDeleteKey) {
+           delete Compare.compareList[key];
+                    var link = Compare.getMooreOptionBtn(item['customDeleteKey']);
+                    /* var link = $('#search-result_rows').find("[data-addedElement = '" + item['customDeleteKey'] + "']")
+                        .removeClass('removeFromCompare').addClass('addRoomToCompare').empty().text(trans('compare.add'));*/
+                    var elem = $(link).parents('div.rdRow');
+                    Compare.addOrRemoveBckColor(elem, 'remove');
+                    if (typeof(Storage) !== "undefined") {
+                        if (!isIE() || isIE() > 7) {
+                            Compare.deleteItemFromLocalStorage(key);
+                        }
+                    }
+       }
+    });
+        }
+        // remove from hotel more info function
+        if (ShowMoreOptionDeleteKey != undefined) {
+            $.each(Compare.compareList, function (key, item)
+            {
+                if (item['customDeleteKey'] == ShowMoreOptionDeleteKey) {
+                    delete Compare.compareList[key];
+                    if (typeof(Storage) !== "undefined") {
+                        if (!isIE() || isIE() > 7) {
+                            Compare.deleteItemFromLocalStorage(key);
+                        }
+                    }
+                }
+            });
+        }
+    }
+    Compare.compareList = Compare.compareList.filter(function(){return true;});
+
+    Compare.updateCount();
+    Compare.filterCancellationTypes();
+
+    return true;
+};
+Compare.removeHtml = function (hotelId, compareId, customDeleteKey)
+{
+    if (hotelId === 'allHotels') {
+        Compare.remove(hotelId, compareId);
+        AlertInfo.hide();
+    }
+    // Do not remove property with colspan
+    var $hotel    = $('.'+hotelId);
+    var hotelClsp = parseInt($hotel.attr('colspan'));
+
+    if(hotelClsp > 1) {
+        $hotel.attr('colspan', hotelClsp - 1);
+    } else {
+        $hotel.remove();
+    }
+
+    var attr = $('#hCompare').find("[data-customdeletekey='" + customDeleteKey + "']").remove();
+    /*$('#hCompare').find('.' + compareId).not('.compare_properties').remove();*/
+
+    /*var arr = compareId.split('-');*/ /* old code */
+    if(typeof Accommodation != "undefined")
+    {
+        //var attr = "[data-roomid\\.1='" + arr[0] + "'][data-runno\\.1='" + arr[1] + "']";
+        var $item  = $('#hotel_' + hotelId + '_row').find(attr).find('.removeFromCompare');
+        $item.click();
+    }
+
+    if(typeof $item.html() == "undefined") {
+        Compare.remove(customDeleteKey, hotelId);
+        //Compare.remove(arr[0],arr[1]);
+    }
+};
+
+Compare.createTableHead = function ()
+{
+    var properties = [];
+    var hotels = [];
+    var nrHotels = {};
+
+    // Sort comparelist to match table head
+    var sortCompareList = Compare.compareList.slice(0);
+    sortCompareList.sort(function(a,b) {
+        return a.hotelId - b.hotelId;
+    });
+    Compare.compareList = sortCompareList;
+    if (typeof(Storage) !== "undefined") {
+        Compare.removeLocalStorage('localStorageObject');
+        // sort local storage
+        localStorage.setItem('localStorageObject', JSON.stringify(Compare.compareList));
+    }
+    // Create table head with colspan
+    $.each(Compare.compareList, function (k, v)
+    {
+        if($.inArray(v['hotelId'], hotels) == -1) {
+            nrHotels[v['hotelId']] = 1;
+            hotels.push(v['hotelId']);
+            properties[v['hotelId']] = {
+                'imagePath': v['imagePath'], 'hotelName': v['hotelName'], 'location': v['location'],
+                'starRate' : v['starRate'], 'hotelId': v['hotelId']
+            };
+        } else {
+            nrHotels[v['hotelId']] = nrHotels[v['hotelId']] + 1;
+            properties[v['hotelId']] = {
+                'imagePath': v['imagePath'], 'hotelName': v['hotelName'], 'location': v['location'],
+                'starRate' : v['starRate'], 'hotelId': v['hotelId'], 'colspan': nrHotels[v['hotelId']]
+            }
+        }
+    });
+
+    properties = properties.filter(function(){return true;});
+    return properties;
+};
+
+Compare.applyMarkUp = function (compareHtml)
+{
+    var $parent     = $('#hotelCompareForm');
+    var markUpType  = $parent.find('#markUpType').val();
+    var markUpValue = parseFloat($parent.find('#markUpValue').val().replace(DECIMAL_SEPARATOR, '.'));
+    if(isNaN(markUpValue)){
+        markUpValue = 0;
+        $parent.find('#markUpValue').val(0);
+    }
+   // markUpValue     = isNaN(markUpValue) ? 0 : markUpValue;
+
+    if(!compareHtml) {
+        compareHtml = $parent.find('#hCompare');
+    }
+
+    // apply markup if is less than 99% or a positive sum
+    if (markUpValue < 0 || (markUpValue > 99.99 && markUpType == 1)) {
+        if(markUpType == 1) {
+            markUpValue = 99.99;
+        }else{
+            markUpValue = 0;
+        }
+        $parent.find('#markUpValue').val(markUpValue.toString().replace('.', DECIMAL_SEPARATOR));
+    }
+
+    $.each(Compare.compareList, function (k, room)
+    {
+        var roomPrice = room['price'].toString();
+        var roomCode  = room['roomCode'];
+
+        roomPrice = roomPrice.replace(THOUSAND_SEPARATOR, '').replace(DECIMAL_SEPARATOR, '.');
+       // roomPrice = roomPrice.replace(/[^\d\.\-\ ]/g, '');
+        if(markUpType == 1)
+        {
+            roomPrice = parseFloat(roomPrice)/((100 - parseFloat(markUpValue))/100);
+        } else {
+            roomPrice = parseFloat(roomPrice) + parseFloat(markUpValue);
+        }
+
+        roomPrice = parseFloat(roomPrice.toFixed(DECIMAL_POINTS));
+        roomPrice = roomPrice.formatMoney(DECIMAL_POINTS, THOUSAND_SEPARATOR, DECIMAL_SEPARATOR );
+		compareHtml.find('#price .'+roomCode).find('.roomPrice').text(roomPrice);
+
+    });
+
+    return compareHtml;
+};
+
+Compare.updateCancellation = function (compareHtml)
+{
+    var $parent     = $('#hotelCompareForm');
+    var cancellationType  = $parent.find('#cancellationType').val();
+    var cancellationBufferValue = parseFloat($parent.find('#cancellationBufferValue').val());
+   
+    if(!compareHtml) {
+        compareHtml = $parent.find('#hCompare');
+    }
+    // get Compare List from local storage
+    if(typeof(Storage) !== "undefined") {
+        if (localStorage.getItem('localStorageObject')){
+            Compare.compareList = Compare.getCompareListFromStorage();
+        }
+    }
+    $.each(Compare.compareList, function (k, room)
+    {
+        var roomPolicy = room['roomPolicy'];
+        var roomCode  = room['roomCode'];
+        if(cancellationType == 1){
+            roomPolicy = '<span class="text-danger non-hover"><span class="glyphicon glyphicon-warning-sign text-danger"></span> &nbsp;'
+            + trans('compare.nonRefundableText') + '</span>';
+        } else if (cancellationType == 2){
+            if ((room['roomPolicy'].indexOf('cNonRefundable') > 0)) {
+            } else {
+                roomPolicy = '<span class="text-danger non-hover"><span class="glyphicon glyphicon-info-sign text-danger"></span> &nbsp;'
+                + trans('compare.withinDeadlineText') + '</span>';
+            }
+        } else if (cancellationType == 3){
+            if((room['roomPolicy'].indexOf('cWithinDeadlineText') !== -1) ||
+                (room['roomPolicy'].indexOf('cNonRefundable') !== -1)){
+                roomPolicy = room['roomPolicy'];
+            }
+            else {
+				var roomPolicyArr = room['roomPolicyRow'].split("^^^");
+				if (roomPolicyArr.length == 2) {
+					var $policyPrefix = ($.trim(roomPolicyArr[0]) == 'crBeforeText') ? trans('compare.crBeforeText') : roomPolicyArr[0];
+					if ($policyPrefix != undefined && $policyPrefix) {
+						if(roomPolicyArr[1].indexOf(String.fromCharCode(160)) > 0) {
+							roomPolicyArr[1] = $.trim(roomPolicyArr[1].substr(roomPolicyArr[1].indexOf(String.fromCharCode(160))));
+						}
+						var index = roomPolicyArr[1].indexOf('/');
+						if (index > -1) {
+							var suffix = roomPolicyArr[1].substr(index);
+							var newDate = roomPolicyArr[1].substr(0, index);
+						}
+						else {
+							newDate = roomPolicyArr[1];
+							suffix = '';
+						}
+						var dateObj = new Date(newDate);//implicit call to Date.parse
+                dateObj.setDate(dateObj.getDate() - cancellationBufferValue);
+						roomPolicy = $policyPrefix + " " + $.datepicker.formatDate(JS_DATE_FORMAT_EXT, dateObj) + " " + getTime(dateObj) + " " + suffix;
+					}
+				}
+            }
+        }
+        //non refundable cannot be altered
+        if(room['roomPolicy'].indexOf(trans('compare.nonRefundableText')) !== -1){
+            roomPolicy = room['roomPolicy'];
+        }
+        compareHtml.find('#policy .'+roomCode).html(roomPolicy);
+
+    });
+
+    return compareHtml;
+};
+
+Compare.filterCancellationTypes = function (){
+    var withinCancCnt = 0;
+    var nonRefCnt = 0;
+    $.each(Compare.compareList, function (k, room)
+    {
+        var roomPolicy = room['roomPolicy'];
+        if(roomPolicy.indexOf(trans('compare.withinDeadlineText')) !== -1){
+            withinCancCnt++;
+        } else if(roomPolicy.indexOf(trans('compare.nonRefundableText')) !== -1){
+            nonRefCnt++
+        }
+    });
+    
+    if(nonRefCnt == Compare.compareList.length){
+        $("#cancellationType option[value!='0']").hide();
+    }
+    if(withinCancCnt == Compare.compareList.length){
+        $("#cancellationType option[value='2']").hide();
+        $("#cancellationType option[value!='2']").show();
+    }
+    if(nonRefCnt + withinCancCnt >= Compare.compareList.length){
+        $("#cancellationType option[value='2']").hide();
+        $("#cancellationType option[value='3']").hide();
+        $('#cancellationBufferValue').parent().addClass('hidden');
+    }
+}
+
+Compare.initCompareEvents = function ()
+{
+    $ (document).on ('mouseover', '#hCompare .promotionsTooltip', function ()
+    {
+        var $this = $(this);
+        if($this.data('toggle') == 'tooltip')
+        {
+            $this.tooltip("show");
+        }
+        else
+        {
+            $this.data('content', $this.next().html());
+            $this.popover("show");
+        }
+    });
+
+    $("[name='markUp']").bootstrapSwitch();
+    $("[name='markUp']").on('switchChange.bootstrapSwitch', function(event, state) {
+        $('#hotelCompareForm').find('#markupValuesContainer').toggleClass('hidden');
+        if (state == false) {
+            $('#markUpValue').val('');
+            $('#markUpType').val(1);
+
+        }
+		Compare.applyMarkUp(false);
+    });
+
+    $("[name='adjustCancellation']").bootstrapSwitch();
+    $("[name='adjustCancellation']").on('switchChange.bootstrapSwitch', function(event, state) {
+        $('#hotelCompareForm').find('#cancellationValuesContainer').toggleClass('hidden');
+        if (state == false) {
+            $('#cancellationBufferValue').val(0);
+            $('#cancellationType').val(0);
+            $("#cancellationType").trigger('change');
+        }
+        Compare.filterCancellationTypes();
+        Compare.updateCancellation(false);
+    });
+
+    $("#cancellationType").on('change', function(event, state) {
+        if($(this).val() == 3){
+            $('#cancellationBufferValue').parent().removeClass('hidden');
+        } else {
+            $('#cancellationBufferValue').parent().addClass('hidden');
+        }
+        $('#cancellationBufferValue').val(0);
+    });
+
+    // ***** Book now button from compare popup
+    $('#hCompare [name="booknow"]').on('click',  function()
+    {
+        AlertInfo.hide();
+        Compare.bookFromPopupList = true;
+        var roomIndex = $(this).closest('#price').find('input.search_btn').index(this);
+        if ($('#content').find('#content-landingpage').length > 0){
+            Accommodation.Booking.roomBookNow('homepage', Compare.compareList[roomIndex]);
+        }
+        else {
+            Accommodation.Booking.roomBookNow('searchPage', Compare.compareList[roomIndex]);
+        }
+
+    });
+    //**** END Book now button
+
+    // Create pdf button event
+    $('#createPdf').on('click', function() {
+       $('.markup_hidden').toggleClass('hidden');
+       $('.cancellation_hidden').toggleClass('hidden');
+       $('.compare_form').toggleClass('hidden');
+       $('.modal-backdrop').css('height', window.innerHeight + window.outerHeight);
+       $('#createPdf').toggleClass('hidden');
+       $('#closePdf').toggleClass('hidden');
+    });
+
+    $('#closePdf').on('click', function() {
+        $('#createPdf').click();
+    });
+    
+
+    $('#recalculatePrices').on('click', function() {
+       Compare.applyMarkUp(false);
+    });
+
+    $('#recalculateDeadline').on('click', function() {
+        Compare.updateCancellation(false);
+    });
+    
+    // send email form Submit
+    $('#hotelCompareForm').submit(function(e)
+    {
+        e.preventDefault();
+        Loader.show();
+
+        var url    = $(this).attr('action');
+        var params = $(this).serializeArray();
+        var compareHtml = $('#hCompare').clone();
+
+        // Apply markup
+        if(typeof $(this).find('[name="markUp"]:checked').val() !== 'undefined')
+        {
+            compareHtml = Compare.applyMarkUp(compareHtml);
+        }
+
+        // Apply cancellation
+        if(typeof $(this).find('[name="markUp"]:checked').val() !== 'undefined')
+        {
+            compareHtml = Compare.applyMarkUp(compareHtml);
+        }
+
+        // ******* Prepare Compare Table for PDF
+        compareHtml.find('.search_btn').remove();
+        compareHtml.find('tr:last').remove();
+
+        // style is added at pdf creation
+        // This functions don't work in IE
+        /*var style = css(compareHtml);
+        $(compareHtml).css(style);
+        compareHtml.find('*').each(function ()
+        {
+            var style = css($(this));
+            $(this).css(style);
+        });*/
+
+        // Add hotel stars hard coded. Is there another way to do it?
+        var imageStarPath = BASE_URL + '/_laravel/public/ci/images/icons/star.png' ;
+        compareHtml.find('.icon-star').append('<img/>');
+        compareHtml.find('.icon-star img').attr('src',imageStarPath);
+
+        compareHtml.find('.promotions').each(function ()
+        {
+            var $this = $(this);
+            var promotions = $this.find('img').data('content');
+            if (typeof promotions !== "undefined")
+            {
+                $this.empty().append(promotions);
+            }
+        });
+
+        //****** END Prepare
+
+        var companyLogoHtml = '';
+        
+        if(customerLogo!=''){
+            companyLogoHtml += '<p style="text-align:center"><img src="'  + customerLogo + '"/></p>';
+        }
+        
+        var compareTable = {'name':'html','value':companyLogoHtml + compareHtml[0].outerHTML};
+        params.push(compareTable);
+
+        var cityName  = {'name': 'cityName', 'value' : $('#searchForm').find('.destinationSearch ').val()};
+        params.push(cityName);
+
+        var dateRange = {'name': 'dateRange', 'value' : $('#searchForm').find('#fromDatepicker ').val() + ' - ' + $('#searchForm').find('#toDatepicker ').val()};
+        params.push(dateRange);
+
+
+        //***** Send email with PDF
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: "post",
+            async: true,
+            data: $.param(params),
+            statusCode: {
+                302: function () {
+                    window.location.href = BASE_CI_URL + '/login';
+                }
+            }
+        }).done(function (result) {
+            AlertInfo.show(result['html']);
+            $('.modal').scrollTop(0);
+        }).fail(function (xhr, err, errText) {
+            AlertInfo.show(xhr['responseText']);
+            $('.modal').scrollTop(0);
+        }).always(function() {
+            Loader.hide();
+        });
+
+    });
+};
+
+
+/**
+ * Credit Card Controller
+ * Responsible of showing credit card modal
+ *
+ * requires creditCardDetails template
+ * @type {CreditCardCnt|*}
+ */
+var CreditCardCnt = (function($) {
+
+		var totalPrice = 0;
+
+		function calculateCosts(obj)
+		{
+			var $totalCost = $(creditCardObj.container).find('[name="ccTotalCost"]');
+			var $chargeFromCreditCard = $(creditCardObj.container).find('[name="ccChargeFromCard"]');
+			var $availableCredit = $(creditCardObj.container).find('[name="availableCredit"]');
+			
+			var initialCredit = CreditCardCnt.initialCredit;
+			var charge = $chargeFromCreditCard.val();
+			var totalCost = totalPrice;
+
+			if(isNaN(obj.value))
+			{
+				obj.value = 0;
+				$chargeFromCreditCard.val(totalCost);
+				$availableCredit.val(initialCredit);
+				
+				return;
+			}
+			
+			var useCreditVal = parseFloat(obj.value);
+			
+			if(! useCreditVal)
+			{
+				obj.value = 0;
+				$chargeFromCreditCard.val(Number(totalCost).toFixed(2));
+				$availableCredit.val(Number(initialCredit).toFixed(2));
+				$(creditCardObj.container).find('#ccFields :input ').attr("disabled", false);
+				$(creditCardObj.container).find('#ccFields').show();
+				return;
+			}
+			
+			if($chargeFromCreditCard.val() == '0' && useCreditVal == totalCost)
+			{
+				return;
+			}
+			
+			if(useCreditVal > initialCredit)
+			{
+				useCreditVal = initialCredit;
+			}
+			
+			if(useCreditVal >= totalCost)
+			{
+                charge = 0;
+                $chargeFromCreditCard.val(charge);
+				$availableCredit.val(Number(initialCredit - totalCost).toFixed(2));
+				obj.value = totalCost.toFixed(2);
+                $(creditCardObj.container).find('#ccFields :input ').attr("disabled", true);
+				$(creditCardObj.container).find('#ccFields').hide();
+			}
+			else
+			{
+                charge = Number(totalCost - useCreditVal).toFixed(2);
+				$chargeFromCreditCard.val(charge);
+				$availableCredit.val(Number(initialCredit - useCreditVal).toFixed(2));
+				obj.value = useCreditVal;
+                $(creditCardObj.container).find('#ccFields :input ').attr("disabled", false);
+                $(creditCardObj.container).find('#ccFields').show();
+			}
+		}
+		
+		var creditCardObj = {
+			container: null,
+			template: '#creditCardDetails',
+			booted: false,
+			initialCredit: 0,
+            validator: null,
+            searchCallback:'',
+            rules: {},
+            messages: {},
+            labelsText: {},
+			init: function()
+			{
+				var _self = this;
+				
+				$(document).on('blur', '[name="useCredit"]', function(event) {
+					calculateCosts(this);
+				});
+				
+				// for commission pay net show the available credit inputs
+				var $commission = $('#commission');
+				if ($commission.length)
+				{
+					$commission.on('change', function() {
+                        _self.showCreditOption(this.value);
+					}).trigger('change');
+				}
+
+				//webbedsWidget.init();
+
+				//webbedsWidget.onReady(function() {
+
+				//});
+
+				webbedsWidget.onError(function() {
+					console.error('webbedsWidget.onError');
+					Loader.hide();
+					webbedsWidget.reload();
+				});
+
+				this.booted = true;
+			},
+            showCreditOption: function (commission)
+            {
+                if (parseInt(commission) == 0)
+                {
+                    $('#totalAvailableCredit, #useFromCredit').removeClass('hidden');
+                }
+                else
+                {
+                    $('#totalAvailableCredit, #useFromCredit').addClass('hidden');
+                }
+            },
+			show: function (okCallback, closeCallback) 
+			{
+				this.template = $(this.template);
+				if( ! this.template.length )
+				{
+                    AlertError.show(makeAMessagePanel(trans('errors.noContainer')), trans('modalTitle.error'));
+					return false;
+				}
+				
+				var options = {
+					title: trans('creditCard.title'), 
+					message: this.template.html(),
+					size: 'large',
+                    className: 'paymentBootbox',
+					buttons: {
+						close: {
+							label: trans('creditCard.button.close'), 
+							className: 'btn-link btn-small',
+							callback: function() {
+								$(document).trigger('close.cc')
+								if($.isFunction(closeCallback)) closeCallback();
+							}
+						},
+						success: {
+							label: trans('creditCard.button.confirm'),
+							className: 'btn-success btn-small',
+							callback: function() {
+								if($.isFunction(okCallback)) return okCallback();
+							}
+						}
+					}
+				};
+
+				this.container = bootbox.dialog(options);
+
+                var _self = this;
+                var form = this.container.find('form');
+                var ccValidator = new ValidatorWithLaravelRules();
+                ccValidator.rules             = _self.rules;
+                ccValidator.messages          = _self.messages;
+                ccValidator.events            = 'validate';
+                ccValidator.formId            = "#"+form.attr("id");
+                ccValidator.FormDoSearch      = _self.validationCallback;//function(){_self.validationCallback()}; 
+
+                $.extend(
+                    true,
+                    ccValidator.messages,
+                    {
+                        error: _self.labelsText.error,
+                        invalidValue: _self.labelsText.invalidValue,
+                        errorsOccurred: _self.labelsText.errorsOccurred
+                    }
+                );
+
+                _self.validator = ccValidator;
+                _self.validator.init();
+
+				if (! this.booted) this.init();
+
+                this.container.css('position', 'none');				
+                this.container.css('overflow','auto');
+                $(document).scrollTop(0);
+				
+				this.clearInputs();
+
+				return this;
+			},
+			hide: function () 
+	        {
+				bootbox.hideAll();
+				return this;
+			},
+			destroy: function()
+            {
+				this.container.modal('destroy');
+				return this;
+			},
+			setWidth: function(width) 
+			{
+				if (this.container) {
+					this.container.find('.modal-dialog').css('width', width);
+				}
+				return this;
+			},
+			setHeight: function(height) 
+			{
+				if (this.container) {
+					this.container.css('height', height);
+				}
+				return this;
+			},
+			setPrices: function (price, currency, itnNumber, devicePayload)
+			{
+				totalPrice = price;
+				this
+					.container
+					.find('[name="ccTotalCost"], [name="ccChargeFromCard"]')
+					.val(price.toFixed(2))
+				;
+				this.container.find('#ccITN').val(itnNumber);
+				this.container.find('#ccDevicePayload').val(devicePayload);
+				this.container.find('#ccTotalCostCurrency, #ccChargeFromCardCurrencyVal').text(currency);
+				this.container.find('#ccChargeFromCardCurrency').val(currency);
+
+                this.container.find('.currency').text(currency);
+                
+                /***************set cost text***************/
+                $('#ccTotalCost').text(currency+' '+price.toFixed(2));
+                /***************set cost text***************/
+				return this;
+			},
+			clearInputs: function ()
+			{
+				var _self = this;
+				this.container.find(':input[data-clear]').each(function (idx, element)
+				{
+					switch ($(element).prop('type'))
+					{
+						case 'text':
+							element.value = '';
+							break;
+						case 'select-one':
+							element.selectedIndex = 0;
+							break;
+						case 'checkbox':
+							$(element).prop('checked', 0);
+							break;
+					}
+				});
+
+				var credit = $(this.container).find('[name="availableCredit"]');
+				_self.initialCredit = parseFloat(credit.val());
+				if (credit.length)
+				{
+					credit.val(_self.initialCredit || 0);
+				}
+
+				webbedsWidget.reload();
+
+				$('#ccFields').show();
+			},
+			validationCallback: function ()
+			{
+				/*skip form validation from local, new validation is made by rezpayment*/
+				/*var valid = webbedsWidget.isValid();
+
+                if(!valid){
+                    Loader.hide();
+					return false;
+				}*/
+
+				//try to get 3ds token
+				//$('#completedCreditCardDetails').attr('disabled', true);
+				webbedsWidget.submitForm();
+
+				webbedsWidget.onSuccess(function() {
+
+					var form = CreditCardCnt.container.find('form');
+					if ($.isFunction(CreditCardCnt.searchCallback)) CreditCardCnt.searchCallback(form);
+				});
+
+                return false;
+			},
+			showTC: function()
+			{
+				Loader.show();
+				AlertInfo.show($('<iframe/>', {src: BASE_CI_URL + '/customer-contract?embedded=true', type: 'application/pdf', width: '100%', height: '500px', frameborder: 0}), trans('creditCard.ccCustomerTC'));
+				AlertInfo.setWidth('50%');
+				AlertInfo.setMinWidth('700px');
+				AlertInfo.setModalBodyPadding('0 14px 14px');
+				Loader.hide();
+			}
+		};
+		
+		return creditCardObj;
+	}) (jQuery);
+
+var webbedsWidget = {
+
+	devicePayload: '',
+	rezToken: '',
+	authorizationId: '',
+	orderCode: 0,
+	callbackCounter: 0,
+	widget: null,
+	errorCallback: function () {
+		console.log('errorCallback');
+		Loader.hide();
+	},
+	successCallback: function () {
+	},
+	readyCallback: function () {
+	},
+
+	init: function () {
+
+		if (this.devicePayload) {
+			this.reload();
+			return;
+		}
+		const that = this;
+
+		webbeds.onDataCollect(function (payload) {
+			that.devicePayload = payload;
+			that.readyCallback();
+		});
+
+		webbeds.onError(function (error) {
+			that.errorCallback(error);
+		});
+	},
+
+	getAuthorizationId: function () {
+		return this.authorizationId;
+	},
+
+	isValid: function () {
+		if($("#creditCardDetailsForm [name='ccCardNumber']").val() == '' ||
+		$("#creditCardDetailsForm [name='ccHolderName']").val()  == '' ||
+		$("#creditCardDetailsForm [name='ccExpireMonth']").val()  == '' ||
+		$("#creditCardDetailsForm [name='ccExpireYear']").val()  == '' ||
+		$("#creditCardDetailsForm [name='ccCVCCode']").val()  == '' || !validateCardNumber($("#creditCardDetailsForm [name='ccCardNumber']").val()))
+			return false;
+		else
+			return true;
+	},
+
+	onReady: function (callback) {
+		if (typeof (callback) === 'function')
+			this.readyCallback = callback
+	},
+
+	onSuccess: function (callback) {
+		if (typeof (callback) === 'function')
+			this.successCallback = callback
+	},
+
+	onError: function (callback) {
+		if (typeof (callback) === 'function')
+			this.errorCallback = callback
+	},
+
+	reload: function () {
+		this.authorizationId = '';
+		this.orderCode = 0;
+		this.enableCCfields();
+		this.readyCallback();
+	},
+	tokenize: function () {
+		// this.enableCCfields();
+        let that = this;
+
+        FramebusEvents.startEvent(
+            function(token){
+                that.chargeWithToken(token);
+            },
+            function(err){
+                that.errorCallback(err);
+            });
+
+		/*this.enableCCfields();
+		var $form = $('#creditCardDetailsForm');
+		var params = {};
+		$.each($form.serializeArray(), function() {
+			params[this.name] = this.value;
+			});
+		this.rezToken = '';
+		const that = this;
+
+		webbeds.tokenize(params.ccHolderName, params.ccCardNumber, params.ccExpireMonth, params.ccExpireYear, params.ccCVCCode)
+			.then(token => {
+				that.rezToken = token;
+				that.disableCCfields();
+				that.chargeWithToken(token);
+			})
+			.catch(error => {
+				that.errorCallback(error);
+			});*/
+	},
+
+	disableCCfields: function(){
+		$("#creditCardDetailsForm [name='ccCardNumber']").attr('disabled', true);
+		$("#creditCardDetailsForm [name='ccHolderName']").attr('disabled', true);
+		$("#creditCardDetailsForm [name='ccExpireMonth']").attr('disabled', true);
+		$("#creditCardDetailsForm [name='ccExpireYear']").attr('disabled', true);
+		$("#creditCardDetailsForm [name='ccCVCCode']").attr('disabled', true);
+	},
+
+	enableCCfields: function(){
+		$("#creditCardDetailsForm [name='ccCardNumber']").attr('disabled', false);
+		$("#creditCardDetailsForm [name='ccHolderName']").attr('disabled', false);
+		$("#creditCardDetailsForm [name='ccExpireMonth']").attr('disabled', false);
+		$("#creditCardDetailsForm [name='ccExpireYear']").attr('disabled', false);
+		$("#creditCardDetailsForm [name='ccCVCCode']").attr('disabled', false);
+	},
+
+	submitForm: function() {
+		this.tokenize();
+	},
+
+	chargeWith3dsChargeId: function () {
+		let that = this;
+
+		const data = {
+			'customerId': $('[name="customerId"]').val(),
+			'data': $("#creditCardDetailsForm").serialize(),
+			'orderCode': this.orderCode,
+			'authorisationId': this.authorizationId
+		};
+		$.post(BASE_CI_URL + "/Authorize3ds" + '?_token=' + CSRF_TOKEN, data, function (respJson) {
+			const respData = $.parseJSON(respJson)
+
+			if (respData.status && respData.AuthorizationId) {
+				that.authorizationId = respData.AuthorizationId;
+				that.orderCode = respData.OrderCode;
+
+				$('#ccAuthorizationId').val(that.authorizationId);
+				$('#orderCode').val(that.orderCode);
+
+
+				that.process3dsToken(respData.ThreeDSStatus, respData.ThreeDSToken);
+			} else {
+				AlertError.show('Authorize3ds call failed:' + respData.errorMessage);
+				that.errorCallback();
+			}
+		}).fail(function (jqXHR, textStatus, errorThrown) {
+			const respData = $.parseJSON(jqXHR.responseText);
+			AlertError.show('Authorize3ds call failed:' + (respData.error && respData.error.message));
+			console.error(respData.error)
+			that.errorCallback(respData.errorMessage);
+		});
+	},
+
+	process3dsToken: function (status, _3dsToken) {
+		/*
+            CHALLENGE_PENDING 			- EMS awaits browser details;
+            ADDITIONAL_DATA_PENDING 	- EMS awaits the challenge flow to be completed;
+            CHALLENGE_COMPLETE 			- the challenge flow is completed;
+            COMPLETE 					- EMS approved the transaction without a challenge flow.
+            NON_3DS 					- Non-3DS transaction
+        */
+
+		let that = this;
+
+		function show3dsModal() {
+			window.setTimeout(function () {
+				$('#modal3ds').modal({backdrop: 'static'});
+				Loader.hide();
+			}, 500);
+		}
+
+		function hide3dsModal() {
+			window.setTimeout(function () {
+				$('#modal3ds').modal('hide');
+				Loader.show();
+			}, 500);
+		}
+
+		function success() {
+			that.chargeWith3dsChargeId();
+			hide3dsModal();
+		}
+
+		function failure(data) {
+			console.error('3DS error:');
+			AlertError.show('There was an error processing the 3ds credit card details');
+			that.errorCallback();
+			hide3dsModal();
+			Loader.show();
+			window.setTimeout(function () {
+				Loader.hide();
+			}, 500);
+		}
+
+		switch (status) {
+			case 'ADDITIONAL_DATA_PENDING':
+			case 'CHALLENGE_PENDING':
+				this.initiate3ds(_3dsToken, success, failure);
+				show3dsModal();
+				break;
+
+			case 'CHALLENGE_COMPLETE':
+			case 'COMPLETE':
+			case 'NON_3DS':
+			case null:
+			case undefined:
+				this.successCallback();
+				break;
+
+			default:
+				AlertError.show('Unknown 3DS status: ' + status);
+				this.errorCallback();
+				break;
+		}
+	},
+
+	chargeWithToken: function (token) {
+		let that = this;
+
+		const data = {
+			'customerId': $('[name="customerId"]').val(),
+			'data': $("#creditCardDetailsForm").serialize(),
+			'tk': token
+		};
+		$.post(BASE_CI_URL + "/AuthorizeWithToken" + '?_token=' + CSRF_TOKEN, data, function (respJson) {
+			const respData = $.parseJSON(respJson)
+
+			if (respData.status && respData.AuthorizationId) {
+				that.authorizationId = respData.AuthorizationId;
+				that.orderCode = respData.OrderCode;
+
+				$('#ccAuthorizationId').val(that.authorizationId);
+				$('#orderCode').val(that.orderCode);
+
+
+				that.process3dsToken(respData.ThreeDSStatus, respData.ThreeDSToken);
+			} else {
+				AlertError.show('AuthorizationWithToken call failed:' + respData.errorMessage);
+				that.errorCallback();
+			}
+		}).fail(function (jqXHR, textStatus, errorThrown) {
+			const respData = $.parseJSON(jqXHR.responseText);
+			AlertError.show('AuthorizationWithToken call failed:' + (respData.error && respData.error.message));
+			console.error(respData.error);
+			that.errorCallback();
+		});
+	},
+	initiate3ds: function (token, cbSuccess, cbFailure) {
+		$('#widget3ds2').html('');
+
+
+		webbeds.initiate3dsAuth('widget3ds2', token)
+			.then(cbSuccess, cbFailure)
+			.catch(function (error) {
+				console.error(error);
+				cbFailure();
+			});
+	}
+};
+
+var getCancellationPolicy = function(bookingCode)
+{
+    Loader.show();
+    $.get(BASE_CI_URL + '/cancellation-rules/' + bookingCode, {_token: CSRF_TOKEN}, function(response) {
+        AlertInfo.show(response, trans('booking.title.cancellation'));
+        AlertInfo.setWidth('900px');
+    }).always(function() {
+        Loader.hide();
+    });
+};
+
+function getActiveCurrency(onlyId, onlyName)
+{
+    var currency = $('#header').find('#activeCurrency');
+    var activeCurrency = {};
+
+    if(onlyId) {
+        return currency.data('activecurrencyid');
+    }
+
+    if(onlyName) {
+        return currency.data('activecurrencyname');
+    }
+
+    activeCurrency[currency.data('activecurrencyid')] = currency.data('activecurrencyname');
+
+    return activeCurrency;
+}
+
+/**
+ *
+ */
+function changeFormToDisplayValidationErrors()
+{
+
+    if(typeof allValidationErrors == 'object')
+    {
+        $.each(allValidationErrors, function(controlName, controlMessages)
+        {
+            if(controlName.indexOf('.')  > -1)
+            {
+                var parts = controlName.split('.');
+                if(parts.length == 2)
+                {
+                    controlName = parts[0] + '[' + parts[1] + ']';
+                }
+            }
+
+            $("[name='"+ controlName +"']" ).addClass('has-error');
+            $("[name='"+ controlName +"']" ).change(function(){
+                $( this ).removeClass('has-error');
+            });
+        });
+    }
+}
+
+/**
+ *
+ * @param {type} _this
+ * @returns {Boolean}
+ */
+function valueIsEmpty(_this)
+{
+	// select
+	if ( $(_this).attr('type') === undefined && $(_this).is('select') )
+	{
+		// if select 's empty value is set
+		if ( null != $(_this).data('empty-value') )
+		{
+			return ($(_this).val() == $(_this).data('empty-value'));
+		}
+
+		return $( "#" + $(_this).attr('id')).find("option").length == 0;
+	}
+	// radio || checkbox
+	else if ( $(_this).attr('type') === 'radio' || $(_this).attr('type') === 'checkbox' )
+	{
+		return $("input[name='"+$(_this).attr('name')+"']:checked").val() === undefined;
+	}
+
+	// if empty value is set
+	if ( null != $(_this).attr('data-empty-value') )
+	{
+		return ( $(_this).val() === $(_this).attr('data-empty-value') );
+	}
+
+	// if it's just space
+	return ( $(_this).val().trim() === '' );
+}
+
+var addService = function(element){
+
+    var serviceSelect = $(element).parent().parent().find('#addService, #itineraryAddService');
+    var selectedService = serviceSelect.val();
+    var bookingCode = $(element).data('itinerary');
+    var bookingCommission = $(element).data('commission');
+
+    var data = {serviceId:selectedService};
+    if(bookingCode != undefined){
+        data.bookedItnNumber = bookingCode;
+    }
+    if(bookingCommission != undefined){
+        data.bookingCommission = bookingCommission;
+    }
+
+    if(selectedService != SERVICE_TYPE_ALL){
+        //set session booking
+        Loader.show();
+        $.get(ADD_SERVICE_URL, data, function(response) {
+
+            if( response.error != '' ){
+                alert(response.error);
+            } else {
+                window.location.href = response.url; 
+            }
+        }).always(function() {
+            Loader.hide();
+        });
+    }
+}
+    
+var popstateCallback = function(showLoader)
+{
+	var section = BookItineraryCnt.determineSection();
+	if(section !='' && typeof(window[section].Booking) != "undefined" && typeof(window[section].Booking.showResults) != "undefined")
+	{
+		window[section].Booking.showResults(showLoader);
+
+		if(location.hash.slice(1) == 'booking_form')
+		{// if forward
+            historyPushState('Search', window.location.title, window.location.href.replace("#booking_form", ""));
+			//window.history.replaceState('Search', window.location.title, window.location.href.replace("#booking_form", ""));
+		}
+	}
+};
+
+var historyBack = function() {
+    window.history.back();
+}
+
+//FilterMobileMenu
+;(function($){
+
+	var container = '#filtersContainerForSearch';
+	var filters = '#searchFilters';
+	var slideIn = '#slideInSearch';
+	var slideOut = '#slideOutSearch';
+	var activeMenuClass = 'searchFilterMobile';
+
+	//show filters as mobile menu
+	$(document).off('click', slideIn).on('click', slideIn, function(event) {
+		event.preventDefault();
+		var $container = $(container);
+		var $filters = $(filters);
+		$container.parent().addClass(activeMenuClass + 'Parent');
+		$container.addClass(activeMenuClass);
+		$container.show();
+		$container.height($filters.outerHeight());
+		$container.animate({
+			left: '0px'
+		}, 500, function() {
+
+		});
+	});
+
+	//hide filters
+	$(document).off('click', slideOut).on('click', slideOut, function(event) {
+		event.preventDefault();
+		var $container = $(container);
+		$container.animate({
+			left: '-304px'
+		}, 500, function() {
+			$container.parent().removeClass(activeMenuClass + 'Parent');
+			$container.removeClass(activeMenuClass);
+			$container.css('display', '');
+			$container.css('display', null);
+			$container.css('height', '');
+			$container.css('height', null);
+			$container.css('left', '');
+			$container.css('left', null);
+		});
+	});
+
+	//filters panel height change event
+	$(document).bind('heightChanged.togglepanels endApplyFilters.ResultFilter', function(event){
+		var $container = $(container);
+		if($container.hasClass(activeMenuClass))
+		{
+			$container.height($(filters).outerHeight());
+		}
+	});
+
+	$(document).bind('booking.showPassengersForm', function(event){
+		$(slideOut).click();
+		$(slideIn).css('z-index', '-1');
+        
+        //force validator init on booking form display
+        var section = BookItineraryCnt.determineSection();
+        if(section !='' && typeof(window[section].Booking) != "undefined" && 
+            typeof(window[section].Booking.saveValidator) != "undefined" && window[section].Booking.saveValidator !== null)
+        {
+            $(window[section].Booking.formId).unbind('validate');
+            window[section].Booking.saveValidator = null;
+        }
+	});
+	$(document).bind('booking.hidePassengersForm', function(event){
+		$(slideIn).css('z-index', '3');
+	});
+
+	//on resize event
+	$(window).resize(function ()
+	{
+		var $container = $(container);
+		if(window.innerWidth >= 1080 && $container.hasClass(activeMenuClass))
+		{
+			$container.parent().removeClass(activeMenuClass + 'Parent');
+			$container.removeClass(activeMenuClass);
+			$container.css('display', '');
+			$container.css('display', null);
+			$container.css('height', '');
+			$container.css('height', null);
+			$container.css('left', '');
+			$container.css('left', null);
+		}
+		//bubble event for accommodation
+		$(document).trigger('resized.FilterMobileMenu');
+	});
+
+    if (window.addEventListener){
+        window.addEventListener('popstate', function(event) {
+            if(window.location.href.indexOf('doSearch') != -1)
+            {
+                popstateCallback(true);
+            }
+        });
+    } else if (window.attachEvent){
+        window.attachEvent('popstate', function(event) {
+            if(window.location.href.indexOf('doSearch') != -1)
+            {
+                popstateCallback(true);
+            }
+        });
+    }
+
+
+})(jQuery);
+
+//get time string from a date object
+function getTime(dateObj)
+{
+        var arr = new Array(dateObj.getHours(),dateObj.getMinutes(),dateObj.getSeconds());
+
+        for(var i=0;i<arr.length;i++)
+        {
+            if(arr[i].toString().length == 1) arr[i] = "0" + arr[i];
+        }
+    
+        return arr[0] + ":" + arr[1] + ":" + arr[2];
+}
+
+function makeAMessagePanel(messages)
+{
+	var html  = '<div class="col-12 ">';
+	html += '       <ul>';
+	if(Array.isArray(messages))
+	{
+		$.each(messages, function (idx, message) {
+			html += '           <li>' + message + '</li>';
+		});
+	}
+	else
+	{
+		html += '           <li>' + messages + '</li>';
+	}
+	html += '       </ul>';
+	html += '</div>';
+	return html;
+};
+
+
+/**
+ * Get all CSS styles associated with an element and set them inline
+ * */
+function css(a) {
+    var sheets = document.styleSheets, o = {};
+    for (var i in sheets) {
+        var rules = sheets[i].rules || sheets[i].cssRules;
+        for (var r in rules) {
+            if (a.is(rules[r].selectorText)) {
+                o = $.extend(o, css2json(rules[r].style), css2json(a.attr('style')));
+            }
+        }
+    }
+    return o;
+}
+
+function css2json(css) {
+    var s = {};
+    if (!css) return s;
+    if (css instanceof CSSStyleDeclaration) {
+        for (var i in css) {
+            if ((css[i]).toLowerCase) {
+                s[(css[i]).toLowerCase()] = (css[css[i]]);
+            }
+        }
+    } else if (typeof css == "string") {
+        css = css.split("; ");
+        for (var i in css) {
+            var l = css[i].split(": ");
+            s[l[0].toLowerCase()] = (l[1]);
+        }
+    }
+    return s;
+}
+
+/**
+ * Returns IE version, false otherwise
+ * @returns {*}
+ */
+function isOldIE () {
+    if(typeof ISIE !== 'undefined')
+    {
+        var myNav = navigator.userAgent.toLowerCase();
+        return (myNav.indexOf('msie') != -1) ? parseInt(myNav.split('msie')[1]) : false;
+    } else {
+        return ISIE;
+    }
+}
+/**
+ *
+ * @returns {boolean}
+ */
+function isIE() {
+	var ua = window.navigator.userAgent;
+
+	var msie = ua.indexOf('MSIE ');
+	if (msie > 0) {
+		// IE 10 or older => return version number
+		return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+	}
+
+	var trident = ua.indexOf('Trident/');
+	if (trident > 0) {
+		// IE 11 => return version number
+		var rv = ua.indexOf('rv:');
+		return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+	}
+
+	var edge = ua.indexOf('Edge/');
+	if (edge > 0) {
+		// IE 12 => return version number
+		return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+	}
+
+	// other browser
+	return false;
+}
+
+function historyPushState(name, title, link)
+{
+    if(isOldIE())
+    {
+        //console.log(window.location.protocol +"//"+ window.location.host + window.location.pathname + link);
+        link = link.split('#'); // not working with #
+        History.pushState(null,null, link[0]);
+    } else {
+        window.history.pushState(name,title, link);
+    }
+}
+var contactUs = function (url) {
+	Loader.show();
+	// build an ajax to get contact us information
+	$.ajax({
+			url: url,
+			data: { 'contact_us': true },
+			statusCode: {
+				302: function () {
+					window.location.href = BASE_CI_URL + '/login';
+				}
+			},
+			dataType: 'json'})
+		.done (function (result) {
+			if (result.html.length > 0) {
+				var dialogOptions = {
+					size: 'large',
+					className: 'default_contactUs_popup',
+					message: result.html,
+					title: 'CONTACT US',
+					onEscape: function() {},
+					buttons: {
+						close: {
+							label: 'Close',
+							className: 'search_btn'
+						}
+
+					}
+				};
+				var langDialog = bootbox.dialog(dialogOptions);
+			}
+			else {
+				AlertInfo.show('Service unavailable');
+				$('.modal').scrollTop(0);
+			}
+		})
+		.fail(function (xhr, err, errText) {
+			AlertInfo.show(xhr['responseText']);
+			$('.modal').scrollTop(0);
+		}).always(function() {
+		Loader.hide();
+	}) ;
+
+};
+$(document).on('click', '.modal-backdrop', function (event) {
+	bootbox.hideAll();
+});
+$(document).on('click', '#saveWallet', function (ev) {
+
+	var itineraryNumber = $(this).attr("data-id");
+	var isMaqam = $(this).attr("data-ismaqam");
+	Loader.show();
+	$.ajax({
+		url: BASE_CI_URL + '/itinerary/get/' + itineraryNumber,
+		dataType: 'html',
+		type: 'get',
+		async: true,
+		data: {_token: CSRF_TOKEN, 'isMaqam': isMaqam},
+		statusCode: {
+			302: function () {
+				window.location.href = BASE_CI_URL + '/login';
+			}
+		}
+	}).done(function (response) {
+    
+		$(AlertInfo.dialog).addClass('umrah-accom-wallet-cfrm');
+		AlertInfo.show(response, 'Wallet Confirmation', function () {
+			$(AlertInfo.dialog).removeClass('umrah-accom-wallet-cfrm');
+		});
+	}).fail(function (xhr, err, errText) {
+		if(xhr.status != 302)
+		{
+			AlertError.show(xhr.responseText);
+		}
+	}).always(function () {
+		Loader.hide();
+	});
+});
+
+$(document).on('click', '#deleteSaveBooking', function (ev) {
+
+	var itineraryNumber = $(this).attr("data-id");
+	Loader.show();
+	$.ajax({
+		url: BASE_CI_URL + '/itinerary/delete/' + itineraryNumber,
+		dataType: 'json',
+		type: 'get',
+		async: true,
+		data: {_token: CSRF_TOKEN},
+		statusCode: {
+			302: function () {
+				window.location.href = BASE_CI_URL + '/login';
+			}
+		}
+	}).done(function (response) {
+
+		if (response.success == true) {
+
+			$(".uh-booking-management #submitButton").trigger('click')
+		}
+
+	}).fail(function (xhr, err, errText) {
+		if (xhr.status != 302) {
+			AlertError.show(xhr.responseText);
+		}
+	}).always(function () {
+		Loader.hide();
+	});
+});
+function acceptCookie(url)
+{
+    $.get( url, function() {
+        $('body #accept_cookies').hide();
+    });
+}
+
+
+
+/**
+ * Calc and Set Top banner width
+ */
+function topBannerPosition()
+{
+	var menuWidth = $('.header_top_panel').outerWidth(true);
+	var logoWidth = $('#header .logo').outerWidth(true);
+	var bannerWidth = parseInt(menuWidth) + parseInt(logoWidth) + 5;
+	var $topBanner = $('#topBanner');
+
+    var bannerPositionWidth = 'calc(100% - ' +bannerWidth+ 'px)';
+	$topBanner.css('width', bannerPositionWidth);
+	$topBanner.css('display', 'block');
+}
+/*rounding off the currency*/
+function currencyRound(type, amount, curformat) {
+    if (amount === undefined) {
+        return 0.0;
+    }
+    if (type == 'IDR' || type == 'KRW') {
+        if (curformat == true) {
+            return Math.round(amount);
+        }
+        return Math.round(amount).formatMoney(DECIMAL_POINTS, THOUSAND_SEPARATOR, DECIMAL_SEPARATOR);
+    }
+    return amount.formatMoney(DECIMAL_POINTS, THOUSAND_SEPARATOR, DECIMAL_SEPARATOR);
+}
+
+function validateTime(e, type) {
+    var target_name = e.target.name;
+    var enteredNumber = $("input[name=" + target_name + "]").val();
+
+    if (enteredNumber.indexOf('.') !== -1) {
+        enteredNumber = enteredNumber.split('.').join('');
+        $("input[name=" + target_name + "]").val(enteredNumber);
+    }
+
+    //Not allow number followed by 0
+    if (enteredNumber.length >= 1 && enteredNumber[0] == 0) {
+        $("input[name=" + target_name + "]").val(0);
+        return false;
+    }
+
+    if ((type == 'h' && parseInt(enteredNumber, 10) <= 23) || (type == 'm' && parseInt(enteredNumber, 10) <= 59)) {
+        return true;
+    }
+    else {
+        enteredNumber = enteredNumber.substring(0, enteredNumber.length - 1);
+        $("input[name=" + target_name + "]").val(enteredNumber);
+    }
+}
+// for sending payment request to UO
+$(document).on('click', '#sendlinkuo', function (ev) {
+
+	var itineraryNumber = $(this).attr("data-id");
+
+	Loader.show();
+	$.ajax({
+		url: BASE_CI_URL + '/itinerary/sendpaymentrequest/' + itineraryNumber,
+		dataType: 'html',
+		type: 'get',
+		async: true,
+		data: {_token: CSRF_TOKEN},
+		statusCode: {
+			302: function () {
+				window.location.href = BASE_CI_URL + '/login';
+			}
+		}
+	}).done(function (response) {
+		const obj = JSON.parse(response);
+		AlertInfo.show(obj.message, 'UO Payment Request Confirmation', function () {
+			location.reload();
+		});
+	}).fail(function (xhr, err, errText) {
+		if(xhr.status != 302)
+		{
+			AlertError.show(xhr.responseText);
+		}
+	}).always(function () {
+		Loader.hide();
+	});
+});
+
+const validateCardNumber = number => {
+	//Check if the number contains only numeric value
+	//and is of between 13 to 19 digits
+	const regex = new RegExp("^[0-9]{13,19}$");
+	if (!regex.test(number)){
+		return false;
+	}
+
+	return luhnCheck(number);
+}
+
+const luhnCheck = val => {
+	let checksum = 0; // running checksum total
+	let j = 1; // takes value of 1 or 2
+
+	// Process each digit one by one starting from the last
+	for (let i = val.length - 1; i >= 0; i--) {
+		let calc = 0;
+		// Extract the next digit and multiply by 1 or 2 on alternative digits.
+		calc = Number(val.charAt(i)) * j;
+
+		// If the result is in two digits add 1 to the checksum total
+		if (calc > 9) {
+			checksum = checksum + 1;
+			calc = calc - 10;
+		}
+
+		// Add the units element to the checksum total
+		checksum = checksum + calc;
+
+		// Switch the value of j
+		if (j == 1) {
+			j = 2;
+		} else {
+			j = 1;
+		}
+	}
+
+	//Check if it is divisible by 10 or not.
+	return (checksum % 10) == 0;
+}
+
+$(document).on('click', 'a.redirect-link', function(){
+	Loader.show();
+	$.get(
+		$(this).attr('href'), 
+		function(data){
+			console.log(data);
+			window.location = data.url;
+		},
+		'json'
+	);
+	return false;
+});

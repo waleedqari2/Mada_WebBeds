@@ -1,0 +1,1020 @@
+.login-forget-container {
+    background: url(../../images/umrah/new-body-bg.png) no-repeat;
+    background-size: cover;
+}
+
+.carousel-row-container {
+    background: url('../../images/umrah/makkah.jpg') no-repeat center;
+    height: 280px;
+    width: 100%;
+    background-size: cover;
+}
+.other-container {
+    background: white;
+}
+
+.other-container .innerpage_container {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+header #logo img {
+    height: 60px;
+}
+
+header .header-announcement {
+    padding: 5px 0px 0px 0px;
+    padding-left: 11%;
+    background: white;
+}
+
+header .header-announcement img {
+    width: 18px;
+    margin-bottom: 4px;
+}
+
+.header-announcement .announcement-btn {
+    font-size: 10px;
+    letter-spacing: 1px;
+    line-height: 20px;
+    background: #DC140A;
+    color: white;
+    font-family: inherit;
+    border-radius: 40px;
+    transition: all 0.3s ease 0s;
+    margin-top: -5px;
+}
+
+.header-announcement .announcement-text {
+    color: black;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.hotel-header-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 6;
+    animation: smoothScroll 1s forwards;
+}
+
+header .logo-container .header-details {
+    vertical-align: middle;
+    text-align: center;
+    padding-top: 12px;
+    font-weight: bold;
+}
+
+header .header-details ul li a {
+    font-family: 'Sintony', sans-serif;
+    color: #fff;
+    margin-bottom: 9px;
+    font-size: 23px;
+    letter-spacing: 0.03em;
+    padding: 15px;
+}
+
+#header .logo-container {
+    height: 40px;
+    background: #DC140A !important;
+    position: inherit !important;
+}
+
+#header .header_top_panel {
+    margin-top: 5px;
+}
+
+#header .logo {
+    line-height: 45px;
+}
+
+#header .logo img {
+    width: 220px;
+}
+
+#searchHotels {
+    display: none;
+}
+
+.innerpage_container .innerpages_lng_container,
+.innerpage_container .homepage_lang_container {
+    background: none;
+}
+
+.innerpage_container .innerpage_header .innerpage_logo img {
+    max-height: 100px;
+    height: 75px;
+}
+
+.innerpage_container .innerpage_header .innerpage_logo {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.innerpage_container .innerpage_footer {
+    height: 40px;
+}
+
+.innerpage_container .innerpage_footer .footer_nav {
+    margin-top: 0;
+    line-height: 40px;
+}
+
+footer .footer-nav ul li {
+    padding-right: 4%;
+}
+
+footer .footer-nav ul li .glyphicon {
+    color: #DC140A;
+    font-size: 18px;
+}
+
+footer .footer-logo-row {
+    padding: 11px;
+}
+
+footer .footer-logo-row img {
+    margin: 0px 20px 10px 0px;
+    width: 115px;
+    vertical-align: middle
+}
+
+footer .footer-logo-row span {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+footer .footer-logo-row span a, .footer-more {
+    color: #FFF;
+    font-weight: 600;
+}
+
+.footer-logo-row span a {
+    text-decoration: underline;
+}
+
+footer .footer-nav ul {
+    line-height: 40px;
+    margin-bottom: 0;
+}
+
+main .umrah-login #form-container {
+    min-width: 1000px!important;
+}
+
+.umrah-login {
+    padding-top:2%;
+    margin-left: 8%;
+}
+
+.umrah-landing-container {
+    padding: 0;
+}
+
+
+main #form-container .login-form-container {
+    background: none !important;
+    border: none;
+    padding: 0px;
+    margin: -10px 30px 10px 5px;
+}
+
+::-webkit-input-placeholder {
+    font-weight: 500 !important;
+    color: black !important;
+}
+
+.login-form-wrapper {
+    width: 400px;
+}
+
+.login-form-wrapper .jumbotron {
+    padding: 15px;
+    background-color: rgba(204, 204, 204, 0.8);
+    font-family: 'Helvetica', serif;
+}
+
+.forgot-password-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.short-gap {
+    padding: 15px;
+}
+
+.umrah-body-content {
+    min-height: calc(100vh - 70px);
+}
+
+/* Animation for modal */
+.modal .modal-content {
+    -webkit-animation-name: modal-animation;
+    -webkit-animation-duration: 0.5s;
+    animation-name: modal-animation;
+    animation-duration: 0.5s;
+}
+
+@-webkit-keyframes modal-animation {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+@keyframes modal-animation {
+    from {
+        top: -100px;
+        opacity: 0;
+    }
+    to {
+        top: 0;
+        opacity: 1;
+    }
+}
+
+/**
+    Placeholder issue bold
+ */
+.login_textfield:-ms-input-placeholder {
+    color: black !important;
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+.login_textfield::-webkit-input-placeholder {
+    color: black  !important;
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+/* Firefox 4-18 */
+.login_textfield:-moz-placeholder {
+    color: black !important;
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+/* Firefox 19-50 */
+.login_textfield::-moz-placeholder {
+    color: black !important;
+    font-weight: 600 !important;
+    font-size: 14px;
+}
+
+.login-forget-sticky {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Top White Banner */
+.top-banner {
+    padding: 7px;
+    background: #f5f5f5;
+}
+
+/* Flex Container */
+.flex-container {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+/* Announcement Text */
+.top-banner .announcement-text {
+    color: black;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Announcement Container */
+.top-banner .announcement-container {
+    width: 50%;
+    padding-right: 1%;
+    text-align: right;
+    padding-top: 3px;
+}
+
+/* White Header Right Container */
+.right-container {
+    width: 50%;
+    text-align: right;
+    padding-right: 0.5%;
+}
+
+/* Announcement text Link */
+.announcement-text a {
+    font-family: 'Helvetica', serif;
+    text-decoration: none;
+    color: #000;
+}
+
+/* Red header */
+header .main-header {
+    padding: 8px 0 8px 0;
+}
+
+/* Right red Header */
+header .header-right-logos img {
+    width: 120px;
+
+}
+
+/* Header right logos */
+header .header-right-logos {
+    width: 25%;
+    text-align: right;
+    padding-right: 28px;
+}
+
+/* Header middle section */
+.flex-container .header-details{
+    width: 50%;
+    margin: 15px auto;
+    vertical-align: middle;   
+}
+/* Header middle section */
+.uhi-main-header .flex-container .header-details{
+    width: 90%;
+    margin: 15px auto;
+    vertical-align: middle;   
+}
+
+/* Header Nav Text */
+.header-details .header-nav{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 6px 16px;
+    text-transform: uppercase;
+}
+
+
+/* Header Link */
+.header-nav .header-link{
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Header Main Logo */
+.flex-container .left-main-logo{
+    width: 25%;
+}
+.uhi-main-header .flex-container .left-main-logo{
+    width: 12%;
+}
+.left-main-logo img{
+    padding-left: 28px;
+    height: 60px;
+}
+
+
+/* Hajj Quote CSS */
+.hajj-quote {
+    padding: 10px 0;
+}
+
+.Quote {
+    font-family: 'Berkshire Swash', sans-serif;
+    color: #11790c;
+    font-size: 22px;
+    display: inline;
+}
+
+.holu-quran-text {
+    font-size: 11px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    color: #000;
+}
+
+footer div {
+    background: none;
+}
+
+.full-item {
+    background: none;
+    text-decoration: none;
+    display: block;
+    color: black;
+    font-size: 16px;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.full-item p {
+    margin: 0;
+}
+
+/* Next Buttons */
+.carousel-control-next {
+    width: 40px;
+    margin: 40px 0;
+    height: 40px;
+}
+
+.carousel-control-prev {
+    width: 40px;
+    margin: 40px 0;
+    height: 40px;
+}
+
+/* override position and transform in 3.3.x CAROUSEL */
+.carousel-inner .item.left.active {
+    transform: translateX(-25%);
+    left: 0;
+}
+
+.carousel-inner .item.right.active {
+    transform: translateX(25%);
+    left: 0;
+}
+
+.carousel-inner .item.next {
+    transform: translateX(25%);
+    left: 0;
+}
+
+.carousel-inner .item.prev {
+    transform: translateX(-25%);
+    left: 0;
+}
+
+.carousel-inner .item.right,
+.carousel-inner .item.left {
+    transform: translateX(0);
+    left: 0;
+}
+
+.carousel-control.left,
+.carousel-control.right {
+    background-image: none;
+}
+
+
+/* newxt Button Img */
+.carousel-control .next-btn-img{
+    /*padding-top: 27%;*/
+}
+
+/*.inner-item {
+    width: 20%;
+}*/
+
+#myCarousel .carousel-inner {
+    width: 74%;
+    margin: 0 auto;
+}
+
+.carousel-section .carousel-container {
+	width: 65%;
+	margin: 0 auto;
+}
+
+/* New Carousel End */
+
+.top-banner img {
+    width: 18px;
+    margin-bottom: 4px;
+}
+
+.row.row-custom {
+    display: block;
+}
+
+@media (max-width: 1366px) {
+    .umrah-login {
+        padding-top: 1%;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+   
+}
+@media (max-width: 1500px) {
+    .uo-form-pos{
+        float: left;
+        display: inline-block;
+        margin-left: 30px;
+    }
+    html[dir="rtl"] .uo-form-pos {
+        left: auto;
+        right: 431px;
+    }
+}
+.uo-form-pos{
+    float: left;
+    display: inline-block;
+    margin-left: 30px;
+}
+@media only screen and (min-width: 1441px) and (max-width: 1536px) {
+    .umrah-login {
+        padding-top: 2%;
+    }
+
+    /* Alerts */
+    .alert {
+        padding: 5px;
+        margin-bottom: 5px;
+    }
+}
+.login-pos{
+    float: left;
+    display: inline-block;
+}
+/* Footer sticky */
+footer.login-forget-sticky {
+    position: absolute;
+}
+
+.carousel-links {
+    text-align: center;
+    background: white;
+}
+
+@media only screen and (min-width: 1440px) {
+    /* Hajj qoute */
+    .hajj-quote {
+        padding-bottom: 20px;
+    }
+
+    .carousel-container {
+        padding: 10px 0 30px 0;
+    }
+
+    .full-item .img-fluid {
+        margin-bottom: 10px;
+    }
+}
+
+.carousel-section {
+    position: absolute;
+    bottom: 61.64px;
+    width: 100%;
+}
+
+/* Dropdown Image (Chevron) */
+.homepage_lang_container .header-dropdown .chevron-down-circle {
+    padding-top: 3%;
+    width: 17px;
+    margin-right: 0 !important;
+}
+
+/* Dropdown Image (Chevron) (Other buttons) */
+.homepage_lang_container .header-dropdown .chevron-down-circle-other {
+    padding-top: 1%;
+    width: 17px;
+    margin-right: 0 !important;
+}
+
+/* No scroll for body */
+.no-scroll {
+    overflow: hidden;
+}
+
+/*accommodation search response*/
+.supplier_room_group {
+    border-radius: 2px;
+    margin:2px;
+}
+.hotel_supplier_price{
+    border-radius: 2px;
+    margin:2px;
+    height: 20px;
+    font-size: 10px;
+    float:right;
+    font-weight: bold;
+}
+
+.supplier_header {
+    display: block;
+    cursor: pointer;
+    position: relative;
+    margin: 2px 0 0 0;
+    padding: .5em .5em .5em .7em;
+    font-size: 100%;
+    cursor: pointer;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+    border: 1px solid #DC140A;
+    background: #DC140A;
+    font-weight: normal;
+    color: #ffffff;
+}
+
+.hotel-supplier .ui-widget-content{
+    border: 1px solid #d4d4d4;
+    border-width: 0 1px 1px 1px;
+    background: none;
+    width: 100%;
+}
+.ui-accordion .ui-accordion-content{
+    padding: 0;
+}
+
+.ui-widget{
+    font-family: 'Sintony', sans-serif;
+}
+
+.collapse.in {
+    height: 100%!important;
+}
+
+.supplier_room_group .rooms-details .rdCaption {
+    color: black !important;
+    font-weight: bold;
+    padding-left: 10px;
+}
+
+.search-name-container h3.unitName {
+    margin-bottom: 5px;
+}
+
+.uh-hajj-quote-bold {
+    font-weight: bold;
+}
+
+.arabic-rtl {
+    direction: rtl;
+}
+
+.uh-landing-background-transfer .person-per-car-field{
+    margin-left: -130px;
+}
+
+.currency_name {
+    direction: ltr;
+    display: inline-block;
+}
+
+.wallet_heading {
+    border-bottom: 1px solid #CECECE !important;
+}
+
+.wallet_add_btn {
+    font-size: 11px;
+    letter-spacing: 1px;
+    line-height: 20px;
+    background: #DC140A;
+    color: white;
+    font-family: inherit;
+    border: none;
+    font-weight: bold;
+    padding: 3px 15px 3px 15px;
+}
+
+.wallet_list_tab {
+    border-left: 1px solid #CECECE;
+    border-right: 1px solid #CECECE;
+    border-bottom: 1px solid #CECECE;
+}
+
+.wallet_list_tab td {
+    padding: 8px !important;
+}
+
+.uh_errors_list {
+    color: #FF0000;
+}
+
+.walletLoader {
+    /*display: none;*/
+}
+
+.onoffswitch {
+    position: relative;
+    width: 45px;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select: none;
+    margin-left: 25px;
+}
+
+.onoffswitch-checkbox, .sub_cust_wallet_onoff {
+    display: none;
+}
+
+.onoffswitch-label {
+    display: block;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.onoffswitch-inner {
+    display: block;
+    width: 200%;
+    margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s;
+    -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s;
+    transition: margin 0.3s ease-in 0s;
+}
+
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block;
+    float: left;
+    width: 50%;
+    height: 19px;
+    padding: 0;
+    line-height: 19px;
+    font-size: 11px;
+    color: white;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.onoffswitch-inner:before {
+    content: "ON";
+    padding-left: 7px;
+    background-color: #5cb85c;
+    color: #FFFFFF;
+}
+
+.onoffswitch-inner:after {
+    content: "OFF";
+    padding-right: 5px;
+    background-color: #DC140A;
+    color: #FFFFFF;
+    text-align: right;
+}
+
+.onoffswitch-switch {
+    display: block;
+    width: 14px;
+    margin: 2px;
+    background: #FFFFFF;
+    border-radius: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    -moz-transition: all 0.3s ease-in 0s;
+    -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s;
+    transition: all 0.3s ease-in 0s;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px;
+}
+
+.delete_cls {
+    font-size: 16px;
+    color: #DC140A;
+    margin-right: 10px;
+}
+.wallet_share {
+    font-size: 16px;
+    margin-left:10px;
+}
+
+.wallet_list_tab a, .wallet_list_tab a:hover {
+    text-decoration: none;
+    color: #868686;
+}
+
+.wallet_share_dis{
+    font-size: 16px;
+    margin-left:10px;
+    color: #ced4da;
+}
+
+.delete_cls_dis{
+    font-size: 16px;
+    color: #ced4da;
+    margin-right: 10px;
+}
+
+.wallet_head{
+    border-bottom: 2px solid #C1C1C0;
+    width: 90%;
+    padding-bottom: 5px;
+
+}
+
+
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 480px)
+   {
+    .carousel-section {
+        display:none;
+    }
+    footer.login-forget-sticky {
+        position: unset!important;
+    }
+
+}
+@media only screen 
+  and (min-device-width: 375px) 
+  and (max-device-width: 667px) 
+  and (-webkit-min-device-pixel-ratio: 2) { 
+    .carousel-section {
+        display:none;
+    }
+    footer.login-forget-sticky {
+        position: unset!important;
+    }
+
+}
+@media only screen 
+  and (min-device-width: 414px) 
+  and (max-device-width: 736px) 
+  and (max-device-width: 1030px)
+  and (-webkit-min-device-pixel-ratio: 3) {
+    .carousel-section {
+        display:none;
+    }
+    footer.login-forget-sticky {
+        position: unset!important;
+    }
+}
+/*Mobile css starts here*/
+@media (min-width: 768px) {
+    #uh-mobile-header {
+        display: none;
+    }
+}
+
+@media (max-width: 1200px) {
+    #umrah-header-div {
+        display: none;
+    }
+
+    .umrah-register-modal-dialog {
+        width: 100% !important;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    #uh-mobile-header {
+        display: block;
+    }
+}
+
+
+#uh-mobile-header .topnav {
+  overflow: hidden;
+  position: relative;
+}
+
+#uh-mobile-header .topnav #myLinks {
+  display: none;
+}
+
+#uh-mobile-header .flag-icon {
+    width: 18px;
+}
+
+#uh-mobile-header .dropdown-icon {
+    margin-right: 10px;
+}
+
+#uh-mobile-header .lang-label, #uh-mobile-header .account-label {
+    background: #fff;
+    color: #000 !important;
+    width: 150px;
+    margin-left: 14px;
+    margin-bottom: 10px;
+    padding: 5px !important;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+
+#uh-mobile-header .topnav .mobile-head-item {
+  color: white;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  display: block;
+}
+
+
+#uh-mobile-header .topnav a.icon {
+  background: #dc140a;
+  display: block;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+#uh-mobile-header .logo-img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 255px;
+    height: auto;
+    -ms-interpolation-mode: bicubic;
+}
+
+#uh-mobile-header .chevron-down-circle {
+    width: 17px;
+}
+
+.umrah-register-modal-dialog {
+    width: 850px;
+}
+
+.main-parent .errors-list ul {
+    padding-left: 0 !important;
+}
+
+#uh-mobile-header #uh-lang-drop, #uh-mobile-header #uh-acc-mob-drop {
+    background: #aaaaaa;
+    margin: 16px;
+    border: 1px solid #000;
+    border-radius: 10px;
+}
+
+#uh-mobile-header .lang-item {
+    padding: 5px;
+    display: block;
+    text-decoration: none;
+    color: #000;
+}
+
+#uh-mobile-header .lang-item:hover {
+    background: #515050;
+    color: #fff;
+    border-radius: inherit;
+}
+
+
+.footer-xs {
+    background: white;
+    color: #0A0A0A;
+}
+.footer-xs .footer-logo-row {
+    background: #DC140A;
+    color: #fff;
+    padding: 15px;
+}
+.footer-xs .footer-logo-row img {
+    margin: 0px 20px 10px 0px;
+    width: 115px;
+    vertical-align: middle;
+}
+.footer-xs .footer-logo-row span {
+    font-size: 14px;
+    font-weight: 600;
+}
+.footer-xs .footer-logo-row span a, .footer-more {
+    color: #FFF;
+    font-weight: 600;
+}
+.mobile-only h1{
+    font-size:18px;
+}
+    
+.customer-reg .nopad-fields{
+    padding:6px 0px;
+}
+.nopad-rows{
+    padding:0px;
+}
+.action_bar {
+    background-color: #f0f0f0;
+    padding-top: 32px;
+    padding-bottom: 32px;
+    text-align: center;
+    margin-bottom: 25px;
+    margin-bottom: 25px;
+    margin-top: 40px;
+}
+
+#uo-span {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+#uo-span > .dropdown-arrow {
+    transform: rotate(180deg);
+}
+.jombotron-mar{
+    margin-bottom:5px!important;
+}
+
+.foregetUHPass{
+    margin-top: 50px !important;
+}
+
+.search-details-container .rooms-details .rdCaption {
+    font-weight: bold;
+    font-size: 12px;
+}

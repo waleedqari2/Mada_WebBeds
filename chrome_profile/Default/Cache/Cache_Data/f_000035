@@ -1,0 +1,2178 @@
+/**
+ * Created by ionut.airinei on 2/18/15.
+ */
+
+/* Getting current Locale from lang attr of html(GLOBAL) */
+const currentLocale = $('html')[0].lang;
+var isRTL = (currentLocale === 'ar'); // isRTL bool if current locale is arabic
+
+var ResultsSortBy =
+{
+    itemsPerPage    : ITEMS_PER_PAGE,
+    selector        : '#sortBySelect',
+    nameContainer   : '.unitName',
+    rowsContainer   : '#search-result_rows',
+    rows            : '.search-result_row',
+    detachedItems   : {},
+    sectionContainer: '',
+    //cached selectors
+    $selector       : null,
+    $rowsContainer  : null,
+    $rows           : null,
+    $sections       : null,
+    init: function ()
+    {
+        var _self = ResultsSortBy;
+
+        $(document).unbind('EndAppendRemainingResults.AccommodationSearch', _self.EndAppendRemainingResults).bind('EndAppendRemainingResults.AccommodationSearch', _self.EndAppendRemainingResults);
+
+        //cache all selector
+        if (_self.sectionContainer !== ''){
+            _self.$sections = $(_self.sectionContainer);
+        } else {
+            _self.$sections = null;
+        }
+        _self.$rowsContainer = $(_self.rowsContainer);
+        _self.$rows = _self.$rowsContainer.find(_self.rows);
+
+        if (!_self.$selector) {
+            _self.$selector = $(_self.selector);
+        }
+        
+        // 'select' element has correct value but proper option is not selected in UI
+        // forcing to select right option
+        $(_self.selector)
+            .find('option[value="' + _self.$selector.val() + '"]')
+            .attr('selected', 'selected')
+            .trigger('change');
+
+        $(document).on('change', _self.selector, function(event)
+        {
+            let sortBy = event.target.value;
+
+            if (sortBy !== 'none') {
+                Loader.show();
+                setTimeout(function() {
+                    //ResultFilter.appendRemainingResults();
+                    $(document).trigger('appendRemainingResults.ResultsSortBy');
+
+                    _self.sort(sortBy);
+                    Loader.hide();
+                }, 10);
+            }
+        });
+    },
+    sort : function(type)
+    {
+        var _self = ResultsSortBy;
+
+        if (_self.$sections !== null){
+            _self.$sections.each(function(idx, section){
+                _self.detachedItems = $(section).find(_self.rowsContainer).find(_self.rows).detach();
+                switch (type)
+                {
+                    case 'price-asc':
+                        _self.sortPriceAsc();
+                        break;
+                    case 'price-desc':
+                        _self.sortPriceDesc();
+                        break;
+                    case 'name-asc':
+                        _self.sortNameAsc();
+                        break;
+                    case 'name-desc':
+                        _self.sortNameDesc();
+                        break;
+                    case 'loyalty-desc':
+                        _self.sortLoyaltyDesc();
+                        break;
+                    case 'loyalty-asc':
+                        _self.sortLoyaltyAsc();
+                        break;
+                    case 'none':
+                        break;
+                    default:
+                        _self.sortPriceAsc();
+                        break;
+                }
+
+                _self.detachedItems
+                    .addClass('hidden')
+                    .prependTo($(section).find(_self.rowsContainer))
+                    .filter(':not(.notInFilterRange):lt(' + _self.itemsPerPage + ')')
+                    .removeClass('hidden');
+            });
+        } else {
+            _self.detachedItems = _self.$rows.detach();
+            switch (type)
+            {
+                case 'price-asc':
+                    _self.sortPriceAsc();
+                    break;
+                case 'price-desc':
+                    _self.sortPriceDesc();
+                    break;
+                case 'name-asc':
+                    _self.sortNameAsc();
+                    break;
+                case 'name-desc':
+                    _self.sortNameDesc();
+                    break;
+                case 'loyalty-desc':
+                    _self.sortLoyaltyDesc();
+                    break;
+                case 'loyalty-asc':
+                    _self.sortLoyaltyAsc();
+                    break;
+                case 'none':
+                    break;
+                default:
+                    _self.sortPriceAsc();
+                    break;
+            }
+
+            _self.detachedItems
+                .addClass('hidden')
+                .appendTo(_self.$rowsContainer)
+                .filter(':not(.notInFilterRange):lt(' + _self.itemsPerPage + ')')
+                .removeClass('hidden');
+            }
+
+    },
+    sortPriceAsc: function ()
+    {
+        this.detachedItems.sort(function (a, b)
+        {
+            var ap = parseFloat(a.getAttribute('data-price')),
+                bp = parseFloat(b.getAttribute('data-price'));
+            return (ap > bp ? 1 : (ap < bp ? -1 : 0));
+        });
+    },
+    sortPriceDesc: function()
+    {
+        this.detachedItems.sort(function (a, b)
+        {
+            var ap = parseFloat(a.getAttribute('data-price')),
+                bp = parseFloat(b.getAttribute('data-price'));
+            return (ap < bp ? 1 : (ap > bp ? -1 : 0));
+        });
+    },
+    sortNameAsc: function()
+    {
+        var _self = this;
+        _self.detachedItems.sort(function (a, b)
+        {
+            var an = $(a).find(_self.nameContainer).text(),
+                bn = $(b).find(_self.nameContainer).text();
+            return (an > bn ? 1 : (an < bn ? -1 : 0));
+        });
+    },
+    sortNameDesc: function()
+    {
+        var _self = this;
+        _self.detachedItems.sort(function (a, b)
+        {
+            var an = $(a).find(_self.nameContainer).text(),
+                bn = $(b).find(_self.nameContainer).text();
+            return (an < bn ? 1 : (an > bn ? -1 : 0));
+        });
+    },
+    EndAppendRemainingResults : function(event)
+    {
+        //console.log('EndAppendRemainingResults', event);
+        var _self = ResultsSortBy;
+        _self.$rows = _self.$rowsContainer.find(_self.rows);
+        if(ResultFilter.params.isUmrahCustomer !== 'undefined' && ResultFilter.params.isUmrahCustomer == 1) {
+            ResultFilter.setSliderRangeDistance();
+        }
+    },
+    sortLoyaltyAsc: function ()
+    {
+        this.detachedItems.sort(function (a, b)
+        {
+            var ap = parseFloat(a.getAttribute('data-loyalty')),
+                bp = parseFloat(b.getAttribute('data-loyalty'));
+            return (ap > bp ? 1 : (ap < bp ? -1 : 0));
+        });
+    },
+    sortLoyaltyDesc: function()
+    {
+        this.detachedItems.sort(function (a, b)
+        {
+            var ap = parseFloat(a.getAttribute('data-loyalty')),
+                bp = parseFloat(b.getAttribute('data-loyalty'));
+            return (ap < bp ? 1 : (ap > bp ? -1 : 0));
+        });
+    },
+    resetSorting: function ()
+    {
+        this.$selector = null;
+    }
+};
+
+var ResultFilter  =
+{
+    itemsPerPage        : ITEMS_PER_PAGE,
+    params : {},
+    rowsContainer       : '#search-result_rows',
+    rows                : '.search-result_row',
+
+    sliderRange         : '#slider-range',
+    filterStarRate      : '#filterStarRate',
+    filterLocation      : '#filterLocations',
+    filterBoardBasis    : '#filterBoardBasis',
+    filterPromoFreeNight: '#filterPromoFreeNight',
+    filterPromoDiscount : '#filterPromoDiscount',
+    filterPromoOccasion : '#filterPromoOccasion',
+    filterPromoUpgrade  : '#filterPromoUpgrade',
+    filterPromoCico     : '#filterPromo24CICO',
+    filterPromoValueAdded: '#filterPromoValueAdded',
+    filterPromoType     : '#filterPromotionType',
+    filterHotelCity     : '#filterHotelCity',
+    filterHotelByName   : '#filterHotelByName',
+    filterTourType      : '#filterTourType',
+    filterTransferType  : '#filterTransferType',
+    filterPropertyType  : '#filterPropertyType',
+    filterPreferredRate : '#filterPreferredRate',
+    filterExclusiveRate : '#filterExclusiveRate',
+    filterLoyaltyRate   : '#filterLoyaltyRate',
+    filterRateType      : '#filterRateType',
+    filterAmenities     : '#filterAmenities',
+    filterLeisure       : '#filterLeisure',
+    filterGeoLocations  : '#filterGeoLocations',
+    filterBusiness      : '#filterBusiness',
+    filterPreferences   : '#filterPreference',
+    filterChain         : '#filterChain',
+    filterQuarantine    : '#filterQuarantine',
+    minPrice            : 0,
+    maxPrice            : 0,
+    hasGeoMarkers       : false,
+    roundtripInhibitor  : false,
+
+    //UH 920 distance to haram
+    sliderRangeDistance : '#slider-range-distance',
+    minDistance         : 0,
+    maxDistance         : 0,
+    makkahCityCode      :164,
+
+    //cached selectors
+    $rowsContainer      : null,
+    $rows               : null,
+    $sliderRange        : null,
+    $filterStarRate     : null,
+    $filterLocation     : null,
+    $filterBoardBasis   : null,
+    $filterPromoFreeNight: null,
+    $filterPromoDiscount: null,
+    $filterPromoOccasion: null,
+    $filterPromoUpgrade : null,
+    $filterPromoCico    : null,
+    $filterPromoValueAdded: null,
+    $filterPromoType    : null,
+    $filterTourType     : null,
+    $filterTransferType : null,
+    $filterHotelCity    : null,
+    $filterHotelByName  : null,
+    filterTimer         : 0,
+    applyFilterStarted  : false,
+
+    //UH 920 distance to haram
+    $sliderRangeDistance: null,
+    init : function()
+    {
+        if(typeof $('#amount1')[0] === 'undefined')
+        {
+            return;
+        }
+
+        //console.time('ResultFilter.init');
+        var _self = ResultFilter;
+
+        $(document).unbind('EndAppendRemainingResults.AccommodationSearch', _self.EndAppendRemainingResults).bind('EndAppendRemainingResults.AccommodationSearch', _self.EndAppendRemainingResults);
+
+        //cache all selectors
+        _self.$rowsContainer        = $(_self.rowsContainer);
+        _self.$rows                 = _self.$rowsContainer.find(_self.rows);
+        _self.$sliderRange          = $(_self.sliderRange);
+        _self.$filterStarRate       = $(_self.filterStarRate);
+        _self.$filterLocation      =  $(_self.filterLocation);
+        _self.$filterBoardBasis     = $(_self.filterBoardBasis);
+        _self.$filterHotelByName     = $(_self.filterHotelByName);
+        _self.$filterPromoFreeNight  = $(_self.filterPromoFreeNight);
+        _self.$filterPromoDiscount  = $(_self.filterPromoDiscount);
+        _self.$filterPromoOccasion  = $(_self.filterPromoOccasion);
+        _self.$filterPromoUpgrade  = $(_self.filterPromoUpgrade);
+        _self.$filterPromoCico     = $(_self.filterPromoCico);
+        _self.$filterPromoValueAdded = $(_self.filterPromoValueAdded);
+        _self.$filterPromoType      = $(_self.filterPromoType);
+        _self.$filterHotelCity     = $(_self.filterHotelCity);
+        _self.$filterTourType       = $(_self.filterTourType);
+        _self.$filterTransferType   = $(_self.filterTransferType);
+        _self.$filterPropertyType   = $(_self.filterPropertyType);
+        _self.$filterPreferredRate  = $(_self.filterPreferredRate);
+        _self.$filterExclusiveRate  = $(_self.filterExclusiveRate);
+        _self.$filterLoyaltyRate    = $(_self.filterLoyaltyRate);
+        _self.$filterRateType       = $(_self.filterRateType);
+        _self.$filterAmenities      = $(_self.filterAmenities);
+        _self.$filterGeoLocations   = $(_self.filterGeoLocations);
+        _self.$filterLeisure        = $(_self.filterLeisure);
+        _self.$filterBusiness       = $(_self.filterBusiness);
+        _self.$filterPreferences    = $(_self.filterPreferences);
+        _self.$filterChain          = $(_self.filterChain);
+        //UH-1362 Show Quarantine Only
+        _self.$filterQuarantine     = $(_self.filterQuarantine);
+
+        //UH 920 distance to haram
+        _self.$sliderRangeDistance  = $(_self.sliderRangeDistance);
+
+        $('#collapsiblePanelTabLocations, #collapsiblePanelTabAmenities, #collapsiblePanelTabLeisure,#collapsiblePanelTabGeoLocations, #collapsiblePanelTabBusiness, #collapsiblePanelTabPreference, #collapsiblePanelTabChain').off('click', _self.oneTimeCollapsiblePanelLoadResults);
+
+        $("#accordion").togglepanels();
+        // close some filter panels
+        $('#collapsiblePanelTabLocations').click();
+        $('#collapsiblePanelTabAmenities').click();
+        $('#collapsiblePanelTabLeisure').click();
+        $('#collapsiblePanelTabGeoLocations').click();
+        $('#collapsiblePanelTabBusiness').click();
+        $('#collapsiblePanelTabPreference').click();
+        $('#collapsiblePanelTabChain').click();
+
+        // Create location
+        if(typeof _self.$filterLocation[0] !== "undefined") {
+            _self.createLocations();
+        }
+        _self.setSliderRange();
+
+        //UH 920 distance to haram
+        var destinationCity = $('input[name="PSearchId"]').val();
+        if( destinationCity == _self.makkahCityCode && _self.params.isUmrahCustomer == 1){
+            _self.setSliderRangeDistance();
+        }
+
+        _self.bindFilterChangeEvent();
+        
+        //Filter response by Hotel name :: written by CTS
+        $('#filterHotelByName').keyup(function(event) {
+            var panelElement = event.target.id;
+            if(_self.filterTimer > 0)
+            {
+                clearTimeout(_self.filterTimer);
+                _self.filterTimer = 0;
+            }
+            Loader.show();
+            _self.filterTimer = setTimeout(function(){
+                _self.applyFilters('#' + panelElement);
+                //Loader.hide();
+            }, 100);
+        });
+
+        // hide promotion type filter
+        _self.showPromotionTypeFilter(false);
+
+        if(typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined' && parseInt($('#resultsFoundCount').val(), 10) > parseInt($('#resultsFoundCount').data('splitat'), 10))
+        {
+            var activeAttributes = {
+                propertyType: [],
+                preferredRate: [],
+                exclusiveRate:[],
+                loyaltyRate: [],
+                starRate: [],
+            //    location: [],
+                boardBasis: [],
+                rateType: [],
+                promoFreeNight: [],
+                promoDiscount: [],
+                promoOccasion: [],
+                promoUpgrade: [],
+                promoCico: [],
+                promoValueAdded: []
+            };
+
+            //property type
+            var data = $.parseJSON($('#propertyTypes').val());
+            $.each(data, function (i, el){
+                activeAttributes.propertyType[el.type] = el.count;
+            });
+
+            //star rating
+            data = $.parseJSON($('#starRatings').val());
+            $.each(data, function (i, el){
+                if(el.stars == 0) {
+                    activeAttributes.preferredRate['yes'] = el.count;
+                }
+                else
+                if(el.stars == 20) {
+                        activeAttributes.exclusiveRate['yes'] = el.count;
+                }
+               else {
+                    activeAttributes.starRate[el.stars] = el.count;
+                }
+            });
+
+            data = $.parseJSON($('#loyaltyCount').val());
+            activeAttributes.loyaltyRate[1] = 0;
+            activeAttributes.loyaltyRate[2] = 0;
+            $.each(data, function (i, el){
+                if(el.loyalty > 0) {
+                    activeAttributes.loyaltyRate[1] += 1;
+                }
+                if(el.accelerator > 0) {
+                    activeAttributes.loyaltyRate[2] += 1;
+                }
+            });
+
+            //locations
+            //data = $.parseJSON($('#locationIds').val());
+            //$.each(data, function (i, el){
+            //    activeAttributes.location[el.id] = el.count;
+            //});
+
+            var resultsFoundData = $('#resultsFoundCount').data();
+            if(resultsFoundData.roomsloaded == 1)
+            {
+                activeAttributes.boardBasis[0] = resultsFoundData.board0;
+                activeAttributes.boardBasis[15064] = resultsFoundData.board15064;
+                activeAttributes.boardBasis[1331] = resultsFoundData.board1331;
+                activeAttributes.boardBasis[1334] = resultsFoundData.board1334;
+                activeAttributes.boardBasis[1335] = resultsFoundData.board1335;
+                activeAttributes.boardBasis[1336] = resultsFoundData.board1336;
+                activeAttributes.rateType[1] = resultsFoundData.flexible;
+                activeAttributes.rateType[2] = resultsFoundData.restricted;
+                activeAttributes.rateType[3] = resultsFoundData.promotions;
+                activeAttributes.promoFreeNight[0] = resultsFoundData.promofreenight;
+                activeAttributes.promoDiscount[0] = resultsFoundData.promodiscount;
+                activeAttributes.promoOccasion[0] = resultsFoundData.promooccasion;
+                activeAttributes.promoUpgrade[0] = resultsFoundData.promoupgrade;
+                activeAttributes.promoCico[0] = resultsFoundData.promocico;
+                activeAttributes.promoValueAdded[0] = resultsFoundData.promovalueadded;
+            }
+
+            _self.addCntToFilter(_self.$filterPropertyType, activeAttributes.propertyType, true, true, true);
+            _self.addCntToFilter(_self.$filterPreferredRate, activeAttributes.preferredRate, true, true, true);
+            _self.addCntToFilter(_self.$filterExclusiveRate, activeAttributes.exclusiveRate, true, true, true);
+            _self.addCntToFilter(_self.$filterLoyaltyRate, activeAttributes.loyaltyRate, true, true, true);
+            _self.addCntToFilter(_self.$filterStarRate, activeAttributes.starRate, true, true, true);
+            if(resultsFoundData.roomsloaded == 1) {
+                _self.addCntToFilter(_self.$filterBoardBasis, activeAttributes.boardBasis, true, true, true);
+                _self.addCntToFilter(_self.$filterRateType, activeAttributes.rateType, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoFreeNight, activeAttributes.promoFreeNight, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoDiscount, activeAttributes.promoDiscount, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoOccasion, activeAttributes.promoOccasion, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoUpgrade, activeAttributes.promoUpgrade, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoCico, activeAttributes.promoCico, true, true, true);
+                _self.addCntToFilter(_self.$filterPromoValueAdded, activeAttributes.promoValueAdded, true, true, true);
+            }
+            //_self.addCntToFilter(_self.$filterLocation, activeAttributes.location, false, true, true);
+
+            if(resultsFoundData.roomsloaded == 1 /*&& parseInt($('#searchRoomsNo').val(), 10) > 1*/) { //just for multiple rooms
+                _self.$rows.each(function(){
+                    var maxRatesInRange = 0;
+                    $(this).find('.rooms-details').each(function () {
+                        var ratesForRoom = $(this).find('.rdRow');
+                        if(ratesForRoom.length > maxRatesInRange) {
+                            maxRatesInRange = ratesForRoom.length;
+                        }
+                        ratesForRoom.addClass('hidden').filter(':lt(3)').removeClass('hidden');
+                    });
+                    var $button = $(this).find('div.price-range > input.search_btn');
+                    //console.log($button, $button.length, maxRatesInRange);
+                    if($button.length == 1 && (maxRatesInRange < 3 || (maxRatesInRange <= 3 && $button.data('maqam-customer')))) {
+                        $button.addClass('hide');
+                    } else {
+                        $button.val(Accommodation.Search.labelsText.showMore);
+                        $button.removeClass('hide');
+                    }
+                });
+            }
+            $('#collapsiblePanelTabLocations, #collapsiblePanelTabAmenities,#collapsiblePanelTabGeoLocations, #collapsiblePanelTabLeisure, #collapsiblePanelTabBusiness, #collapsiblePanelTabPreference, #collapsiblePanelTabChain').on('click', _self.oneTimeCollapsiblePanelLoadResults);
+            
+            Loader.hide();
+        }
+        else {
+            _self.reloadFilterCounters();
+        }
+
+    },
+    bindFilterChangeEvent: function() {
+
+        $('#filtersContainerForSearch input[type="checkbox"], #filterHotelCity').change(function(event) {
+            var _self = ResultFilter;
+            var panelElement = event.target.id;
+            // var panelElement = $(this).closest('.CollapsiblePanelContent').attr('id');
+            if(_self.filterTimer > 0)
+            {
+                clearTimeout(_self.filterTimer);
+                _self.filterTimer = 0;
+            }
+            Loader.show();
+            //change map in case of change country/area city
+            if(panelElement === 'filterHotelCity'){
+                _self.filterGoogleMap('#' + panelElement);
+            }
+            _self.filterTimer = setTimeout(function(){
+                _self.applyFilters('#' + panelElement);
+                //Loader.hide();
+            }, 100);
+        });
+
+    },
+    oneTimeCollapsiblePanelLoadResults: function()
+    {
+        $('#collapsiblePanelTabLocations, #collapsiblePanelTabAmenities,#collapsiblePanelTabGeoLocations, #collapsiblePanelTabLeisure, #collapsiblePanelTabBusiness, #collapsiblePanelTabPreference, #collapsiblePanelTabChain').off('click', ResultFilter.oneTimeCollapsiblePanelLoadResults);
+        Loader.show();
+        setTimeout(function(){
+            $(document).trigger('appendRemainingResults.ResultFilter');
+            Loader.hide();
+        }, 25);
+    },
+    setSliderRange : function()
+    {
+        var _self = ResultFilter;
+
+        // Slide range Filter ******
+        var currency = _self.params.activeCurrency.trim();
+        var steps=0.5;
+        if(currency=='IDR' || currency=='KRW') {
+            steps=0;
+        }
+        $('#minAmount').find('.value').text(currency + ' ' + _self.minPrice.formatMoney(DECIMAL_POINTS, THOUSAND_SEPARATOR, DECIMAL_SEPARATOR));
+        $('#maxAmount').find('.value').text(currency + ' ' + _self.maxPrice.formatMoney(DECIMAL_POINTS, THOUSAND_SEPARATOR, DECIMAL_SEPARATOR));
+
+        /* Putting negative values for RTL */
+        var minPriceSlider = isRTL && _self.params.isUmrahCustomer == 1 ? (_self.maxPrice * -1) : _self.minPrice;
+        var maxPriceSlider = isRTL && _self.params.isUmrahCustomer == 1 ? (_self.minPrice * -1) : _self.maxPrice;
+
+        _self.$sliderRange.slider({
+            range: true,
+            min: minPriceSlider,
+            max: maxPriceSlider,
+            values: [ minPriceSlider, maxPriceSlider ],
+            step: steps,
+            slide: function( event, ui ) {
+                if (isRTL && _self.params.isUmrahCustomer == 1) { /* If the layout is RTL & current logged in customer is Umrah Customer */
+                    // Multiplying main handle values by -1 to get original value
+                    var leftHandleValue = ui.values[0] * -1;
+                    var rightHandleValue = ui.values[1] * -1;
+
+                    $('#amount1').val(currency + ' ' + currencyRound(currency, leftHandleValue,false));
+                    $('#amount2').val(currency + ' ' + currencyRound(currency, rightHandleValue,false));
+                } else {
+                    $('#amount1').val(currency + ' ' + currencyRound(currency,ui.values[ 0 ],false));
+                    $('#amount2').val(currency + ' ' + currencyRound(currency,ui.values[ 1 ],false));
+                }
+            },
+            change: function()
+            {
+                if(_self.filterTimer > 0)
+                {
+                    clearTimeout(_self.filterTimer);
+                    _self.filterTimer = 0;
+                }
+                Loader.show();
+                _self.filterTimer = setTimeout(function(){
+                    _self.applyFilters('#slider-range-panel');
+                    //Loader.hide();
+                }, 100);
+            }
+        });
+        if (isRTL && _self.params.isUmrahCustomer == 1) {
+            // Multiplying main handle values by -1 to get original value
+            var leftHandleValue = _self.$sliderRange.slider('values', 0) * -1;
+            var rightHandleValue = _self.$sliderRange.slider('values', 1) * -1;
+
+            $('#amount1').val(currency + ' ' + currencyRound(currency, leftHandleValue,false));
+            $('#amount2').val(currency + ' ' + currencyRound(currency, rightHandleValue,false));
+        } else {
+            $('#amount1').val(currency + ' ' + currencyRound(currency, _self.$sliderRange.slider('values', 0), false));
+            $('#amount2').val(currency + ' ' + currencyRound(currency, _self.$sliderRange.slider('values', 1), false));
+        }
+
+    },
+    setSliderRangeDistance: function()
+    {
+        //UH 920 distance to haram
+        var _self = ResultFilter;
+        // Slide range Filter ******
+        var allHaramDistanceArr = [];
+        _self.$rows.each(function() {
+            //cache jQuery(this)
+            var $this = $(this);
+            var data = $this.data();
+            allHaramDistanceArr.push(data.distance);            
+        });
+
+        if( allHaramDistanceArr.length > 0 ){
+            _self.minDistance = Math.min(...allHaramDistanceArr);
+            _self.maxDistance = Math.max(...allHaramDistanceArr);
+        }        
+
+        var steps=.1;  
+        var distanceUnit = 'km';     
+
+        /* Putting negative values for RTL */
+        var minDistanceSlider = isRTL ? (_self.maxDistance * -1) : _self.minDistance;
+        var maxDistanceSlider = isRTL ? (_self.minDistance * -1) : _self.maxDistance;
+
+        _self.$sliderRangeDistance.slider({
+            range: true,
+            min: minDistanceSlider,
+            max: maxDistanceSlider,
+            values: [ minDistanceSlider, maxDistanceSlider ],
+            step: steps,
+            slide: function( event, ui ) {
+                if (isRTL) { /* If the layout is in RTL */
+                    // Multiplying main handle values by -1 to get original value
+                    var leftHandleValue = ui.values[0] * -1;
+                    var rightHandleValue = ui.values[1] * -1;
+
+                    if(rightHandleValue < 1) {
+                        var distanceHaramMeter = rightHandleValue * 1000;
+                        distanceUnit = 'm';
+                        $('#distance2').val(distanceHaramMeter + distanceUnit);
+                        if (leftHandleValue < 1) {
+                            var distanceHaramMeter = leftHandleValue * 1000;
+                            distanceUnit = 'm';
+                            $('#distance1').val(distanceHaramMeter + distanceUnit);
+
+                        } else {
+                            distanceUnit = 'km';
+                            $('#distance1').val(leftHandleValue + distanceUnit);
+                        }
+                    } else{
+                        $('#distance1').val(leftHandleValue + distanceUnit);
+                        $('#distance2').val(rightHandleValue + distanceUnit);
+                    }
+                } else {
+                    if (ui.values[0] < 1) {
+                        var distanceHaramMeter = (ui.values[0] * 1000);
+                        distanceUnit = 'm';
+                        $('#distance1').val(distanceHaramMeter + distanceUnit);
+
+                        if (ui.values[1] < 1) {
+                            var distanceHaramMeter = ui.values[1] * 1000;
+                            distanceUnit = 'm';
+                            $('#distance2').val(distanceHaramMeter + distanceUnit);
+                        } else {
+                            distanceUnit = 'km';
+                            $('#distance2').val(ui.values[1] + distanceUnit);
+                        }
+                    } else {
+                        $('#distance1').val(ui.values[0] + distanceUnit);
+                        $('#distance2').val(ui.values[1] + distanceUnit);
+                    }
+                }
+                
+            },
+            change: function()
+            {
+                if(_self.filterTimer > 0)
+                {
+                    clearTimeout(_self.filterTimer);
+                    _self.filterTimer = 0;
+                }
+                Loader.show();
+                _self.filterTimer = setTimeout(function(){
+                    _self.applyFilters('#slider-range-panel');
+                    //Loader.hide();
+                }, 100);
+            }            
+        });
+
+        if (isRTL) {
+            // Multiplying main handle values by -1 to get original value
+            var leftHandleValue = _self.$sliderRangeDistance.slider('values', 0) * -1;
+            var rightHandleValue = _self.$sliderRangeDistance.slider('values', 1) * -1;
+
+            if(rightHandleValue < 1) {
+                var distanceHaramMeter = rightHandleValue * 1000;
+                distanceUnit = 'm';
+                $('#distance2').val(distanceHaramMeter + distanceUnit);
+                if (leftHandleValue < 1) {
+                    var distanceHaramMeter = leftHandleValue * 1000;
+                    distanceUnit = 'm';
+                    $('#distance1').val(distanceHaramMeter + distanceUnit);
+
+                } else {
+                    distanceUnit = 'km';
+                    $('#distance1').val(leftHandleValue + distanceUnit);
+                }
+            } else{
+                $('#distance1').val(leftHandleValue + distanceUnit);
+                $('#distance2').val(rightHandleValue + distanceUnit);
+            }
+        } else {
+            if (_self.$sliderRangeDistance.slider('values', 0) < 1) {
+                var distanceHaramMeter = _self.$sliderRangeDistance.slider('values', 0) * 1000;
+                distanceUnit = 'm';
+                $('#distance1').val(distanceHaramMeter + distanceUnit);
+
+                if (_self.$sliderRangeDistance.slider('values', 1) < 1) {
+                    distanceUnit = 'm';
+                    var distanceHaramMeter = _self.$sliderRangeDistance.slider('values', 1) * 1000;
+                    $('#distance2').val(distanceHaramMeter + distanceUnit);
+                } else {
+                    distanceUnit = 'km';
+                    $('#distance2').val(_self.$sliderRangeDistance.slider('values', 1) + distanceUnit);
+                }
+            } else {
+                $('#distance1').val(_self.$sliderRangeDistance.slider('values', 0) + distanceUnit);
+                $('#distance2').val(_self.$sliderRangeDistance.slider('values', 1) + distanceUnit);
+            }
+        }
+        
+    },
+    getActiveFilters: function()
+    {
+        var _self = ResultFilter;
+
+        //create filter list
+        var activeFilters = {
+            price: [],
+            propertyType: [],
+            preferredRate: [],
+            exclusiveRate: [],
+            loyaltyRate: [],
+            starRate: [],
+            boardBasis: [],
+            promoFreeNight: [],
+            promoDiscount: [],
+            promoOccasion: [],
+            promoUpgrade: [],
+            promoCico: [],
+            promoValueAdded: [],
+            rateType: [],
+            location: [],
+            amenities: [],
+            leisure: [],
+            geolocations: [],
+            business: [],
+            preferences: [],
+            chain: [],
+            tourType: [],
+            transferType: [],
+            hotelcity : [],
+            hotelNames : [],
+            promoType: [],
+            distanceHaram: [],
+            quarantine : [],
+        };
+        if(typeof _self.$sliderRange[0] !== 'undefined') {
+            // Multiplying by -1 to get original values if rtl & umrah Customer
+            activeFilters.price = isRTL && _self.params.isUmrahCustomer == 1 ? _self.$sliderRange.slider("option", "values").map(item => item * -1) : _self.$sliderRange.slider("option", "values");
+        }
+
+        if(typeof _self.$sliderRangeDistance[0] !== 'undefined') {
+            // Multiplying by -1 to get original values if rtl
+            activeFilters.distanceHaram = isRTL ? _self.$sliderRangeDistance.slider("option", "values").map(item => item * -1) : _self.$sliderRangeDistance.slider("option", "values");
+        }
+        //no need to check for [type="checkbox"] just for input
+        _self.$filterPropertyType.find('input:checked').each(function() {
+            activeFilters.propertyType.push(parseInt(this.value, 10));
+        });
+        _self.$filterPreferredRate.find('input:checked').each(function() {
+            activeFilters.preferredRate.push(this.value);
+        });
+        _self.$filterExclusiveRate.find('input:checked').each(function() {
+            activeFilters.exclusiveRate.push(this.value);
+        });
+        _self.$filterLoyaltyRate.find('input:checked').each(function() {
+            activeFilters.loyaltyRate.push(this.value);
+        });
+        _self.$filterStarRate.find('input:checked').each(function() {
+            activeFilters.starRate.push(parseInt(this.value, 10));
+        });
+        _self.$filterBoardBasis.find('input:checked').each(function() {
+            activeFilters.boardBasis.push(parseInt(this.value, 10));
+        });
+        _self.$filterPromoType.find('input:checked').each(function() {
+            activeFilters.promoType.push(parseInt(this.value, 10));
+        });
+        _self.$filterRateType.find('input:checked').each(function() {
+            activeFilters.rateType.push(parseInt(this.value, 10));
+        });
+        _self.$filterLocation.find('input:checked').each(function() {
+            activeFilters.location.push(parseInt(this.value, 10));
+        });
+        _self.$filterAmenities.find('input:checked').each(function() {
+            activeFilters.amenities.push(parseInt(this.value, 10));
+        });
+        _self.$filterLeisure.find('input:checked').each(function() {
+            activeFilters.leisure.push(parseInt(this.value, 10));
+        });
+        _self.$filterGeoLocations.find('input:checked').each(function() {
+            activeFilters.geolocations.push(parseInt(this.value, 10));
+        });
+        _self.$filterBusiness.find('input:checked').each(function() {
+            activeFilters.business.push(parseInt(this.value, 10));
+        });
+        _self.$filterPreferences.find('input:checked').each(function() {
+            activeFilters.preferences.push(parseInt(this.value, 10));
+        });
+        _self.$filterChain.find('input:checked').each(function() {
+            activeFilters.chain.push(parseInt(this.value, 10));
+        });
+        _self.$filterTourType.find('input:checked').each(function() {
+            activeFilters.tourType.push(this.value);
+        });
+        _self.$filterTransferType.find('input:checked').each(function() {
+            activeFilters.transferType.push(this.value);
+        });
+         _self.$filterHotelCity.find(":selected").each(function() {
+           if(!isNaN(parseInt(this.value))){
+               activeFilters.hotelcity.push(parseInt(this.value, 10));
+           }
+        });
+        if(typeof _self.$filterHotelByName.val() !== "undefined"){
+           activeFilters.hotelNames.push(_self.$filterHotelByName.val().toUpperCase());
+        }
+        //UH-1362 Show Quarantine Only
+        _self.$filterQuarantine.find('input:checked').each(function() {
+            activeFilters.quarantine.push(this.value);
+        });
+        return activeFilters;
+    },
+    EndAppendRemainingResults : function(event)
+    {
+        var _self = ResultFilter;
+        _self.$rows = _self.$rowsContainer.find(_self.rows);
+        _self.reloadFilterCounters();
+    },
+    reloadFilterCounters: function()
+    {
+        ResultFilter.applyFilters('reload');
+    },
+
+    filterGoogleMap : function(cityFilter){
+        //hide the google big map on change the city
+        $('#googleMapLegend').hide();
+        $('#googleBigMap').hide();
+         $('#googleMiniMap label').text('View map');
+        //check if search by all city
+        var searchedAddress = '';
+        var googleMapKey = $('#googleMapApiKey').val();
+        if($(cityFilter+' :selected').val() !== ''){
+            var country = $(cityFilter).data('country');
+            var selectedCity = $(cityFilter+' :selected').text();
+            searchedAddress = selectedCity+','+country;
+        }else{
+            searchedAddress = $('#seachedAddress').val();
+        }
+        $('#searchCityAddress').val(searchedAddress)
+        var googleMapURL = "https://maps.googleapis.com/maps/api/staticmap?center="+searchedAddress+
+                            "&sensor=false&format=png8&size=242x100&key="+googleMapKey;
+            $('#googleMiniMapImage').attr('src',googleMapURL);
+    },
+    getPromotionTypeAttrMapping: function()
+    {
+        return {
+            1:'promofreenight.1',
+            2:'promodiscount.1',
+            3:'promooccasion.1',
+            4:'promoupgrade.1',
+            5:'promocico.1',
+            6:'promovalueadded.1'
+        };
+    },
+    showPromotionTypeFilter: function(status)
+    {
+        if(status) {
+            $('#filterPromotionType').parent().show();
+        } else {
+            $('#filterPromotionType').find('input:checked').each(function() {
+               $(this).click();
+            });
+            $('#filterPromotionType').parent().hide();
+        }
+    },
+    // applies filters to current results
+    applyFilters : function(fromWhere, filters)
+    {
+        //console.log('applyFilters', fromWhere);
+
+        var _self = ResultFilter;
+        if(_self.applyFilterStarted) {
+            return;
+        }
+        _self.applyFilterStarted = true;
+
+        //close daily rates
+        $(document).trigger('beginApplyFilters.ResultFilter');
+        
+        if (fromWhere !== 'reload') {
+            //add remaining results - if any
+            $(document).trigger('appendRemainingResults.ResultFilter');
+        }
+
+        var activeFilters = _self.getActiveFilters();
+        if (typeof filters !== 'undefined') {
+            $.extend(true, activeFilters, filters);
+        }
+        var matchedData = {
+            //price: [],
+            propertyType: [],
+            preferredRate: [],
+            exclusiveRate: [],
+            loyaltyRate: [],
+            loyaltyAccelerator: [],
+            starRate: [],
+            boardBasis: [],
+            promoFreeNight:[],
+            promoDiscount:[],
+            promoOccasion:[],
+            promoUpgrade:[],
+            promoCico:[],
+            promoType: [],
+            promoValueAdded:[],
+            rateType: [],
+            location: [],
+            amenities: [],
+            leisure: [],
+            geolocations:[],
+            business: [],
+            preferences: [],
+            chain: [],
+            tourType: [],
+            transferType: [],
+            hotelcity   : [],
+            hotelname : [],
+            quarantine : []
+        };
+
+        var visibleRows = 0;
+        var resultsFoundCount = parseInt($('#resultsFoundCount').val(), 10);
+        if( resultsFoundCount > 0) {
+            $('div#noResultsFoundErrorMessage', _self.rowsContainer).remove();
+        }
+
+        var resultsFoundData = $('#resultsFoundCount').data();
+        _self.$rows.each(function() {
+            //cache jQuery(this)
+            var $this = $(this);
+            var data = $this.data();
+
+            var priceInRange = true;
+            if(activeFilters.price.length > 0) {
+                priceInRange = isRTL && _self.params.isUmrahCustomer == 1 ?
+                    _self.priceFilter(data.price, activeFilters.price[1], activeFilters.price[0]) :
+                    _self.priceFilter(data.price, activeFilters.price[0], activeFilters.price[1]);
+            }
+
+            //UH 920 distance to haram
+            var distanceInRange = true;
+            if(activeFilters.distanceHaram.length > 0) {
+                distanceInRange = isRTL ?
+                    _self.distanceFilter(data.distance, activeFilters.distanceHaram[1], activeFilters.distanceHaram[0]):
+                    _self.distanceFilter(data.distance, activeFilters.distanceHaram[0], activeFilters.distanceHaram[1]);
+            }
+
+            var propertyTypeInRange = true;
+            if(activeFilters.propertyType.length > 0) {
+                propertyTypeInRange = _self.propertyTypeFilter(data.property, activeFilters.propertyType);
+            }
+            var preferredRateInRange = true;
+            if(activeFilters.preferredRate.length > 0) {
+                preferredRateInRange = _self.preferredRateFilter(data.preferred, activeFilters.preferredRate);
+            }
+            var exclusiveRateInRange = true;
+            if(activeFilters.exclusiveRate.length > 0) {
+                exclusiveRateInRange = _self.exclusiveRateFilter(data.exclusive, activeFilters.exclusiveRate);
+            }
+
+
+            var loyaltyRateInRange = true;
+            if(activeFilters.loyaltyRate.length > 0 && activeFilters.loyaltyRate.indexOf('1') != -1) {
+                loyaltyRateInRange = _self.loyaltyRateFilter(data.loyalty);
+            }
+            var loyaltyAcceleratorInRange = true;
+            if(activeFilters.loyaltyRate.length > 0 && activeFilters.loyaltyRate.indexOf('2') != -1) {
+                loyaltyAcceleratorInRange = _self.loyaltyAcceleratorFilter(data.accelerator);
+            }
+
+            var starRateInRange = true;
+            if(activeFilters.starRate.length > 0) {
+                starRateInRange = _self.starRateFilter(data.rate, activeFilters.starRate);
+            }
+
+            //special case for board basis & rate type & Quarantine
+            $this.find('.rdRow').removeClass('notInFilterRangeBoardBasis notInFilterRangeRateType notInFilterRangeQuarantine hidden');
+            var boardBasisInRange = true;
+            if(activeFilters.boardBasis.length > 0) {
+                boardBasisInRange = _self.boardBasisFilter($this, activeFilters.boardBasis);
+            }
+            var promoTypeInRange = true;
+            if(activeFilters.promoType.length > 0) {
+                promoTypeInRange = _self.promotionTypeFilter($this, activeFilters.promoType);
+            }
+            var rateTypeInRange = true;
+            if(activeFilters.rateType.length > 0) {
+                rateTypeInRange = _self.rateTypeFilter($this, activeFilters.rateType);
+            }
+            var quarantineInRange = true;
+            if(activeFilters.quarantine.length > 0) {
+                quarantineInRange = _self.quarantineFilter($this, activeFilters.quarantine);
+            }
+            var roomsInRange = true, maxRatesInRange = 0, maxRatesForRoom = 0;
+            $this.find('.rooms-details').each(function () {
+                //maximum unfiltered rates for a room
+                var ratesForRoom = $(this).find('.rdRow');
+                if(ratesForRoom.length > maxRatesForRoom) {
+                    maxRatesForRoom = ratesForRoom.length;
+                }
+                //filtered room rates
+                ratesForRoom = ratesForRoom.addClass('hidden').filter(':not(.notInFilterRangeBoardBasis, .notInFilterRangeRateType, .notInFilterRangeQuarantine)');
+                if(ratesForRoom.length == 0) { //hide the hotel if we don't have at least one rate for each room
+                    roomsInRange = false;
+                }
+                else {
+                    if(ratesForRoom.length > maxRatesInRange) {
+                        maxRatesInRange = ratesForRoom.length;
+                    }
+                }
+                ratesForRoom.filter(':lt(3)').removeClass('hidden');
+            });
+
+            if(typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined' && (resultsFoundData.roomsloaded == 1 || maxRatesForRoom > 0)) { //only if we have rates loaded for this hotel
+                var $button = $this.find('div.price-range > input.search_btn');
+                if($button.length == 1 && (maxRatesInRange < 3 || (maxRatesInRange <= 3 && $button.data('maqam-customer')))) {
+                    $button.addClass('hide');
+                } else {
+                    var showMoreLabel = Accommodation.Search.labelsText.showMore;
+                    if (typeof IS_UMRAH_CUSTOMER === "undefined" || Boolean(IS_UMRAH_CUSTOMER) === false) {
+                        showMoreLabel = Accommodation.Search.labelsText.showRooms;
+                    }
+                    $button.val(showMoreLabel);
+                    $button.removeClass('hide');
+                }
+
+                //do not reset for maqam hotels
+                 if(!_self.params.isUmrahCustomer.trim() || !_self.params.activeTab.trim())
+                 {
+                    $this.find('select.multipleRoomsSelect').each(function() { //activate the rooms
+                        $(this).prop('disabled', false);
+                        this.selectedIndex = 0;
+                    });
+                }
+            }
+
+            var locationInRange = true;
+            if(activeFilters.location.length > 0) {
+                locationInRange = _self.locationFilter(data.location, activeFilters.location);
+            }
+            var amenitiesInRange = true;
+            if(activeFilters.amenities.length > 0) {
+                amenitiesInRange = _self.amenitiesFilter(data.amenities, activeFilters.amenities);
+            }
+            var leisureInRange = true;
+            if(activeFilters.leisure.length > 0) {
+                leisureInRange = _self.leisureFilter(data.leisure, activeFilters.leisure);
+            }
+            var geoLocationInRange = true;
+            if(activeFilters.geolocations.length > 0) {
+                geoLocationInRange = _self.geoLocationsFilter(data.geolocations, activeFilters.geolocations);
+            }
+
+            var hotelCityInRange = true;
+            if(activeFilters.hotelcity.length > 0) {
+                hotelCityInRange = _self.hotelCityFilter(data.hotelcity, activeFilters.hotelcity);
+            }
+
+            var hotelNamesInRange = true;
+            if(activeFilters.hotelNames.length > 0) {
+                hotelNamesInRange = _self.hotelNamesFilter(data.hotelname, activeFilters.hotelNames);
+            }
+
+            var businessInRange = true;
+            if(activeFilters.business.length > 0) {
+                businessInRange = _self.businessFilter(data.business, activeFilters.business);
+            }
+            var preferencesInRange = true;
+            if(activeFilters.preferences.length > 0) {
+                preferencesInRange = _self.preferencesFilter(data.hotelpreference, activeFilters.preferences);
+            }
+            var chainInRange = true;
+            if(activeFilters.chain.length > 0) {
+                chainInRange = _self.chainFilter(data.chain, activeFilters.chain);
+            }
+            var tourTypeInRange = true;
+            if(activeFilters.tourType.length > 0) {
+                tourTypeInRange = _self.tourTypeFilter(data.tourtype, activeFilters.tourType);
+            }
+            var transferTypeInRange = true;
+            if(activeFilters.transferType.length > 0) {
+                transferTypeInRange = _self.transferTypeFilter(data.transfertype, activeFilters.transferType);
+            }
+
+            if(priceInRange && propertyTypeInRange &&  preferredRateInRange && exclusiveRateInRange && starRateInRange && roomsInRange && locationInRange && loyaltyRateInRange && loyaltyAcceleratorInRange &&
+                amenitiesInRange && leisureInRange &&  geoLocationInRange && hotelCityInRange && hotelNamesInRange && businessInRange && preferencesInRange && chainInRange && tourTypeInRange && transferTypeInRange && distanceInRange && quarantineInRange) {
+                $this.removeClass('notInFilterRange');
+                if (_self.roundtripInhibitor == false){
+                    if (visibleRows >= _self.itemsPerPage) {
+                        $this.addClass("hidden");
+                    } else {
+                        $this.removeClass("hidden");
+                        if (typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined' && resultsFoundCount == 1){
+                            $this.find('.rooms-details .rdRow').filter(':not(.notInFilterRangeBoardBasis, .notInFilterRangeRateType, .notInFilterRangeQuarantine)').removeClass('hidden');
+                            var $button = $this.find('.price-range input');
+                            if(typeof SHOW_NEW_SEARCH_FORMAT === "undefined" || Boolean(SHOW_NEW_SEARCH_FORMAT) === false) {
+                                $button.val(Accommodation.Search.labelsText.showLess);
+                                $button.addClass('showLess');
+                            }
+                        }
+                    }
+                    visibleRows++;
+                }  else{
+                    visibleRows = _self.$rows.length
+                }
+            }
+            else {
+                $this.addClass('notInFilterRange').removeClass("hidden");
+            }
+
+            //we keep the values found to update the filters counters
+            //if(propertyTypeInRange && preferredRateInRange && starRateInRange && boardBasisInRange && rateTypeInRange &&
+            //    locationInRange && amenitiesInRange && leisureInRange && businessInRange && preferencesInRange && chainInRange && tourTypeInRange && transferTypeInRange) {
+            //    matchedData.price.push(data.price);
+            //}
+            if(typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined')
+            {
+                // filtersInRange
+                var allFilters = {
+                    'priceInRange': priceInRange,
+                    'propertyTypeInRange': propertyTypeInRange,
+                    'preferredRateInRange': preferredRateInRange,
+                    'exclusiveRateInRange': exclusiveRateInRange,
+                    'starRateInRange': starRateInRange,
+                    'roomsInRange': roomsInRange,
+                    'loyaltyRateInRange': loyaltyRateInRange,
+                    'loyaltyAcceleratorInRange': loyaltyAcceleratorInRange,
+                    'boardBasisInRange': boardBasisInRange,
+                    'promoTypeInRange': promoTypeInRange,
+                    'rateTypeInRange': rateTypeInRange,
+                    'locationInRange': locationInRange,
+                    'amenitiesInRange': amenitiesInRange,
+                    'leisureInRange': leisureInRange,
+                    'geoLocationInRange' :geoLocationInRange,
+                    'hotelCityInRange'  : hotelCityInRange,
+                    'hotelNamesInRange' : hotelNamesInRange,
+                    'businessInRange': businessInRange,
+                    'preferencesInRange': preferencesInRange,
+                    'chainInRange': chainInRange,
+                    'distanceInRange': distanceInRange, //UH 920 distance to haram
+                    'quarantineInRange':quarantineInRange
+                }
+                if(_self.filtersInRange(['propertyTypeInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.propertyType.push(data.property);
+                }
+                if(_self.filtersInRange(['preferredRateInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.preferredRate.push(data.preferred);
+                }
+                if(_self.filtersInRange(['exclusiveRateInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.exclusiveRate.push(data.exclusive);
+                }
+                if(_self.filtersInRange(['starRateInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.starRate.push(data.rate);
+                }
+                if(_self.filtersInRange(['loyaltyRateInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.loyaltyRate.push(data.loyalty);
+                }
+                if(_self.filtersInRange(['loyaltyAcceleratorInRange', 'boardBasisInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.loyaltyAccelerator.push(data.accelerator);
+                }
+                // board basis and rate type are not countable filters
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange'], allFilters)) {
+                    matchedData.boardBasis.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoTypeInRange'], allFilters)) {
+                    matchedData.promoType.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoFreeNightInRange'], allFilters)) {
+                    matchedData.promoFreeNight.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoDiscountInRange'], allFilters)) {
+                    matchedData.promoDiscount.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoOccasionInRange'], allFilters)) {
+                    matchedData.promoOccasion.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoUpgradeInRange'], allFilters)) {
+                    matchedData.promoUpgrade.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoCicoInRange', 'promoValueAddedInRange'], allFilters)) {
+                    matchedData.promoCico.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'boardBasisInRange', 'promoValueAddedInRange', 'promoCicoInRange'], allFilters)) {
+                    matchedData.promoValueAdded.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['roomsInRange', 'rateTypeInRange'], allFilters)) {
+                    matchedData.rateType.push(data.hotelid);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'locationInRange'], allFilters)) {
+                    matchedData.location.push(data.location);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'amenitiesInRange'], allFilters)) {
+                    matchedData.amenities.push(data.amenities);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'leisureInRange'], allFilters)) {
+                    matchedData.leisure.push(data.leisure);
+                }
+                 if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'geoLocationInRange'], allFilters)) {
+                    matchedData.geolocations.push(data.geolocations);
+                }
+                 if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'hotelCityInRange'], allFilters)) {
+                    matchedData.hotelcity.push(data.hotelcity);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'hotelNamesInRange'], allFilters)) {
+                    matchedData.hotelname.push(data.hotelname);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'businessInRange'], allFilters)) {
+                    matchedData.business.push(data.business);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'preferencesInRange'], allFilters)) {
+                    matchedData.preferences.push(data.hotelpreference);
+                }
+                if(_self.filtersInRange(['boardBasisInRange', 'rateTypeInRange', 'chainInRange'], allFilters)) {
+                    matchedData.chain.push(data.chain);
+                }
+
+            }
+            else if(typeof Tour !== 'undefined' && typeof Tour.Search !== 'undefined')
+            {
+                if(priceInRange) {
+                    matchedData.tourType.push(data.tourtype);
+                }
+            }
+            else if(typeof Transfer !== 'undefined' && typeof Transfer.Search !== 'undefined')
+            {
+                if(priceInRange) {
+                    matchedData.transferType.push(data.transfertype);
+                }
+            }
+        });
+
+        showNoResultsMessage();
+        _self.updateFilterAttributesNumber(fromWhere, activeFilters, matchedData);
+
+        if(typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined') {
+            _self.geoLocationFilter();
+        }
+
+        $(document).trigger('endApplyFilters.ResultFilter');
+
+        if($('#filterLoyaltyRate').find('input:visible').length == 0) {
+            $('#filterLoyalty').parent().addClass('hidden');
+        }
+        else {
+            $('#filterLoyalty').parent().removeClass('hidden');
+        }
+
+        //sort results
+        if(ResultsSortBy.$selector) {
+            ResultsSortBy.$selector.change();
+        }
+
+        var sum = $(document).find(".search-result_row:not(.notInFilterRange)").length;
+
+        if((typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined' && !Accommodation.Search.fromFastSearch)
+            || (typeof Transfer !== 'undefined' && typeof Transfer.Search !== 'undefined')
+            || (typeof Tour !== 'undefined' && typeof Tour.Search !== 'undefined')) {
+            $('#resultsFoundCountLabel').text("("+sum+")");
+        }
+
+        _self.applyFilterStarted = false;
+
+        Loader.hide();
+
+        function showNoResultsMessage() 
+        {
+            if (visibleRows > 0) return;
+            if (resultsFoundCount === 0) return;
+            if (typeof Accommodation.Search !== 'undefined' && Accommodation.Search.fromFastSearch) return;
+            
+            $(_self.rowsContainer).append(
+                '<div id="noResultsFoundErrorMessage"><h4>' 
+                + trans('errors.noResultsAfterFiltering') 
+                + '</h4></div>'
+            );
+        }
+    },
+    selectFilters : function(filters)
+    {
+        var _self = ResultFilter; 
+
+        var checkboxesMapping = {
+            'amenities': _self.$filterAmenities,
+            'boardBasis': _self.$filterBoardBasis,
+            'business': _self.$filterBusiness,
+            'chain': _self.$filterChain,
+            'exclusiveRate': _self.$filterExclusiveRate,
+            'geolocations': _self.$filterGeoLocations,
+            'leisure': _self.$filterLeisure,
+            'loyaltyRate': _self.$filterLoyaltyRate,
+            'preferredRate': _self.$filterPreferredRate,
+            'promoCico': _self.$filterPromoCico,
+            'promoDiscount': _self.$filterPromoDiscount,
+            'promoFreeNight': _self.$filterPromoFreeNight,
+            'promoOccasion': _self.$filterPromoOccasion,
+            'promoType': _self.$filterPromoType,
+            'promoUpgrade': _self.$filterPromoUpgrade,
+            'promoValueAdded': _self.$filterPromoValueAdded,
+            'quarantine': _self.$filterQuarantine,
+            'rateType': _self.$filterRateType,
+            'starRate': _self.$filterStarRate,
+            'tourType': _self.$filterTourType,
+            'transferType': _self.$filterTransferType,
+            'propertyType': _self.$filterPropertyType
+        };
+        console.log(checkboxesMapping);
+        for (var index in checkboxesMapping) {
+            if (filters[index].length) {
+                selectCheckboxFilter(filters[index], checkboxesMapping[index]);
+            }
+        }
+        
+        function selectCheckboxFilter(selectedValues, jqFilter)
+        {
+            if (selectedValues.length) {
+                var hasCheckboxesSelected = false;
+                jqFilter.find(':checkbox').each(function(){
+                    var checkboxValue = parseInt($(this).val(), 10);
+                    if (isNaN(checkboxValue)) {
+                        checkboxValue = $(this).val()
+                    }
+                    for (const selectedValue of selectedValues) {
+                        if (selectedValue == checkboxValue) {
+                            $(this).prop('checked', true);
+                            hasCheckboxesSelected = true;
+                        }
+                    }
+                });
+                setTimeout(function(){
+                    if (hasCheckboxesSelected && jqFilter.is(':hidden')) {
+                        jqFilter.siblings('.CollapsiblePanelTab').click();
+                    }
+                }, 100);
+            }
+        }
+    },
+    updateFilterAttributesNumber : function(fromWhere, activeFilters, matchedData)
+    {
+        //console.log(activeFilters, matchedData);
+
+        var _self = ResultFilter;
+
+        var activeAttributes = [];
+        var resultsFoundData = $('#resultsFoundCount').data();
+        if(typeof Accommodation !== 'undefined' && typeof Accommodation.Search !== 'undefined')
+        {
+            $.each(matchedData.propertyType, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+
+            _self.addCntToFilter(_self.$filterPropertyType, activeAttributes, true, true, true);
+
+            activeAttributes = [];
+            $.each(matchedData.preferredRate, function (i, value) {
+                if(typeof value !== 'undefined' && value.length > 0) {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterPreferredRate, activeAttributes, true, true, true);
+
+
+            activeAttributes = [];
+            $.each(matchedData.exclusiveRate, function (i, value) {
+                if(typeof value !== 'undefined' && value.length > 0) {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterExclusiveRate, activeAttributes, true, true, true);
+
+
+
+            activeAttributes = [];
+            $.each(matchedData.loyaltyRate, function (i, value) {
+                if(typeof value !== 'undefined' && value > 0) {
+                    if(typeof activeAttributes[1] !== 'undefined') {
+                        activeAttributes[1] += 1;
+                    }
+                    else {
+                        activeAttributes[1] = 1;
+                    }
+                }
+            });
+            $.each(matchedData.loyaltyAccelerator, function (i, value) {
+                if(typeof value !== 'undefined' && value == 's') {
+                    if(typeof activeAttributes[2] !== 'undefined') {
+                        activeAttributes[2] += 1;
+                    }
+                    else {
+                        activeAttributes[2] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterLoyaltyRate, activeAttributes, true, true, true);
+
+            activeAttributes = [];
+            $.each(matchedData.starRate, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterStarRate, activeAttributes, true, true, true);
+
+            //board basis
+            activeAttributes = [];
+            $.each(matchedData.boardBasis, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    var rooms = $('#hotel_' + value + '_row').find('.rdRow');
+                    //if(fromWhere != _self.filterBoardBasis) {
+                        rooms = rooms.not('.notInFilterRangeRateType');
+                    //}
+                    rooms.each(function() {
+                        var boardBasis = $(this).data('board.1');
+                        if(typeof boardBasis !== 'undefined') {
+                            if(typeof activeAttributes[boardBasis] !== 'undefined') {
+                                activeAttributes[boardBasis] += 1;
+                            }
+                            else {
+                                activeAttributes[boardBasis] = 1;
+                            }
+                        }
+                    });
+                }
+            });
+            if(resultsFoundData.roomsloaded == 1 || activeAttributes.length) {
+                _self.addCntToFilter(_self.$filterBoardBasis, activeAttributes, true, true, false);
+            }
+
+
+
+            activeAttributes = [];
+            /*promotion type data attribut mapping*/
+            var attrMapping = _self.getPromotionTypeAttrMapping();
+            $.each(matchedData.promoType, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    var rooms = $('#hotel_' + value + '_row').find('.rdRow');
+
+                    rooms.each(function() {
+                        var $thisElem = $(this);
+                        $.each(attrMapping, function(k,v)
+                        {
+                            var promoType = $thisElem.data(v);
+                            if(typeof promoType !== 'undefined' && promoType > 0) {
+                                if(typeof activeAttributes[promoType] !== 'undefined') {
+                                    activeAttributes[promoType] += 1;
+                                }
+                                else {
+                                    activeAttributes[promoType] = 1;
+                                }
+                            }
+                        });
+                    });
+                }
+            });
+            if(resultsFoundData.roomsloaded == 1 || activeAttributes.length) {
+                var visible = false;
+                if($('#rateTypePromotions').is(':checked')) {
+                    visible = true;
+                }
+                _self.addCntToFilter(_self.$filterPromoType, activeAttributes, visible, true, false);
+            }
+            //rate type
+            activeAttributes = [];
+            $.each(matchedData.rateType, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    var rooms = $('#hotel_' + value + '_row').find('.rdRow');
+                    //if(fromWhere != _self.filterRateType) {
+                        rooms = rooms.not('.notInFilterRangeBoardBasis');
+                    //}
+                    rooms.each(function() {
+                        // Count restricted
+                        var restricted = $(this).data('nonrefundable.1');
+                        if(typeof restricted !== 'undefined' && restricted.length == 0)
+                        {
+                            if(typeof activeAttributes[1] !== 'undefined') {
+                                activeAttributes[1] += 1;
+                            }
+                            else {
+                                activeAttributes[1] = 1;
+                            }
+                        }
+                        // Count nonrefundable
+                        else if(typeof restricted !== 'undefined' && restricted.length > 0)
+                        {
+                            if(typeof activeAttributes[2] !== 'undefined') {
+                                activeAttributes[2] += 1;
+                            }
+                            else {
+                                activeAttributes[2] = 1;
+                            }
+                        }
+                        // Count promotions
+                        var promotions = $(this).data('promotions.1');
+                        if(typeof promotions !== 'undefined' && promotions > 0)
+                        {
+                            if(typeof activeAttributes[3] !== 'undefined') {
+                                activeAttributes[3] += 1;
+                            }
+                            else {
+                                activeAttributes[3] = 1;
+                            }
+                        }
+                    });
+                }
+            });
+            if(resultsFoundData.roomsloaded == 1 || activeAttributes.length) {
+                _self.addCntToFilter(_self.$filterRateType, activeAttributes, true, true, false);
+            }
+
+            activeAttributes = [];
+            $.each(matchedData.location, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterLocation, activeAttributes, false, true, true);
+
+            activeAttributes = [];
+            $.each(matchedData.amenities, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterAmenities, activeAttributes, false, false, false);
+
+            activeAttributes = [];
+            $.each(matchedData.leisure, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterLeisure, activeAttributes, false, false, false);
+
+             activeAttributes = [];
+            $.each(matchedData.geolocations, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterGeoLocations, activeAttributes, false, false, false);
+
+              activeAttributes = [];
+            $.each(matchedData.hotelcity, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterHotelCity, activeAttributes, false, false, false);
+
+            activeAttributes = [];
+            $.each(matchedData.business, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterBusiness, activeAttributes, false, false, false);
+
+            activeAttributes = [];
+            $.each(matchedData.preferences, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    activeAttributes = $.merge(activeAttributes, _self.getNumericArray(value));
+                }
+            });
+            _self.addCntToFilter(_self.$filterPreferences, activeAttributes, false, false, false);
+
+            activeAttributes = [];
+            $.each(matchedData.chain, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterChain, activeAttributes, false, true, true);
+        }
+        else if(typeof Tour !== 'undefined' && typeof Tour.Search !== 'undefined') {
+            $.each(matchedData.tourType, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+
+            _self.addCntToFilter(_self.$filterTourType, activeAttributes, true, true, true);
+
+
+        }
+        else if(typeof Transfer !== 'undefined' && typeof Transfer.Search !== 'undefined') {
+            $.each(matchedData.transferType, function (i, value) {
+                if(typeof value !== 'undefined') {
+                    if(typeof activeAttributes[value] !== 'undefined') {
+                        activeAttributes[value] += 1;
+                    }
+                    else {
+                        activeAttributes[value] = 1;
+                    }
+                }
+            });
+            _self.addCntToFilter(_self.$filterTransferType, activeAttributes, true, true, true);
+        }
+    },
+    getNumericArray : function(inputData) {
+        var result = [];
+        if(typeof inputData !== 'undefined' && inputData != '')
+        {
+            if(!$.isNumeric(inputData)) {
+                result = inputData.split(",").map(function (e) {
+                    return parseInt(e, 10)
+                });
+            }
+            else {
+                result.push(inputData);
+            }
+        }
+        return result;
+    },
+    addCntToFilter : function ($filter, filterValue, visible, searchInKeys, showCount)
+    {
+        var oneInputVisible = false;
+        $filter.find('input').each(function () {
+            var $this = $(this);
+
+            if(searchInKeys && typeof filterValue[this.value] === 'undefined') {
+                filterValue[this.value] = 0;
+            }
+
+            if(((searchInKeys && filterValue[this.value] == 0) || (!searchInKeys && $.inArray(parseInt(this.value), filterValue) == -1)) && !$this.is(':checked'))
+            {
+                $this.parent().hide(); //checkbox container
+                $this.parent().next().hide(); //label container
+                $this.parent().next().next().hide(); //br
+                //if($this.is(':checked')) {
+                //    this.checked = false;
+                //    console.log(this);
+                //}
+            }
+            else
+            {
+                $this.parent().show();
+                $this.parent().next().show();
+                if(showCount) {
+                    $this.parent().next().find('span').empty().text(filterValue[this.value]);
+                }
+                $this.parent().next().next().show();
+                oneInputVisible = true;
+            }
+        });
+        if(!oneInputVisible && !visible) {
+            if( $filter.data('rec') !== 'undefined' && $filter.data('rec') !== 'select-city'){
+                $filter.parent().hide();
+            }
+        }
+        else {
+            if(!visible && $filter.attr('id') == 'filterPromotionType') {
+                ResultFilter.showPromotionTypeFilter(false);
+            } else {
+                $filter.parent().show();
+            }
+        }
+    },
+    createLocations: function()
+    {
+        var _self = this;
+
+        locationsJSON = $.parseJSON($('#locationIds').val());
+        for(var i = 0, j = locationsJSON.length; i < j; i++)
+        {
+            if(locationsJSON[i].id  > 0)
+            {
+                $(
+                    '<div class="squaredThree">' +
+                    '<input type="checkbox" name="checkLocations" id="location' + i + '" value="' + locationsJSON[i].id + '"/>' +
+                    '<label for="location' + i + '"></label>' +
+                    '</div>' +
+                    '<label for="location' + i + '" class="checkbox_label">' + locationsJSON[i].name + '(<span>0</span>)</label>' +
+                    '<div class="clear"></div>'
+                ).appendTo(_self.$filterLocation);
+            }
+        }
+    },
+    geoLocationFilter: function()
+    {
+        var _self = ResultFilter;
+        var hotelIds = [];
+        _self.$rows.not('.notInFilterRange').each(function (key) {
+            hotelIds[key] = $(this).data('hotelid');
+        });
+        $(document).trigger('updateGeoMarkers.ResultFilter', [hotelIds]);
+    },
+    priceFilter : function(productPrice, fromPrice, toPrice)
+    {
+        if(typeof productPrice === 'undefined' || (parseFloat(productPrice) >= fromPrice && parseFloat(productPrice) <= toPrice)) {
+            return true;
+        }
+        return false;
+    },
+    distanceFilter : function(productDistance, fromDistance, toDistance)
+    {
+        //UH 920 distance to haram
+        if(typeof productDistance === 'undefined' || (parseFloat(productDistance) >= fromDistance && parseFloat(productDistance) <= toDistance)) {
+            return true;
+        }
+        return false;
+    },
+    propertyTypeFilter: function(property, checkedBoxes)
+    {
+        if(typeof property === 'undefined' || checkedBoxes.indexOf(property) != -1) {
+            return true;
+        }
+        return false;
+    },
+    preferredRateFilter: function(preferred, checkedBoxes)
+    {
+        if(typeof preferred === 'undefined' || checkedBoxes.indexOf(preferred) != -1) {
+            return true;
+        }
+        return false;
+    },
+
+    exclusiveRateFilter: function(exclusive, checkedBoxes)
+    {
+        if(typeof exclusive === 'undefined' || checkedBoxes.indexOf(exclusive) != -1) {
+            return true;
+        }
+        return false;
+    },
+    loyaltyRateFilter: function(loyalty)
+    {
+        if(typeof loyalty === 'undefined' || parseInt(loyalty,10) > 0) {
+            return true;
+        }
+        return false;
+    },
+    loyaltyAcceleratorFilter: function(accelerator)
+    {
+        if(typeof accelerator === 'undefined' || accelerator == 's') {
+            return true;
+        }
+        return false;
+    },
+
+    starRateFilter : function(rate, checkedBoxes)
+    {
+        if(typeof rate === 'undefined' || checkedBoxes.indexOf(rate) != -1) {
+            return true;
+        }
+        return false;
+    },
+    boardBasisFilter : function($el, checkedBoxes)
+    {
+        var roomsFound = false;
+
+        var roomsContainers = $el.find('.rooms-details');
+        if(roomsContainers.length == 0) //no rooms loaded in CI_DISPLAY_SIMPLE mode
+        {
+            roomsFound = true;
+        }
+        else
+        {
+            roomsContainers.each(function () {
+
+                $(this).find('.rdRow').each(function () {
+                    var boardBasisCode = $(this).data('board.1');
+
+                    if(checkedBoxes.indexOf(boardBasisCode) != -1) {
+                        roomsFound = true;
+                    }
+                    else {
+                        $(this).addClass('notInFilterRangeBoardBasis');
+                    }
+                });
+            });
+        }
+        return roomsFound;
+    },
+    promotionTypeFilter : function($el, checkedBoxes)
+    {
+        /*promotion type data attribut mapping*/
+        var _self = ResultFilter;
+        var attrMapping = _self.getPromotionTypeAttrMapping();
+
+        var roomsFound = false;
+
+        var roomsContainers = $el.find('.rooms-details');
+        if(roomsContainers.length == 0) //no rooms loaded in CI_DISPLAY_SIMPLE mode
+        {
+            roomsFound = true;
+        }
+        else
+        {
+            roomsContainers.each(function () {
+
+                $(this).find('.rdRow').each(function ()
+                {
+                    var $thisElem = $(this);
+                    var notInFilterRange = true;
+                    $.each(checkedBoxes, function(k,v)
+                    {
+                        var promoTypeAttr = attrMapping[v];
+
+                        var promoTypeCode = $thisElem.data(promoTypeAttr);
+
+                        if(checkedBoxes.indexOf(promoTypeCode) != -1) {
+                            roomsFound = true;
+                            notInFilterRange = false;
+                        }
+                    });
+
+                    if(notInFilterRange)
+                    {
+                        $thisElem.addClass('notInFilterRangeRateType');
+                    }
+                });
+            });
+        }
+        return roomsFound;
+    },
+    rateTypeFilter: function($el, checkedBoxes)
+    {
+        var roomsFound = false;
+
+        var roomsContainers = $el.find('.rooms-details');
+        if(roomsContainers.length == 0) //no rooms loaded in CI_DISPLAY_SIMPLE mode
+        {
+            roomsFound = true;
+        }
+        else
+        {
+            roomsContainers.each(function () {
+
+                $(this).find('.rdRow').each(function () {
+                    var rowInRange = false;
+
+                    if(checkedBoxes.indexOf(1) != -1 && checkedBoxes.indexOf(2) != -1) { //no point in verify nonrefundable because restricted & flexible are exclusive
+                        var promotions = true;
+                        if(checkedBoxes.indexOf(3) != -1)
+                        {
+                            var test = $(this).data('promotions.1');
+                            if(test == 0) {
+                                promotions = false;
+                            }
+                        }
+                        rowInRange = promotions;
+                    }
+                    else if(checkedBoxes.indexOf(1) != -1) {
+                        var flexible = true, promotions = true;
+                        var test = $(this).data('nonrefundable.1');
+                        if(test.length > 0) {
+                            flexible = false;
+                        }
+                        if(checkedBoxes.indexOf(3) != -1) {
+                            test = $(this).data('promotions.1');
+                            if(test == 0) {
+                                promotions = false;
+                            }
+                        }
+                        rowInRange = flexible && promotions;
+                    }
+                    else if(checkedBoxes.indexOf(2) != -1) {
+                        var nonRefundable = true, promotions = true;
+                        var test = $(this).data('nonrefundable.1');
+                        if(test.length == 0) {
+                            nonRefundable = false;
+                        }
+                        if(checkedBoxes.indexOf(3) != -1) {
+                            test = $(this).data('promotions.1');
+                            if(test == 0) {
+                                promotions = false;
+                            }
+                        }
+                        rowInRange = nonRefundable && promotions;
+                    }
+                    else if(checkedBoxes.indexOf(3) != -1)
+                    {
+                        // show promotion type filter
+                        ResultFilter.showPromotionTypeFilter(true);
+
+                        var promotions = true;
+                        var test = $(this).data('promotions.1');
+                        if(test == 0) {
+                            promotions = false;
+                        }
+                        rowInRange = promotions;
+                    }
+                    else {
+                        rowInRange = true;
+                    }
+
+                    roomsFound = roomsFound || rowInRange;
+
+                    if(!rowInRange) {
+                       $(this).addClass('notInFilterRangeRateType');
+                    }
+
+                });
+            });
+        }
+        return roomsFound;
+    },
+    locationFilter : function(location, checkedBoxes)
+    {
+        if(typeof location === 'undefined' || checkedBoxes.indexOf(location) != -1) {
+            return true;
+        }
+        return false;
+    },
+    amenitiesFilter: function (amenities, checkedBoxes)
+    {
+        if(typeof amenities === 'undefined' || amenities == '') {
+            return true;
+        }
+
+        amenities = ResultFilter.getNumericArray(amenities);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(amenities.indexOf(value) != -1)
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+    leisureFilter: function (leisure, checkedBoxes)
+    {
+        if(typeof leisure === 'undefined' || leisure == '') {
+            return true;
+        }
+
+        leisure = ResultFilter.getNumericArray(leisure);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(leisure.indexOf(value) != -1)
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+    geoLocationsFilter: function (geolocations, checkedBoxes)
+    {
+        if(typeof geolocations === 'undefined' || geolocations == '') {
+            return false;
+        }
+        geolocations = ResultFilter.getNumericArray(geolocations);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(geolocations.indexOf(value) != -1)
+            {
+                found = true;
+            }
+        });
+        return found;
+    },
+
+     hotelCityFilter: function (hotelcity, checkedBoxes)
+    {
+        if(typeof hotelcity === 'undefined' || hotelcity == '') {
+            return true;
+        }
+        hotelcity = ResultFilter.getNumericArray(hotelcity);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(hotelcity.indexOf(value) != -1)
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+    hotelNamesFilter: function (hotelname, searchHotels)
+    {
+        if(typeof hotelname === 'undefined' || hotelname == '') {
+            return true;
+        }
+        var found = false;
+        $.each(searchHotels, function(k, value) {
+        if (hotelname.toUpperCase().indexOf(value) != -1 )
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+
+    businessFilter: function (business, checkedBoxes)
+    {
+        if(typeof business === 'undefined' || business == '') {
+            return true;
+        }
+
+        business = ResultFilter.getNumericArray(business);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(business.indexOf(value) != -1)
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+    preferencesFilter: function (hotelpreference, checkedBoxes)
+    {
+        if(typeof hotelpreference === 'undefined' || hotelpreference == '') {
+            return true;
+        }
+
+        hotelpreference = ResultFilter.getNumericArray(hotelpreference);
+        var found = false;
+        $.each(checkedBoxes, function(k, value) {
+            if(hotelpreference.indexOf(value) != -1)
+            {
+                found = true;
+                return false;
+            }
+        });
+        return found;
+    },
+    chainFilter: function (chain, checkedBoxes)
+    {
+        if(typeof chain === 'undefined' || checkedBoxes.indexOf(chain) != -1) {
+            return true;
+        }
+        return false;
+    },
+    tourTypeFilter : function(tourtype, checkedBoxes)
+    {
+        if(typeof tourtype === 'undefined' || checkedBoxes.indexOf(tourtype) != -1) {
+            return true;
+        }
+        return false;
+    },
+    transferTypeFilter : function(transfertype, checkedBoxes)
+    {
+        if(typeof transfertype === 'undefined' || checkedBoxes.indexOf(transfertype) != -1) {
+            return true;
+        }
+        return false;
+    },
+    filtersInRange: function (excludedFilters, allFilters)
+    {
+        // method checks if all filters are in range, other than 'excludedFilters'
+        for (var property in allFilters) {
+            if (allFilters.hasOwnProperty(property)) {
+                if(excludedFilters.indexOf(property) == -1 && allFilters[property] == false) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    },
+    quarantineFilter: function($el, checkedBoxes)
+    {
+        var roomsFound = false;
+        var roomsContainers = $el.find('.rooms-details');
+        if(roomsContainers.length == 0) //no rooms loaded in CI_DISPLAY_SIMPLE mode
+        {
+            roomsFound = true;
+        }
+        else
+        {
+            roomsContainers.each(function () {
+
+            $(this).find('.rdRow').each(function () {
+                var roomTypeText = $(this).find('.roomTypeText').text();
+                var roomTypeTextLowerCase = roomTypeText.toLowerCase();
+                if(roomTypeTextLowerCase.indexOf(checkedBoxes) != -1 || roomTypeTextLowerCase == checkedBoxes) {
+                    roomsFound = true;
+                }
+                else
+                {
+                    $(this).addClass('notInFilterRangeQuarantine');
+                }
+                });
+            });
+        }
+        return roomsFound;
+    }
+
+};
+
+
+function getFilterInputLabels(filter, codes)
+{
+    var filterItems = $(filter).find('input');
+    var labelNames = [];
+
+    $.each(filterItems, function ()
+    {
+        if($.inArray(parseInt($(this).val()), codes) != -1 ) {
+            var label = $('label[for="' + this.id + '"].checkbox_label').html();
+            labelNames.push(label);
+        }
+    });
+
+    return labelNames;
+}
+
+
+/**
+ * Accordion
+ * @returns {*}
+ */
+$.fn.togglepanels = function(){
+    return this.each(function(){
+        $(this).find("h3").click(function() {
+            $(this).next().slideToggle("fast", function(){
+                $(document).trigger('heightChanged.togglepanels');
+            });
+            $(this).parent().toggleClass('CollapsiblePanelOpen');
+
+            var $open = $(this).parent().hasClass('CollapsiblePanelOpen');
+            if ($open) {
+                $(this).find('span').removeClass('glyphicon-plus-sign').addClass('glyphicon-minus-sign');
+            } else {
+                $(this).find('span').removeClass('glyphicon-minus-sign').addClass('glyphicon-plus-sign');
+            }
+            return false;
+        });
+    });
+};

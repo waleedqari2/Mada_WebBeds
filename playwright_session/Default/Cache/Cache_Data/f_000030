@@ -1,0 +1,1529 @@
+/**
+ * Created by ciprian on 2/17/15.
+ * Created by ionut on 2/17/15.
+ * Created by florin on 2/17/15.
+ * :D
+ */
+
+/****************************
+ * Datepickers
+ *
+ ********************************/
+
+var DateIntervalLib = DateIntervalLib || (function()
+{
+    var params = {dateFormat: JS_DATE_FORMAT, altFormat: 'yy-mm-dd'};
+
+    function _init()
+    {
+        var $datePickerFrom = $('#datePickerFrom');
+        var $datePickerTo   = $('#datePickerTo');
+
+        $datePickerFrom.datepicker({
+            dateFormat : params.dateFormat,
+            changeYear : true,
+            changeMonth: true,
+            minDate    : $(this).datepicker('getDate'),
+			altField   : $(params.DateFrom),
+            altFormat  : params.altFormat,
+            onSelect   : function (dateText, inst)
+            {
+                var fromDate = new Date($(params.DateFrom).val());
+                var toDate = new Date(fromDate);
+                $datePickerTo.datepicker("option", "minDate", new Date(toDate.setDate(toDate.getDate() + 1)));
+                toDate = new Date($(params.DateTo).val());
+                $(params.dateRangeId).val($.datepicker.formatDate(params.dateFormat, fromDate) + " - " + $.datepicker.formatDate(params.dateFormat, toDate));
+            }
+        });
+
+        $datePickerTo.datepicker({
+            dateFormat : params.dateFormat,
+            changeYear : true,
+            changeMonth: true,
+			altField   : $(params.DateTo),
+            altFormat  : params.altFormat,
+            onSelect   : function (dateText, inst)
+            {
+                var fromDate = new Date($(params.DateFrom).val());
+                var toDate = new Date($(params.DateTo).val());
+                $(params.dateRangeId).val($.datepicker.formatDate(params.dateFormat, fromDate) + " - " + $.datepicker.formatDate(params.dateFormat, toDate));
+                $("#dateRangePop").hide();
+            }
+        });
+
+        if ($datePickerFrom.val())
+        {
+            var minDateFrom = new Date($(params.DateFrom).val());
+            var currentDate = new Date();
+
+            if (currentDate < minDateFrom || (currentDate.getFullYear() == minDateFrom.getFullYear()
+                && currentDate.getMonth() == minDateFrom.getMonth()
+                && currentDate.getDate() == minDateFrom.getDate() ))
+            {
+                minDateFrom = new Date(currentDate.setDate(currentDate.getDate() - 1));
+            }
+
+            var useMinDateFunctionality = params.useMinDate;
+
+            if (useMinDateFunctionality != 0)
+            {
+                $datePickerFrom.datepicker('option', 'minDate', minDateFrom);
+                var minDateTo = minDateFrom;
+                minDateTo = new Date(minDateTo.setDate(minDateTo.getDate() + 1));
+                $datePickerTo.datepicker('option', 'minDate', minDateTo);
+            }
+
+        }
+
+        $('.glyphicon-calendar, ' + params.dateRangeId).on('click', function ()
+        {
+            $('#dateRangePop').fadeToggle("fast");
+        });
+
+        // Outsite container click
+        $(document).mouseup(function (e)
+        {
+            var container = $("#dateRangePop");
+
+            if (!container.is(e.target) // if the target of the click isn't the container...
+                && container.has(e.target).length === 0) // ... nor a descendant of the container
+            {
+                container.hide();
+            }
+        });
+
+
+        var selectedFrom = new Date(params.travelFrom);
+        $datePickerFrom.datepicker("setDate", selectedFrom);
+        $(params.DateFrom).val($.datepicker.formatDate(params.altFormat, selectedFrom));
+
+        var selectedTo = new Date(params.travelTo);
+        $datePickerTo.datepicker("setDate", selectedTo);
+        $(params.DateTo).val($.datepicker.formatDate(params.altFormat, selectedTo));
+
+        $(params.dateRangeId).val($.datepicker.formatDate(params.dateFormat, selectedFrom) + ' - ' + $.datepicker.formatDate(params.dateFormat, selectedTo));
+    };
+	
+	var paramsR = {
+		dateFormat:     JS_DATE_FORMAT,
+		altFormat:      'yy-mm-dd',
+		numberOfMonths: 2,
+		changeYear:     true,
+		changeMonth:    true,
+		from:           '#fromDatepicker',
+		to:             '#toDatepicker'
+	};
+	
+	function _initR() {
+		var from = $(paramsR.from);
+		var to = $(paramsR.to);
+        var toAlt = $(paramsR.toAltField);
+        var fromAlt = $(paramsR.fromAltField);
+		var showSecond = false;
+		
+        from.datepicker({
+			dateFormat:     paramsR.dateFormat,
+			altFormat:      paramsR.altFormat,
+			numberOfMonths: paramsR.numberOfMonths,
+			changeYear:     paramsR.changeYear,
+			changeMonth:    paramsR.changeMonth,
+			altField:       paramsR.fromAltField,
+			minDate:        0,
+			onClose:        function (dateText, datepicker)
+			{
+                $(this).attr("disabled", false);
+				if(showSecond)
+				{
+					to.datepicker('show');
+					showSecond = false;
+				}
+                updateNight();
+			},
+			onSelect: function() {
+				showSecond = true;
+                fromAlt.change();
+                var currentDate = from.datepicker('getDate')/*.valueOf()*/;
+                var nextDate = new Date(currentDate.setDate(currentDate.getDate() + 1));
+                to.datepicker('option', 'minDate', nextDate);
+                var maxDate = new Date(currentDate.setDate(currentDate.getDate() + 30));
+                to.datepicker('option', 'maxDate', maxDate);
+                updateNight();
+			},
+			beforeShowDay: function(date) {
+				var toD 	= Date.parse(to.datepicker('getDate'));
+				var fromD 	= Date.parse(from.datepicker('getDate'));
+				date 		= Date.parse(date);
+				
+				return [true, date >= fromD && date <= toD ? 'ui-state-highlight ui-state-active' : ''];
+			}
+		});
+		to.datepicker({
+			dateFormat:     paramsR.dateFormat,
+			altFormat:      paramsR.altFormat,
+			numberOfMonths: paramsR.numberOfMonths,
+			changeYear:     paramsR.changeYear,
+			changeMonth:    paramsR.changeMonth,
+			altField:       paramsR.toAltField,
+			minDate: 		from.datepicker('getDate'),
+			maxDate: 		'+ 180 days',
+			beforeShowDay: function(date) {
+				var toD 	= Date.parse(to.datepicker('getDate'));
+				var fromD 	= Date.parse(from.datepicker('getDate'));
+				date 		= Date.parse(date);
+                updateNight();
+				return [true, date >= fromD && date <= toD ? 'ui-state-highlight ui-state-active' : ''];
+
+			},
+            onSelect: function() {
+                toAlt.change();
+                updateNight();
+            }
+		});
+        numberOfNightsChange();
+        updateNight();
+	};
+    function numberOfNightsChange() {
+        $('[name="numberOfNights"]').on('change', function (e) {
+            var fromDate = $('[name="DateFrom"]').datepicker('getDate'),
+                toDate = $('[name="DateTo"]'),
+                nbrNights = Number($(this).val()),
+                newDate = new Date(fromDate);
+
+            newDate.setDate(fromDate.getDate() + nbrNights);
+            toDate.datepicker('setDate', newDate);
+            $('#isCriteriaChange').val(1);
+        });
+    }
+    function updateNight()
+    {
+        var $fromDate = $('[name="DateFrom"]');
+        var $toDate = $('[name="DateTo"]');
+        var $nbrNights = $('[name="numberOfNights"]');
+
+        const _fromDate = $fromDate.datepicker('getDate');
+        const _toDate = $toDate.datepicker('getDate');
+
+        const utcFromDate = Date.UTC(_fromDate.getFullYear(), _fromDate.getMonth(), _fromDate.getDate());
+        const utcToDate = Date.UTC(_toDate.getFullYear(), _toDate.getMonth(), _toDate.getDate());
+
+        var dayDiff = Math.ceil((utcToDate - utcFromDate) / (1000 * 60 * 60 * 24));
+
+        var visaPage =  $fromDate.parents().find("form#VisaSearchForm").length;
+        if(visaPage !=1)
+        {
+            if(dayDiff > 30)
+            {
+                $nbrNights.val('30');
+                $($("button.selectpicker")[0]).find("span.filter-option").text('30');
+            }else {
+                $nbrNights.val(dayDiff);
+                $($("button.selectpicker")[0]).find("span.filter-option").text(dayDiff);
+            }
+        }
+        $('#isCriteriaChange').val(1);
+
+    }
+    return {
+        init : function(Args)
+        {
+            params = $.extend(params, Args);
+            _init();
+        },
+		initR: function(Args) {
+			paramsR = $.extend(paramsR, Args);
+			_initR();
+            $('.ui-datepicker').addClass('notranslate');
+		}
+    }
+}());
+
+/*****************************************
+ * == Transfer Locations Predictive CI ==
+ ****************************************/
+function TransferLocationsLib()
+{
+    this.pickUp = 'pickUpFrom';
+    this.dropOff = 'dropOffTo';
+
+    this.params = {CI_PROXY_URL: CI_PROXY_URL, BASE_URL: BASE_URL, FOLDER: FOLDER};
+    this.prevText = '';
+}
+
+TransferLocationsLib.prototype.init = function(args) {
+    this.params.searchType = args.searchType || this.pickUp;
+
+    this.params = $.extend(this.params, args);
+    this._init();
+};
+
+TransferLocationsLib.prototype._init = function() {
+    var that = this;
+    var $filterDestination = $('#filter_' + that.params.inputId);
+    var $clearTT = $filterDestination.find('.clearTypeahead');
+    var siteUrl = that.params.BASE_URL + (that.params.FOLDER ? '/' + that.params.FOLDER : '');
+
+    that.populateLocations();
+
+    function getTransferLocationRemoteData(type) {
+        var _limit = 5;
+
+        return {
+            datumTokenizer: function (d) {
+                return Bloodhound.tokenizers.whitespace(d.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: _limit,
+            remote: {
+                url: that.params.CI_PROXY_URL + '?c=PredictiveSearch&m=getTypeaheadPredictiveSearchDataTransfer&query=%QUERY',
+                filter: function(d) {
+                    var items = [];
+
+                    for (var i in d)
+                    {
+                        if (d[i].LocationType === type || (type === 'show_more' && d[i].Id === -1))
+                        {
+                            items.push(d[i]);
+                        }
+                    }
+
+                    return items;
+                },
+                ajax: {
+                    beforeSend: function () {
+                        $clearTT.hide();
+                        $('#' + that.params.inputId).activity({
+                            outside: true,
+                            align: 'right',
+                            width: 2,
+                            length: 2,
+                            color: '#ffffff'
+                        });
+                    },
+                    complete: function () {
+                        $('#' + that.params.inputId).activity(false);
+                        $clearTT.show();
+                    }
+                }
+            },
+            sorter: function (a, b) {
+                // Chrome fix, re-order the items by index
+                if (a.index < b.index) {
+                    return -1;
+                } else if (a.index > b.index) {
+                    return 1;
+                } else
+                    return 0;
+            }
+        };
+    }
+
+    var terminals = new Bloodhound(getTransferLocationRemoteData('terminal'));
+    var hotels = new Bloodhound(getTransferLocationRemoteData('hotel'));
+    var neighborhoods = new Bloodhound(getTransferLocationRemoteData('neighborhood'));
+    var showMoreBH = new Bloodhound(getTransferLocationRemoteData('show_more'));
+
+    terminals.initialize();
+    hotels.initialize();
+    neighborhoods.initialize();
+    showMoreBH.initialize();
+
+    $('#' + that.params.inputId).typeahead({minLength: 3, highlight: true, hint: false},
+    {
+        name: 'terminals',
+        displayKey: 'value',
+        source: terminals.ttAdapter(),
+        templates: {
+            header: '<h5>Terminals</h5>',
+            suggestion: function (item)
+            {
+                return '<p>' + (item['flag'].length > 0 ? '<img src="' + siteUrl + '/_laravel/public/images/destination/country/flags/' + item['flag'] + '" alt="" style="width:40px; height:20px"/>' : '') +
+                    '&nbsp;&nbsp;' + item['value'] + (item['city'].length > 0 ? ' , ' + item['city'] : '') +
+                    (item['country'].length > 0 ? ' - ' + item['country'] : '') + '</p>';
+            }
+        }
+    },
+    {
+        name: 'hotels',
+        displayKey: 'value',
+        source: hotels.ttAdapter(),
+        templates: {
+            header: '<h5>Hotels</h5>',
+            suggestion: function (item)
+            {
+                return '<p>' + (item['flag'].length > 0 ? '<img src="' + siteUrl + '/_laravel/public/images/destination/country/flags/' + item['flag'] + '" alt="" style="width:40px; height:20px"/>' : '') +
+                    '&nbsp;&nbsp;' + item['value'] + (item['city'].length > 0 ? ' , ' + item['city'] : '') +
+                    (item['country'].length > 0 ? ' - ' + item['country'] : '') + '</p>';
+            }
+        }
+    },
+    {
+        name: 'neighborhoods',
+        displayKey: 'value',
+        source: neighborhoods.ttAdapter(),
+        templates: {
+            header: '<h5>Neighborhoods</h5>',
+            suggestion: function (item)
+            {
+                return '<p>' + (item['flag'].length > 0 ? '<img src="' + siteUrl + '/_laravel/public/images/destination/country/flags/' + item['flag'] + '" alt="" style="width:40px; height:20px"/>' : '') +
+                    '&nbsp;&nbsp;' + item['value'] + (item['city'].length > 0 ? ' , ' + item['city'] : '') +
+                    (item['country'].length > 0 ? ' - ' + item['country'] : '') + '</p>';
+            }
+        }
+    },
+    {
+        name: 'show-more',
+        displayKey: 'value',
+        source: showMoreBH.ttAdapter(),
+        templates: {
+            suggestion: function (item)
+            {
+                return '<p>&nbsp;&nbsp;' + item['value'] + '</p>';
+            }
+        }
+    }).on('typeahead:selected', function(j, item) {
+        if (item['Id'] > 0) {
+            that.prevText = $(this).val();
+
+            $('[name="' + that.params.inputName + 'Type"]').val(item['LocationType']);
+            $('[name="' + that.params.inputName + 'Id"]').val(item['Id']);
+            $('[name="destinationCountry"]').val(item['countryId']);
+
+            if (that.params.searchType === that.pickUp && $(that.params.transferType).val() === 'm')
+            {
+                $('[name="' + that.dropOff + '"]').val(that.prevText).data('ttTypeahead').input.query = that.prevText;
+                $('[name="' + that.dropOff + 'Type"]').val(item['Id']);
+                $('[name="' + that.dropOff + 'Id"]').val(item['LocationType']);
+            }
+
+            TransferLocations[that.params.searchType] = {
+                id: item['Id'],
+                type: item['LocationType'],
+                text: $(this).val()
+            };
+
+            // jQuery workaround
+            $("#" + that.params.inputId).blur();
+
+            //update label and show/hide pickup date and time row
+            Transfer.Search.changeTransferLabel();
+            return null;
+        }
+
+        // Show more details functionality
+        $filterDestination.find('[name="' + that.params.inputName + 'Id"]').val('');
+        $filterDestination.find('[name="' + that.params.inputName + 'Type"]').val('');
+        $filterDestination.find('[name="destinationCountry"]').val('');
+
+        $filterDestination.find('input.typeahead').val('').data('ttTypeahead').input.query = '';
+        $("#" + that.params.inputId).blur();
+
+        //update label and show/hide pickup date and time row
+        Transfer.Search.changeTransferLabel();
+
+        var searchBoxHtml = $('#searchShowMoreDestinationScript').html();
+
+        $('#testdata').html(searchBoxHtml);
+
+        searchBoxHtml = searchBoxHtml.replace('Search destination');
+        if(searchBoxHtml.indexOf('</script>') === -1) { //ie fix!!!
+            searchBoxHtml += '</script>';
+        }
+
+        bootbox.dialog({
+            title: 'Show more destinations',
+            message: searchBoxHtml,
+            buttons: {
+                main: {
+                    label: 'Close',
+                    className: "btn btn-default",
+                    callback: function () {
+                    }
+                },
+                success: {
+                    label: 'Select',
+                    className: "btn btn-primary selectShowMoreDestination",
+                    callback: function () {
+                        var area = $('#scAreaSelect option:selected');
+                        var city = $('#scCitySelect option:selected');
+                        var location = $('#scLocationSelect option:selected');
+                        var hotel = $('#scHotelSelect option:selected');
+                        if ((city.val() == '' && area.val() == '') || (location.val() == '' && hotel.val() == '')) {
+                            return false;
+                        }
+
+                        if (hotel.val() != '') {
+                            $('[name="' + that.params.inputName + 'Id"]').val(hotel.val()).trigger('change');
+                            $('[name="' + that.params.inputName + 'Type"]').val('hotel');
+
+                            $filterDestination.find('input.typeahead').val(hotel.text()).data('ttTypeahead').input.query = hotel.text();
+                        } else if (location.val() != '') {
+                            $('[name="' + that.params.inputName + 'Id"]').val(location.val()).trigger('change');
+                            $('[name="' + that.params.inputName + 'Type"]').val(location.data('type'));
+
+                            $filterDestination.find('input.typeahead').val(location.text()).data('ttTypeahead').input.query = location.text();
+                        }
+                    }
+                }
+            }
+        });
+    }).on('change', function() {
+        if($(this).val() != that.prevText || $(this).val() == '')
+        {
+            $filterDestination.find('[name="' + that.params.inputName + 'Id"]').val('');
+            $filterDestination.find('[name="' + that.params.inputName + 'Type"]').val('');
+        }
+        //update label and show/hide pickup date and time row
+        Transfer.Search.changeTransferLabel();
+    });
+};
+
+TransferLocationsLib.prototype.populateLocations = function() {
+    var queryDict = {};
+    location.search.substr(1).split('&').forEach(function(item) {queryDict[item.split('=')[0]] = item.split('=')[1]});
+
+    if (queryDict.pickUpFrom !== undefined)
+    {
+        TransferLocations.pickUpFrom.id = queryDict.pickUpFromId || '';
+        TransferLocations.pickUpFrom.type = queryDict.pickUpFromType || '';
+        TransferLocations.pickUpFrom.text = queryDict.pickUpFrom.split('+').join(' ') || '';
+    }
+
+    if (queryDict.dropOffTo !== undefined)
+    {
+        TransferLocations.dropOffTo.id = queryDict.dropOffToId || '';
+        TransferLocations.dropOffTo.type = queryDict.dropOffToType || '';
+        TransferLocations.dropOffTo.text = queryDict.dropOffTo.split('+').join(' ') || '';
+    }
+};
+
+
+/***********************************
+ * === PREDICTIVE SEARCH CI : TYPEAHEAD ===
+ *
+ **********************************/
+function PredictiveSearchaheadLib()
+{
+    this.params = {CI_PROXY_URL: CI_PROXY_URL, BASE_URL: BASE_URL, FOLDER: FOLDER};
+    this.prevText = '';
+}
+
+PredictiveSearchaheadLib.prototype =
+{
+    _init : function()
+    {
+        var _self = this;
+        var $filterDestination = $('#filter_' + _self.params.inputId);
+        var $clearTT = $filterDestination.find('.clearTypeahead');
+
+        var Predicitive = new Bloodhound({
+            datumTokenizer: function (d)
+            {
+                return Bloodhound.tokenizers.whitespace(d.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote        : {
+                url: BASE_URL + '/' + ROUTE_FOLDER + '/autocomplete/search.php?query=%QUERY&l=%LANG',
+                ajax   : {
+                    beforeSend: function ()
+                    {
+                        $clearTT.hide();
+                        $('.destinationSearch').activity({
+                            outside: true,
+                            align: 'right',
+                            width: 2,
+                            length: 2,
+                            color: '#ffffff'
+                        });
+                    },
+                    complete  : function ()
+                    {
+                        $('.destinationSearch').activity(false);
+                        $clearTT.show();
+                    }
+                },
+                replace: function (url, query)
+                {
+                    var backup = _self.params.CI_PROXY_URL + '?c=PredictiveSearch&m=getTypeaheadPredictiveSearchData&query=%QUERY';
+
+                    backup = backup.replace('%QUERY', encodeURIComponent(query));
+
+                    return url.replace('%QUERY', encodeURIComponent(query))
+                        .replace('%LANG', _currentLang)
+                        + '&append=' + encodeURIComponent(trans('common.showMoreDestinations'))
+                        + '&u=' + encodeURIComponent(backup)
+                        + '&ui=' + PREDICTIVE_SEARCH_DATA.ui
+                        + '&ub=' + JSON.stringify(PREDICTIVE_SEARCH_DATA.ub);
+                }
+            },
+            rateLimitWait : 100,
+            limit         : 50,
+            sorter:       function(a, b) {
+                return a.index - b.index;
+            }
+        });
+        
+        Predicitive.initialize();
+
+        $('#searchHotels').click(function () {
+            Loader.show();
+            show_more_destination();
+            $(".searchCitiesContainer .row:nth-child(4)").hide();
+            $(".searchCitiesContainer .row:nth-child(2)").hide();
+            //check if location value is not blank
+
+            var areaVisible = getModalCookie("areaVisible");
+            if (areaVisible == 1) {
+                $('#areaContainer').show();
+            } else {
+                $('#areaContainer').hide();
+            }
+            checkAndDisableSubmit();
+            $('#hotelContainer').show();
+            Loader.hide();
+        });
+
+        function show_more_destination()
+        {
+            var searchBoxHtml = $('#searchShowMoreDestinationScript').html();
+            searchBoxHtml = searchBoxHtml.replace('Search destination');
+
+            if (searchBoxHtml.indexOf('</script>') === -1) { //ie fix!!!
+                searchBoxHtml += '</script>';
+            }
+
+            var selectBox = bootbox.dialog({
+                backdrop: false,
+                title: Translations.getText('searchCities.title'),
+                message: searchBoxHtml,
+                buttons: {
+                    main: {
+                        label: Translations.getText('searchCities.close'),
+                        className: "btn btn-default",
+                        callback: function () {
+                        }
+                    },
+                    success: {
+                        label: Translations.getText('searchCities.select'),
+                        className: "btn btn-primary disabled",
+                        callback: function () {
+                            var country = $('#scCountrySelect');
+                            var countryName = $('#scCountrySearch');
+                            var area = $('#scAreaSelect');
+                            var areaName = $('#scAreaSearch');
+                            var city = $('#scCitySelect');
+                            var cityName = $('#scCitySearch');
+                            var location = $('#scLocationSelect');
+                            var locationName = $('#scLocationSearch');
+                            var hotel = $('#scHotelSelect');
+                            var hotelName = $('#scHotelSearch');
+
+                            var hiddenName = (typeof _self.params.hiddenName == "undefined" ? 'PSearchId' : _self.params.hiddenName);
+
+                            if (hotel.val() != '' && $("#hotelContainer").is(":visible"))
+                            {
+                                $filterDestination.find('[name="' + hiddenName + '"]').val(hotel.val()).trigger('change');
+                                $filterDestination.find('input.typeahead.tt-input').val(hotelName.val()).data('ttTypeahead').input.query = hotelName.val();
+                                $filterDestination.find('.tt-dataset-destination').text(hotelName.val());
+                                $filterDestination.find('[name="PSearchType"]').val('hotel');
+                                $filterDestination.find('[name="PLocationType"]').val('');
+                            }
+                            else if (location.val() != '' && $("#locationContainer").is(":visible"))
+                            {
+                                $filterDestination.find('[name="' + hiddenName + '"]').val(location.val()).trigger('change');
+                                $filterDestination.find('input.typeahead.tt-input').val(locationName.val()).data('ttTypeahead').input.query = locationName.val();
+                                $filterDestination.find('.tt-dataset-destination').text(locationName.val());
+                                $filterDestination.find('[name="PSearchType"]').val('geoLocation');
+                                $filterDestination.find('[name="PLocationType"]').val($('#PLocationTypeHidden').val());
+                            }
+                            else if (city.val() != '')
+                            {
+                                if (hotelName.val() != '' && hotel.val() == '')
+                                {
+                                    $filterDestination.find('[name="' + hiddenName + '"]').val('').trigger('change');
+                                    $filterDestination.find('input.typeahead.tt-input').val(cityName.val() + ' ' + hotelName.val()).data('ttTypeahead').input.query = cityName.val() + ' ' + hotelName.val();
+                                    $filterDestination.find('.tt-dataset-destination').text(cityName.val() + ' ' + hotelName.val());
+                                }
+                                else
+                                {
+                                    $filterDestination.find('[name="' + hiddenName + '"]').val(city.val()).trigger('change');
+                                    $filterDestination.find('input.typeahead.tt-input').val(cityName.val()).data('ttTypeahead').input.query = cityName.val();
+                                    $filterDestination.find('.tt-dataset-destination').text(cityName.val());
+                                }
+
+                                $filterDestination.find('[name="PSearchType"]').val('city');
+                                $filterDestination.find('[name="PLocationType"]').val('');
+                            }
+                            else if (area.val() != '')
+                            {
+                                $filterDestination.find('[name="' + hiddenName + '"]').val(area.val()).trigger('change');
+                                $filterDestination.find('input.typeahead.tt-input').val(areaName.val()).data('ttTypeahead').input.query = areaName.val();
+                                $filterDestination.find('.tt-dataset-destination').text(areaName.val());
+                                $filterDestination.find('[name="PSearchType"]').val('area');
+                                $filterDestination.find('[name="PLocationType"]').val('');
+                            }
+                            else
+                            {
+                                $filterDestination.find('[name="' + hiddenName + '"]').val(country.val()).trigger('change');
+                                $filterDestination.find('input.typeahead.tt-input').val(countryName.val()).data('ttTypeahead').input.query = countryName.val();
+                                $filterDestination.find('.tt-dataset-destination').text(countryName.val());
+                                $filterDestination.find('[name="PSearchType"]').val('country');
+                                $filterDestination.find('[name="PLocationType"]').val('');
+                            }
+
+                            $filterDestination.find('[name="destinationCountry"]').val(country.val());
+
+                            if ($filterDestination.find('[name="PSearchType"]').val() == 'geoLocation' && $filterDestination.find('[name="PLocationType"]').val() == 'marker') {
+                                $('#markerRangeContainer').show();
+                            } else {
+                                $('#markerRangeContainer').hide();
+                            }
+                        }
+                    }
+                }
+            });
+
+            if ($('#PLocationTypeHidden').val() == 'marker') {
+                $('#hotelContainer').hide();
+            } else {
+                $('#hotelContainer').show();
+            }
+        }
+
+        $('#' + _self.params.inputId)
+            .typeahead({
+                minLength: 2,
+                highlight: true,
+                hint: true
+            }, {
+                name: 'destination',
+                displayKey: 'value',
+                source: Predicitive.ttAdapter(),
+                templates: {
+                    suggestion: function (ctx) {
+                        var siteUrl = _self.params.BASE_URL + (_self.params.FOLDER ? '/' + _self.params.FOLDER : '');
+                        var $flag = (ctx.flag && ctx.flag.length > 0 ? '<img src="' + siteUrl + '/_laravel/public/images/destination/country/flags/' + ctx.flag + '" alt="" style="width:40px; height:20px"/>' : '');
+
+                        var $details = ctx.value + (ctx.city && ctx.city.length > 0 ? ', ' + ctx.city : '') + (ctx.country && ctx.country.length > 0 ? ' - ' + ctx.country : '');
+                        var $details_hint = '';
+
+                        if (ctx.hint) {
+                            $details_hint += '<br><small>' +
+                                ctx.hint.value +
+                                (ctx.hint.city.length > 0 ? ', ' + ctx.hint.city : '') +
+                                (ctx.hint.country.length > 0 ? ', ' + ctx.hint.country : '') +
+                                '</small>';
+                        }
+
+                        return '<p>' +
+                            $flag +
+                            '&nbsp;&nbsp;' +
+                            $details +
+                            $details_hint +
+                            '</p>';
+                    }
+                }
+            })
+            .on('typeahead:selected', function (j, ctx) {
+                if (ctx['Id'] < 0) {
+                    $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ?
+                        'PSearchId' : _self.params.hiddenName) + '"]').val('').trigger('change');
+
+                    $filterDestination.find('[name="destinationCountry"]').val('');
+                    $filterDestination.find('[name="PSearchType"]').val('');
+                    $filterDestination.find('[name="cityHotels"]').val('');
+                    $filterDestination.find('[name="PLocationType"]').val('');
+                    $filterDestination.find('.tt-dataset-destination').text('');
+                    $filterDestination.find('input.typeahead.tt-input').val('').data('ttTypeahead').input.query = '';
+                    $("#" + _self.params.inputId).blur();
+
+                    show_more_destination();
+                    var areaVisible = getModalCookie("areaVisible");
+                    if (areaVisible == 1) {
+                        $('#areaContainer').show();
+                    } else {
+                        $('#areaContainer').hide();
+                    }
+                    checkAndDisableSubmit();
+                }
+                else if (ctx['Id'] === 0) {
+                    this.value = '';
+
+                    return false;
+                }
+                else //
+                {
+                    var id = ctx['Id'];
+
+                    $filterDestination
+                        .find('[name="' + (typeof _self.params.hiddenName === "undefined" ? 'PSearchId' : _self.params.hiddenName) + '"]')
+                        .val(id)
+                        .trigger('change')
+                    ;
+
+                    $filterDestination.find('[name="PSearchType"]').val(ctx['Type']);
+                    $filterDestination.find('[name="cityHotels"]').val('');
+                    $filterDestination.find('[name="PLocationType"]').val(ctx['locationType']);
+                    $filterDestination.find('[name="destinationCountry"]').val(ctx['countryId']);
+
+                    // empty product name if destination is changed
+                    var fieldHolder = $('.field_holder');
+                    fieldHolder.find('[name="productCode"]').val('');
+                    fieldHolder.find('.productSearch').val('');
+                    _self.prevText = $(this).val();
+
+                    $("#" + _self.params.inputId).blur();
+                    if (
+                        $filterDestination.find('[name="PSearchType"]').val() === 'geoLocation' &&
+                        $filterDestination.find('[name="PLocationType"]').val() === 'marker'
+                    ) {
+                        $('#markerRangeContainer').show();
+                    } else {
+                        $('#markerRangeContainer').hide();
+                    }
+                }
+
+                //check if location type is marker and search type is geolocation than allow markerRange
+
+            })
+            .on('change', function () {
+                if ('' === $(this).val() || ('' !== _self.prevText && $(this).val() !== _self.prevText)) //firefox36 will trigger a onchange on out-of-focus !
+                {
+                    $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ? 'PSearchId' : _self.params.hiddenName) + '"]').val('');
+                    $filterDestination.find('[name="PSearchType"]').val('');
+                    $filterDestination.find('[name="PLocationType"]').val('');
+                    $filterDestination.find('[name="destinationCountry"]').val('');
+                    $filterDestination.find('.tt-dataset-destination').text('');
+                }
+            });
+    },
+    init : function(Args) {
+        this.params = $.extend(this.params, Args);
+        this._init();
+    }
+};
+
+    function getModalCookie(name) {
+        var re = new RegExp(name + "=([^;]+)");
+        var value = re.exec(document.cookie);
+        return (value != null) ? unescape(value[1]) : '';
+    }
+
+    function setModalCookie(name, value) {
+        var today = new Date();
+        var expiry = new Date(today.getTime() + 1 * 24 * 3600 * 1000); // plus 1 day
+        document.cookie = name + "=" + escape(value) + "; path=/; expires=" + expiry.toGMTString();
+    }
+
+    function checkAndDisableSubmit() {
+        if ($('#PLocationTypeHidden').val() == 'marker') {
+            if( $('#locationContainer:visible').length == 0){
+                $('#hotelContainer').show();
+            }else{
+               $('#hotelContainer').hide();
+            }
+        } else {
+            $('#hotelContainer').show();
+        }
+        if( (parseInt($('#scHotelSelect').val()) > 0 )
+            || ( parseInt($('#scLocationSelect').val()) > 0 && $('#locationContainer:visible').length == 1 )
+            || ( parseInt($('#scCitySelect').val()) > 0 || parseInt($('#scAreaSelect').val()) > 0 )
+            || ( parseInt($('#scCountrySelect').val()) > 0 && parseInt($('#isSearchAllowCountry').val()) > 0 ) ){
+            $('.searchCitiesContainer').closest('.modal-content').find('.modal-footer > .btn-primary').removeClass('disabled').addClass('active');
+        }else{
+            $('.searchCitiesContainer').closest('.modal-content').find('.modal-footer > .btn-primary').removeClass('active').addClass('disabled');
+        }
+    }
+
+/***********************************
+ * === DESTINATION EVENT : TYPEAHEAD ===
+ *
+ **********************************/
+
+function CityTypeaheadLib()
+{
+    this.params = {CI_PROXY_URL: CI_PROXY_URL, BASE_URL: BASE_URL, FOLDER: FOLDER};
+    this.prevText = '';
+}
+
+CityTypeaheadLib.prototype =
+{
+    _init : function()
+    {
+        var _self = this;
+        var limit=10;
+        var showMoreButton=true;
+        var $filterDestination = $('#filter_' + _self.params.inputId);
+        var $clearTT = $filterDestination.find('.clearTypeahead');
+        if ($('#getTrasferBlade').length > 0) {
+            showMoreButton = 0;
+            if ($('#getTrasferBlade').val() == 1) {
+                limit = 6;
+            }
+
+        }
+        var City = new Bloodhound({
+            datumTokenizer: function (d)
+            {
+                return Bloodhound.tokenizers.whitespace(d.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote        : {
+                url    : _self.params.CI_PROXY_URL + '?c=City&m=getTypeaheadDestination&s=true&limit='+limit+'&showMoreButton='+showMoreButton,
+                ajax   : {
+                    beforeSend: function ()
+                    {
+                        $clearTT.hide();
+                        $('.destinationSearch').activity({
+                            outside: true,
+                            align: 'right',
+                            width: 2,
+                            length: 2,
+                            color: '#ffffff'
+                        });
+                    },
+                    complete  : function ()
+                    {
+                        $('.destinationSearch').activity(false);
+                        $clearTT.show();
+                    }
+                },
+                replace: function (url, query)
+                {
+                    query = encodeURIComponent(query);
+
+                    var fullUrl = url + '&query=' + query;
+                    var productId = $("[name='productId']").val();
+
+                    if (typeof productId !== "undefined")
+                    {
+                        fullUrl += '&productId=' + productId;
+                    }
+
+                    return fullUrl;
+                }
+            },
+            rateLimitWait : 300,
+            limit         : 11,
+            sorter:       function(a, b) {
+                // Chrome fix, re-order the items by index
+                if (a.index < b.index) {
+                    return -1;
+                } else if (a.index > b.index) {
+                    return 1;
+                } else
+                    return 0;
+            }
+        });
+
+        City.initialize();
+
+        $('#' + _self.params.inputId).typeahead({minLength: 3, highlight: true, hint: false}, {
+            name      : 'destination',
+            displayKey: 'value',
+            source    : City.ttAdapter(),
+            templates : {
+                suggestion: function (ctx)
+                {
+                    var siteUrl = _self.params.BASE_URL + (_self.params.FOLDER ? '/' + _self.params.FOLDER : '');
+
+                    return '<p>' + (ctx['country'].length > 0 ? '<img src="' + siteUrl + '/images/destination/country/flags/' + ctx['countryFlag'] + '" alt="" style="width:40px; height:20px"/>' : '') +
+                        '&nbsp;&nbsp;' + ctx['value'] + (ctx['country'].length > 0 ? ' - ' + ctx['country'] : '') + '</p>';
+                }
+            }
+        }).on('typeahead:selected',function (j, ctx)
+        {
+            if(ctx['id'] < 0)
+            {
+                $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ? 'destinationCity' : _self.params.hiddenName) + '"]').val('').trigger('change');
+                $filterDestination.find('[name="destinationCountry"]').val('');
+                $filterDestination.find('.tt-dataset-destination').text('');
+                $filterDestination.find('input.typeahead.tt-input').val('').data('ttTypeahead').input.query = '';
+                $("#" + _self.params.inputId).blur();
+
+                var searchBoxHtml = $('#searchCitiesScript').html();
+                searchBoxHtml = searchBoxHtml.replace('/*0*/', ctx['countryId'] > 0 ? ctx['countryId'].toString() : '0');
+                if(searchBoxHtml.indexOf('</script>') === -1) { //ie fix!!!
+                    searchBoxHtml += '</script>';
+                }
+                var selectBox = bootbox.dialog({
+                    title: Translations.getText('searchCities.title'),
+                    message: searchBoxHtml,
+                    buttons: {
+                        main: {
+                            label: Translations.getText('searchCities.close'),
+                            className: "btn btn-default",
+                            callback: function() {
+
+                            }
+                        },
+                        success: {
+                            label: Translations.getText('searchCities.select'),
+                            className: "btn btn-primary disabled",
+                            callback: function () {
+                                var country = $('#scCountrySelect option:selected');
+                                var city = $('#scCitySelect option:selected');
+                                if(country.val() == '' || city.val() == '') {
+                                    return false;
+                                }
+                                $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ? 'destinationCity' : _self.params.hiddenName) + '"]').val(city.val()).trigger('change');
+                                $filterDestination.find('[name="destinationCountry"]').val(country.val());
+                                $filterDestination.find('input.typeahead.tt-input').val(city.text()).data('ttTypeahead').input.query = city.text();
+                                $filterDestination.find('.tt-dataset-destination').text(city.text());
+                            }
+                        }
+                    }
+                });
+            }
+            else //
+            {
+                $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ? 'destinationCity' : _self.params.hiddenName) + '"]').val(ctx['id']).trigger('change');
+                $filterDestination.find('[name="destinationCountry"]').val(ctx['countryId']);
+
+                // empty product name if destination is changed
+                $('.field_holder').find('[name="productCode"]').val('');
+                $('.field_holder').find('.productSearch').val('');
+                _self.prevText = $(this).val();
+
+                $("#" + _self.params.inputId).blur();
+            }
+        }).on('change', function ()
+        {
+            if($(this).val() != _self.prevText || $(this).val() == '') //firefox36 will trigger a onchange on out-of-focus !
+            {
+                $filterDestination.find('[name="' + (typeof _self.params.hiddenName == "undefined" ? 'destinationCity' : _self.params.hiddenName) + '"]').val('');
+                if($('#getTrasferBlade').length > 0 ){
+                   /*For transfer amend page destination data set will not remove*/
+                }else {
+                    $filterDestination.find('[name="destinationCountry"]').val('');
+                    $filterDestination.find('.tt-dataset-destination').text('');
+                }
+
+            }
+        });
+    },
+    init : function(Args) {
+        this.params = $.extend(this.params, Args);
+        this._init();
+    }
+};
+
+/*****************************
+ * Typeahead for all
+ *
+ ****************************/
+
+var GenericTypeaheadLib = GenericTypeaheadLib || (function()
+{
+    var params = {};
+
+    function _init()
+    {
+        var $searchInputId  = $(params.inputId);
+        var typeaheadUrl    = params.url;
+        var urlParams       = params.urlParams;
+        var $clearTT = $searchInputId.parents('.pos-relative').find('.clearTypeahead');
+
+        var TypeaheadSearch = new Bloodhound({
+            datumTokenizer: function (d) {
+                return Bloodhound.tokenizers.whitespace(d.value);
+            },
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            remote : {
+
+                url : typeaheadUrl + '?query=%QUERY' + urlParams,
+
+                replace: function (url, encoded) {
+                    //console.log('customer interface > Hotel Name, Transfer Name ...');
+                    return url.replace('%QUERY', encodeURIComponent(encoded)) + '&'
+                        + $.param([
+                        {name: 'field', value: $searchInputId.val()},
+                        {name: 'countryId', value: ''},
+                        {name: 'cityId', value: $('[name="destinationCity"]').val()}
+                    ])
+                },
+                ajax : {
+                    beforeSend: function () {
+                        $clearTT.hide();
+                        $('.productSearch ').activity({
+                            outside: true,
+                            align  : 'right',
+                            width  : 2,
+                            length : 2,
+                            color  : '#ffffff'
+                        });
+                    },
+                    complete: function () {
+                        $('.productSearch ').activity(false);
+                        $clearTT.show();
+                    }
+                }
+            },
+            rateLimitWait : 300,
+            limit         : 10
+        });
+
+        TypeaheadSearch.initialize();
+
+        $searchInputId.typeahead({minLength: 3, highlight: true, hint: false}, {
+            name      : params.displayKey,
+            displayKey: params.displayKey,
+            source    : TypeaheadSearch.ttAdapter(),
+            templates : {
+                suggestion: function (context) {
+                    var suggestionList = context[params.displayKey] + ', '+[context['CityName']].join(' - ');
+                    if( typeof context['Country_Name'] !== "undefined") {
+                        suggestionList += ' - ' + context['Country_Name'];
+                    }
+                    return '<p>' + suggestionList + '</p>';
+                }
+            }
+        }).on('typeahead:selected', function (j, ctx) {
+
+            $('[name="productCode"]').val(ctx['Code'] || ctx['CodHotel']);
+
+            // autocomplete destination, if exists
+            var $parent = $('.search_taps');
+
+            $parent.find('.destinationSearch').val(ctx['CityName']);
+            $parent.find('[name="destinationCity"]').val(ctx['CityCode']);
+
+            $(this).trigger('change');
+
+        }).on('change', function () {
+
+
+            // reset the value of the hidden input if the value of the type ahead input is empty
+            if (!this.value) {
+
+                $('[name="productCode"]').val('');
+            }
+        });
+    }
+
+    return {
+        init : function(Args) {
+            params = $.extend(params, Args);
+            _init();
+        }
+    };
+
+}());
+
+/******
+ *
+ * Validator for search forms
+ *
+ * @type rules: {},
+ * messages: {},
+ * formId: string,
+ * URL: string,
+ * resultContainer: string,
+ * errorHolder: string,
+ * callBack: null,
+ * init: init,
+ * FormValidate: FormValidate,
+ * FormDoSearch: FormDoSearch
+ */
+function ValidatorWithLaravelRules()
+{
+    this.formId = '#searchForm';
+    this.URL = '';
+    this.modalBannerUrl = '';
+    this.method = 'get';
+    this.dataType = 'html';
+    this.events = 'submit';
+
+    this.rules = {};
+    this.messages = {};
+    this.resultContainer = '#content .row';
+    this.errorHolder = '#search_errors';
+    this.alertError = true;
+    this.callBack = null;
+    this.errorsArr = {};
+    this.showSearchText = false;
+}
+
+ValidatorWithLaravelRules.prototype =
+{
+    init: function() {
+        var _self = this;
+        // Integrate Laravel rules
+        $.each(_self.rules, function(key, value) {
+            $(_self.formId + ' ' + '[name^="' + key + '"]').attr('data-validations', value);
+        });
+
+        _self.FormValidate();
+    },
+    FormValidate: function()
+    {
+        // Prepare form on submit
+        var _self = this;
+        var nonumrahacm = $("input[name=nonumrahacm]").val();
+        _self.errorsArr = {};
+        var firstInvalidError = true;
+        var selectors = [_self.formId + ' input[type!="submit"]', _self.formId + ' select', _self.formId + ' textarea'];
+        selectors = selectors.join(', ');
+        $(_self.formId).validator({
+            events   : _self.events,
+            selector : selectors,
+            parentForm: _self.formId,
+            preventDefault : true,
+
+            callback : function( elem, valid, rule )
+            {
+                //console.log(_self.formId);
+                var $elem = $(elem);
+
+                $elem.removeClass('error');
+                var attrName = $elem.attr('name');
+                var alphaAttrName = attrName.replace(/\[.*?]/g, '')/*accommodation has elements with numeric indexes*/.replace(/\W/g, '');
+                //delete(_self.errorsArr[alphaAttrName]);
+
+                if(!valid)
+                {
+                    // Add error class
+                    var elemId = $elem.attr('id');
+                    var elemId2 = $elem.data('id');
+                    $('[data-id="'+ elemId +'"]').addClass('error');
+                    $('#' + elemId).addClass('error');
+                    $('#' + elemId2).addClass('error');
+                    $elem.addClass('error');
+
+
+                    var rulesArr = rule.split('|');
+                    var messageArr = [];
+
+                    $.each(rulesArr, function (key, ruleValue)
+                    {
+                        var message = _self.messages[alphaAttrName + '.' + ruleValue];
+                        
+                        if (typeof message === 'undefined' && ruleValue.indexOf('regex:') == 0){
+                            message = _self.messages[alphaAttrName + '.regex'];
+                        }
+
+                        //console.log(message);
+                        if (typeof message === 'undefined')
+                        {
+                            message = _self.messages.invalidValue + alphaAttrName;
+                        }
+                        if(ruleValue == 'free_text'){
+                            if(firstInvalidError){
+                                messageArr[key] = '<li class="error_' + 'free_text' + '">' + validatorLatinError + '</li>';
+                                firstInvalidError = false;
+                            }
+                        } else {
+                            messageArr[key] = '<li class="error_' + alphaAttrName + '">' + message + '</li>';
+                        }
+                        if(messageArr.length > 0) {
+                            _self.errorsArr[alphaAttrName] = messageArr;
+                        }
+                    });
+                }
+            },
+            done: function(valid) {
+
+                //console.log('form valid = ' + valid);
+
+                if(valid) {
+                    _self.setSearchModalBanners();
+                    $(_self.formId).find('.error').removeClass('error');
+                    $(_self.errorHolder).empty();
+                    if(_self.showSearchText){
+                        Loader.show(loaderSearchText, true);
+                    } else {
+                        Loader.show();
+                    }
+                    setTimeout(function() {_self.FormDoSearch(); }, 50);
+
+                    // set banners
+                    _self.setSearchTopBanners();
+                    _self.setSearchFooterBanners();
+                } else {
+
+                    if(Object.keys(_self.errorsArr).length > 0)
+                    {
+                        var html= '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><ul>';
+                        _self.alertError = false;
+                        if(nonumrahacm != 0){
+                            html = '<div class="col-12 "><ul>';
+                            _self.alertError =true;
+                        }
+
+                        $.each(_self.errorsArr, function(key, value) {
+                            $.each(value, function(key, value) {
+                                html += value;
+                            });
+                        });
+                        html += '</ul></div>';
+
+                        html = $.parseHTML(html);
+
+                        if (!_self.alertError)
+                        {
+                            $(_self.errorHolder).empty();
+                            $(_self.errorHolder).append(html);
+                        } else {
+
+                            AlertError.show(html, _self.messages.error);
+
+                        }
+                    }
+                    //remove the errors after display
+                    //because accommodation has 5 rows of nationality/residency/adults...
+                    //and a valid value for any element in a row will remove the message from list
+                    _self.errorsArr = {};
+                }
+                firstInvalidError = true;
+            }
+        });
+    },
+    FormDoSearch: function() // Execute form
+    {
+        var _self = this;
+        var nonumrahacm = $("input[name=nonumrahacm]").val();
+        var params = $(_self.formId).serializeArray();
+
+        if (nonumrahacm != 0) {
+            if (typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true && typeof Accommodation !== 'undefined' && typeof IS_GROUP_RATE_SEARCH !== 'undefined' && IS_GROUP_RATE_SEARCH > 5) {
+                _self.method = 'POST';
+            } else {
+                params = params.filter(function (item) {
+                    return item['name'] != '_token';
+                });
+                params.push({'name': 'doSearch', 'value': 1});
+                historyPushState("Search", "search", '?' + $.param(params));
+            }
+        } else {
+            _self.method = 'POST';
+        }
+
+        var fastSearch = false;
+        if (typeof Accommodation !== 'undefined') {
+            fastSearch = true;
+            var PSearchType = params.find(function(elem) { return elem.name === 'PSearchType' });
+            if(PSearchType.value === 'hotel' || IS_UMRAH_CUSTOMER === '1')
+            {
+                fastSearch = false;
+            }
+        }
+        
+        if (fastSearch) {
+            Loader.lock();
+        }
+
+        //do not set fastSearch to 'yes' for umrah and one single hotel searches
+        params.push({'name': 'fastSearch', 'value': fastSearch ? 'yes' : 'no'});
+
+        if (fastSearch && typeof Accommodation !== 'undefined') {
+            Accommodation.Search.abortRemainingResultsFullRequest();
+        }
+
+        $.ajax({
+            url: _self.URL,
+            dataType: _self.dataType,
+            type: _self.method,
+            async: true,
+            data: $.param(params),
+            statusCode: {
+                302: function () {
+                    window.location.href = BASE_CI_URL + '/login';
+                }
+            }
+        }).done(function (result) {
+            //console.log('show results');
+
+            //console.time('parse result');
+            //var html = $.parseHTML( result );
+            //var test = $(html).find('.search-result_row:first');
+            //console.timeEnd('parse result');
+
+            $(_self.errorHolder).empty();
+            if(typeof _self.callBack === 'function')
+            {
+                _self.callBack(result, fastSearch);
+            }
+            else
+            {
+                $(_self.resultContainer).html(result);
+                Loader.hide();
+            }
+
+            //console.log(new Date().getTime() - time);
+        }).fail(function (xhr, err, errText) {
+            Loader.unlock();
+            Loader.hide();
+            // only show the alert if the status is not a redirect
+            if(xhr.status != 302)
+            {
+                AlertError.show(xhr.responseText, _self.messages.error);
+                AlertError.setWidth('550px');
+                AlertError.setModalBodyPadding('20px');
+            }
+        });
+    },
+
+    setSearchModalBanners: function()
+    {
+        var _self = this;
+        var params = $('#searchForm').serialize();
+
+        if(_self.modalBannerUrl === null)
+        {
+            return;
+        }
+
+        $.ajax({
+            url: _self.modalBannerUrl,
+            dataType: 'json',
+            type: "get",
+            async: true,
+            data: params,
+            statusCode: {
+                302: function () {
+                    window.location.href = BASE_CI_URL + '/login';
+                }
+            }
+        }).done(function (result)
+        {
+            if(result.success === true) {
+                var html = $(result.html).html();
+                $('#loaderContent').removeClass('hasBanner');
+                $('#loaderContent').empty().append(html);
+
+                if($(html).find('.carousel').length) {
+                    $('#loaderContent').addClass('hasBanner');
+                }
+
+                $('#modalCarousel').carousel();
+            }
+        });
+    },
+    setSearchTopBanners:function () {
+        var params = $('#searchForm').serialize();
+
+        setTopBannersOnSearchAction(params)
+    },
+    setSearchFooterBanners:function () {
+        var params = $('#searchForm').serialize();
+
+        setFooterBannersOnSearchAction(params);
+    }
+};
+
+$.fn.serializeObject = function()
+{
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (typeof o[this.name] !== "undefined") {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
+
+function IE_hotelDesc_fix() {
+    if(isOldIE() < 9)
+    {
+        $('div#search-result_rows .search-result_row').each(function() {
+            var $this = $(this);
+            if($this.find('.showLessDesc').length)
+            {
+                var hotelDesc = $this.find('.info_container p span:first').text();
+                var descLength = hotelDesc.length;
+
+                $this.find('.info_container p span:first').text(hotelDesc.substr(0,350));
+                $this.find('.info_container .hidden').prepend(hotelDesc.substr(350,descLength));
+            }
+        });
+    }
+}
+
+function setTopBannersOnSearchAction(params)
+{
+    if(typeof TOP_BANNER_URL === 'undefined' || TOP_BANNER_URL === null)
+    {
+        return;
+    }
+    var method ='get';
+    if (typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true && typeof IS_GROUP_RATE_SEARCH !== 'undefined' && IS_GROUP_RATE_SEARCH > 5) {
+        method ='post';
+    }
+
+    $.ajax({
+        url: TOP_BANNER_URL,
+        dataType: 'json',
+        type: method,
+        async: true,
+        data: params,
+        statusCode: {
+            302: function () {
+                window.location.href = BASE_CI_URL + '/login';
+            }
+        }
+    }).done(function (result)
+    {
+        if(result.success === true)
+        {
+            var html        = $(result.html);
+            var $container  = $('#topBanner');
+
+            if($container.length === 0) {
+                $('<div id="topBanner"></div>').insertAfter($('#header').find('.logo'));
+                $container = $('#topBanner');
+            }
+            $container.empty().append(html);
+
+            // fix top Banner position
+            topBannerPosition();
+        } else {
+            $('#topBanner').empty();
+        }
+    });
+}
+
+
+function setFooterBannersOnSearchAction(params)
+{
+    if(typeof FOOTER_BANNER_URL === 'undefined' || FOOTER_BANNER_URL === null)
+    {
+        return;
+    }
+    var method ='get';
+    if (typeof IS_UMRAH_CUSTOMER !== "undefined" && Boolean(IS_UMRAH_CUSTOMER) === true && typeof IS_GROUP_RATE_SEARCH !== 'undefined' && IS_GROUP_RATE_SEARCH > 5) {
+        method ='post';
+    }
+    $.ajax({
+        url: FOOTER_BANNER_URL,
+        dataType: 'json',
+        type: method,
+        async: true,
+        data: params,
+        statusCode: {
+            302: function () {
+                window.location.href = BASE_CI_URL + '/login';
+            }
+        }
+    }).done(function (result)
+    {
+        if(result.success === true) {
+            var html = $(result.html);
+            var $footer = $('#results_footer');
+            $footer.find('.copyrights_holder').find('#footerBanner').remove();
+
+            $footer.addClass('bannerStickyFooter');
+            $footer.find('.copyrights_holder').prepend($('<div id="footerBanner">'));
+
+            $('#footerBanner').append(html);
+        } else {
+            $('#results_footer').removeClass('bannerStickyFooter');
+            $('#footerBanner').empty();
+        }
+    });
+}
